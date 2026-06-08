@@ -611,8 +611,8 @@
 // ══════════════════════════════════════════════
 //  CONFIG
 // ══════════════════════════════════════════════
-let CLIENT_ID = localStorage.getItem('hi_client_id') || '';
-let PROPERTY_ID = localStorage.getItem('hi_property_id') || '';
+let CLIENT_ID = localStorage.getItem('hi_client_id') || '679982823954-fhlicpdh8ps1is67grpip2ndcffpdvt9.apps.googleusercontent.com';
+let PROPERTY_ID = localStorage.getItem('hi_property_id') || '540752503';
 let accessToken = null;
 let isDemoMode = false;
 
@@ -660,16 +660,12 @@ function loadDemo() {
   loadAllData();
 }
 
-// Auto-launch if already configured
+// Auto-launch — credentials are pre-configured
 window.addEventListener('load', () => {
-  if (CLIENT_ID && PROPERTY_ID) {
-    document.getElementById('setup-overlay').style.display='none';
-    initGoogleAuth();
-  } else {
-    // pre-fill if empty defaults
-    document.getElementById('input-client-id').value = CLIENT_ID;
-    document.getElementById('input-property-id').value = PROPERTY_ID;
-  }
+  document.getElementById('input-client-id').value = CLIENT_ID;
+  document.getElementById('input-property-id').value = PROPERTY_ID;
+  document.getElementById('setup-overlay').style.display='none';
+  initGoogleAuth();
 });
 
 // ══════════════════════════════════════════════
