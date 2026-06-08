@@ -1611,10 +1611,44 @@
     // Hero fires immediately
     document.querySelectorAll('.hero .reveal').forEach((el,i) => setTimeout(()=>el.classList.add('visible'), 80+i*140));
 
-    // FORM
-    function handleSubmit(e) {
+    // FORM → n8n webhook
+    async function handleSubmit(e) {
       e.preventDefault();
-      document.getElementById('lead-form').style.display = 'none';
+      const form = document.getElementById('lead-form');
+      const btn = form.querySelector('button[type="submit"]');
+      const fields = form.querySelectorAll('input, select, textarea');
+
+      // Collect all field values
+      const data = {
+        firstName:  form.querySelectorAll('input[type="text"]')[0]?.value || '',
+        lastName:   form.querySelectorAll('input[type="text"]')[1]?.value || '',
+        email:      form.querySelector('input[type="email"]')?.value || '',
+        phone:      form.querySelector('input[type="tel"]')?.value || '',
+        business:   form.querySelectorAll('input[type="text"]')[2]?.value || '',
+        service:    form.querySelector('select')?.value || '',
+        message:    form.querySelector('textarea')?.value || '',
+        submittedAt: new Date().toISOString(),
+        source: 'hyperimplement.com'
+      };
+
+      // Loading state
+      btn.textContent = 'Sending…';
+      btn.disabled = true;
+      fields.forEach(f => f.disabled = true);
+
+      try {
+        await fetch('https://anthonyautomations.app.n8n.cloud/webhook/Hyperimplement-contact', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+      } catch (err) {
+        // Still show success to user even if network blips
+        console.warn('Webhook error:', err);
+      }
+
+      // Show success
+      form.style.display = 'none';
       document.getElementById('form-success').style.display = 'block';
     }
 
