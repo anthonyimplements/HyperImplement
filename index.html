@@ -756,23 +756,21 @@
       bottom: -5px; left: 50%; transform: translateX(-50%);
     }
     .gap-card-icon {
-      font-size: 24px; margin-bottom: 18px; display: flex;
-      justify-content: center;
+      display: flex; justify-content: center;
+      margin-bottom: 20px; margin-top: -8px;
     }
     .gap-card-icon img {
-      width: 120px; height: 120px;
+      width: 160px; height: 160px;
       object-fit: contain; display: block;
-      border-radius: 16px;
-      mix-blend-mode: multiply;
-      filter: drop-shadow(0 4px 16px rgba(249,91,61,0.15));
-      transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), filter 0.3s;
+      transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1), filter 0.35s;
+      filter: drop-shadow(0 6px 18px rgba(249,91,61,0.18));
     }
     .gap-node-card:hover .gap-card-icon img {
-      transform: scale(1.07) translateY(-3px);
-      filter: drop-shadow(0 8px 24px rgba(249,91,61,0.25));
+      transform: scale(1.06) translateY(-4px);
+      filter: drop-shadow(0 12px 28px rgba(249,91,61,0.28));
     }
     @media(max-width:768px){
-      .gap-card-icon img { width: 88px; height: 88px; }
+      .gap-card-icon img { width: 120px; height: 120px; }
     }
     .gap-card-title {
       font-family: 'Unbounded', sans-serif; font-size: 14px;
@@ -1142,7 +1140,7 @@
 
         <!-- Card 1 -->
         <div class="gap-node-card">
-          <span class="gap-card-icon"><img src="Noise.png" alt="Buried in the noise" /></span>
+          <span class="gap-card-icon"><img src="NoiseBGremoved.png" alt="Buried in the noise" /></span>
           <div class="gap-card-title">Buried in the Noise</div>
           <p class="gap-card-body">New tools, announcements, and "game-changing" features drop every week. People spend hours consuming AI content and zero time actually putting it to work.</p>
         </div>
@@ -1156,7 +1154,7 @@
 
         <!-- Card 2 (center) -->
         <div class="gap-node-card" id="gap-center-card">
-          <span class="gap-card-icon"><img src="Awareness.png" alt="Awareness without action" /></span>
+          <span class="gap-card-icon"><img src="AwarenessBGremoved.png" alt="Awareness without action" /></span>
           <div class="gap-card-title">Awareness Without Action</div>
           <p class="gap-card-body">Knowing about ChatGPT, Claude, or Gemini is not the same as having them run real tasks for you. The gap between knowing and doing is where time, money, and opportunity disappear.</p>
         </div>
@@ -1170,7 +1168,7 @@
 
         <!-- Card 3 -->
         <div class="gap-node-card">
-          <span class="gap-card-icon"><img src="OldWorkflow.png" alt="Back to the old workflow" /></span>
+          <span class="gap-card-icon"><img src="OldWorkflowBGremoved.png" alt="Back to the old workflow" /></span>
           <div class="gap-card-title">Back to the Old Workflow</div>
           <p class="gap-card-body">The demo ends. The tab closes. And it's back to doing things the same way. AI ends up being something people talk about — never something that works for them.</p>
         </div>
