@@ -54,23 +54,28 @@ async function runRealtimeReport(body) {
 async function fetchAllData(range) {
   const dateRange = { startDate: range, endDate: 'today' };
 
-  const [overview, sessionsByDay, sources, devices, countries, browsers,
-    topPages, events, landingPages, channelsByDay, newReturning, rt] = await Promise.all([
-    runReport({ dateRanges:[dateRange], metrics:[{name:'sessions'},{name:'totalUsers'},{name:'newUsers'},{name:'screenPageViews'},{name:'averageSessionDuration'},{name:'bounceRate'},{name:'screenPageViewsPerSession'}] }),
-    runReport({ dateRanges:[dateRange], dimensions:[{name:'date'}], metrics:[{name:'sessions'},{name:'totalUsers'}], orderBys:[{dimension:{dimensionName:'date'}}] }),
-    runReport({ dateRanges:[dateRange], dimensions:[{name:'sessionDefaultChannelGrouping'}], metrics:[{name:'sessions'}], orderBys:[{metric:{metricName:'sessions'},desc:true}] }),
+  const prevLen = range === '7daysAgo' ? 7 : range === '30daysAgo' ? 30 : range === '90daysAgo' ? 90 : 365;
+  const prevRange = { startDate: `${prevLen * 2}daysAgo`, endDate: `${prevLen + 1}daysAgo` };
+
+  const [overview, overviewPrev, sessionsByDay, sources, devices, countries, browsers,
+    topPages, events, landingPages, channelsByDay, newReturning, engagementByDay, rt] = await Promise.all([
+    runReport({ dateRanges:[dateRange], metrics:[{name:'sessions'},{name:'totalUsers'},{name:'newUsers'},{name:'screenPageViews'},{name:'averageSessionDuration'},{name:'bounceRate'},{name:'screenPageViewsPerSession'},{name:'engagedSessions'},{name:'engagementRate'},{name:'eventCount'}] }),
+    runReport({ dateRanges:[prevRange], metrics:[{name:'sessions'},{name:'totalUsers'},{name:'newUsers'},{name:'screenPageViews'},{name:'averageSessionDuration'},{name:'bounceRate'},{name:'screenPageViewsPerSession'},{name:'engagedSessions'},{name:'engagementRate'},{name:'eventCount'}] }),
+    runReport({ dateRanges:[dateRange], dimensions:[{name:'date'}], metrics:[{name:'sessions'},{name:'totalUsers'},{name:'engagedSessions'}], orderBys:[{dimension:{dimensionName:'date'}}] }),
+    runReport({ dateRanges:[dateRange], dimensions:[{name:'sessionDefaultChannelGrouping'}], metrics:[{name:'sessions'},{name:'totalUsers'}], orderBys:[{metric:{metricName:'sessions'},desc:true}] }),
     runReport({ dateRanges:[dateRange], dimensions:[{name:'deviceCategory'}], metrics:[{name:'sessions'}], orderBys:[{metric:{metricName:'sessions'},desc:true}] }),
-    runReport({ dateRanges:[dateRange], dimensions:[{name:'country'}], metrics:[{name:'sessions'}], orderBys:[{metric:{metricName:'sessions'},desc:true}], limit:10 }),
+    runReport({ dateRanges:[dateRange], dimensions:[{name:'country'}], metrics:[{name:'sessions'},{name:'totalUsers'}], orderBys:[{metric:{metricName:'sessions'},desc:true}], limit:10 }),
     runReport({ dateRanges:[dateRange], dimensions:[{name:'browser'}], metrics:[{name:'sessions'}], orderBys:[{metric:{metricName:'sessions'},desc:true}], limit:8 }),
-    runReport({ dateRanges:[dateRange], dimensions:[{name:'pagePath'}], metrics:[{name:'screenPageViews'},{name:'userEngagementDuration'}], orderBys:[{metric:{metricName:'screenPageViews'},desc:true}], limit:8 }),
-    runReport({ dateRanges:[dateRange], dimensions:[{name:'eventName'}], metrics:[{name:'eventCount'}], orderBys:[{metric:{metricName:'eventCount'},desc:true}], limit:10 }),
-    runReport({ dateRanges:[dateRange], dimensions:[{name:'landingPage'}], metrics:[{name:'sessions'}], orderBys:[{metric:{metricName:'sessions'},desc:true}], limit:6 }),
+    runReport({ dateRanges:[dateRange], dimensions:[{name:'pagePath'}], metrics:[{name:'screenPageViews'},{name:'userEngagementDuration'},{name:'totalUsers'}], orderBys:[{metric:{metricName:'screenPageViews'},desc:true}], limit:10 }),
+    runReport({ dateRanges:[dateRange], dimensions:[{name:'eventName'}], metrics:[{name:'eventCount'}], orderBys:[{metric:{metricName:'eventCount'},desc:true}], limit:12 }),
+    runReport({ dateRanges:[dateRange], dimensions:[{name:'landingPage'}], metrics:[{name:'sessions'},{name:'totalUsers'},{name:'bounceRate'}], orderBys:[{metric:{metricName:'sessions'},desc:true}], limit:8 }),
     runReport({ dateRanges:[dateRange], dimensions:[{name:'date'},{name:'sessionDefaultChannelGrouping'}], metrics:[{name:'sessions'}], orderBys:[{dimension:{dimensionName:'date'}}] }),
-    runReport({ dateRanges:[dateRange], dimensions:[{name:'newVsReturning'}], metrics:[{name:'totalUsers'}] }),
+    runReport({ dateRanges:[dateRange], dimensions:[{name:'newVsReturning'}], metrics:[{name:'totalUsers'},{name:'sessions'},{name:'engagementRate'}] }),
+    runReport({ dateRanges:[dateRange], dimensions:[{name:'date'}], metrics:[{name:'engagementRate'},{name:'averageSessionDuration'}], orderBys:[{dimension:{dimensionName:'date'}}] }),
     runRealtimeReport({ dimensions:[{name:'country'},{name:'unifiedScreenName'}], metrics:[{name:'activeUsers'}] }),
   ]);
 
-  return { overview, sessionsByDay, sources, devices, countries, browsers, topPages, events, landingPages, channelsByDay, newReturning, rt };
+  return { overview, overviewPrev, sessionsByDay, sources, devices, countries, browsers, topPages, events, landingPages, channelsByDay, newReturning, engagementByDay, rt };
 }
 
 // ── HTTP Server ──
@@ -91,11 +96,11 @@ const server = http.createServer(async (req, res) => {
       const { tokens } = await oauth2Client.getToken(code);
       oauth2Client.setCredentials(tokens);
       fs.writeFileSync(TOKENS_FILE, JSON.stringify(tokens, null, 2));
-      res.writeHead(200, { 'Content-Type': 'text/html' });
-      res.end(`<html><body style="font-family:sans-serif;background:#07070D;color:#eee;display:flex;align-items:center;justify-content:center;height:100vh;margin:0;flex-direction:column;gap:16px;">
-        <div style="font-size:48px;">✅</div>
+      res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+      res.end(`<!DOCTYPE html><html><head><meta charset="utf-8"></head><body style="font-family:sans-serif;background:#07070D;color:#eee;display:flex;align-items:center;justify-content:center;height:100vh;margin:0;flex-direction:column;gap:16px;">
+        <div style="font-size:48px;">&#x2705;</div>
         <div style="font-size:24px;font-weight:700;">Connected!</div>
-        <div style="color:#8A8A9A;">Closing in 3 seconds…</div>
+        <div style="color:#8A8A9A;">Closing in 3 seconds&hellip;</div>
         <script>setTimeout(()=>window.close(),3000)</script>
       </body></html>`);
       console.log('✅ Authentication successful! Tokens saved.');

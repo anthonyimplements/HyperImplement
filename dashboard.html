@@ -429,6 +429,7 @@
 <!-- ═══ MAIN ═══ -->
 <main class="main" id="dashboard" style="display:none;">
 
+  <div id="api-status-bar" style="display:none;padding:10px 16px;border-radius:8px;border:1px solid;font-size:12px;font-family:'IBM Plex Mono',monospace;margin-bottom:16px;"></div>
   <div id="no-data-banner">
     <strong>No data yet</strong> — GA4 just got connected. Data typically appears within 24–48 hours. The dashboard will populate automatically.
   </div>
@@ -460,6 +461,16 @@
       <div class="kpi-label">Avg. Session</div>
       <div class="kpi-value" id="kpi-duration">—</div>
       <div class="kpi-sub">minutes:seconds</div>
+    </div>
+    <div class="kpi-card" style="--kpi-color:var(--cyan);">
+      <div class="kpi-label">Engagement Rate</div>
+      <div class="kpi-value" id="kpi-engagement">—</div>
+      <div class="kpi-sub">engaged sessions</div>
+    </div>
+    <div class="kpi-card" style="--kpi-color:var(--purple);">
+      <div class="kpi-label">Engaged Sessions</div>
+      <div class="kpi-value" id="kpi-engaged-sessions">—</div>
+      <div class="kpi-sub">10s+ or 2+ pages</div>
     </div>
     <div class="kpi-card kpi-realtime" style="--kpi-color:var(--green);">
       <div class="kpi-label">Active Right Now</div>
@@ -791,26 +802,56 @@ function showDashboard() {
 // ══════════════════════════════════════════════
 //  GA4 API
 // ══════════════════════════════════════════════
+let _apiErrors = [];
+
+function showApiStatus(ok, msg) {
+  let bar = document.getElementById('api-status-bar');
+  if (!bar) return;
+  bar.textContent = msg;
+  bar.style.background = ok ? 'rgba(16,217,140,0.12)' : 'rgba(255,80,80,0.12)';
+  bar.style.color = ok ? 'var(--green)' : '#FF6B6B';
+  bar.style.borderColor = ok ? 'rgba(16,217,140,0.25)' : 'rgba(255,80,80,0.25)';
+  bar.style.display = 'block';
+  if (ok) setTimeout(() => { bar.style.display='none'; }, 5000);
+}
+
 async function runReport(body) {
   if (isDemoMode) return null;
-  const r = await fetch(`https://analyticsdata.googleapis.com/v1beta/properties/${PROPERTY_ID}:runReport`, {
-    method: 'POST',
-    headers: { 'Authorization': `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify(body)
-  });
-  if (!r.ok) { const e = await r.json(); console.error(e); return null; }
-  return r.json();
+  try {
+    const r = await fetch(`https://analyticsdata.googleapis.com/v1beta/properties/${PROPERTY_ID}:runReport`, {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    if (!r.ok) {
+      const text = await r.text().catch(() => '(unreadable)');
+      console.error('GA4 runReport', r.status, text.slice(0, 300));
+      _apiErrors.push(`${r.status}: ${text.slice(0,120)}`);
+      if (r.status === 401 || r.status === 403) showApiStatus(false, `Auth error ${r.status} — click Sign In again`);
+      return null;
+    }
+    return r.json();
+  } catch(e) {
+    console.error('GA4 runReport network error:', e.message);
+    _apiErrors.push(`Network: ${e.message}`);
+    return null;
+  }
 }
 
 async function runRealtimeReport(body) {
   if (isDemoMode) return null;
-  const r = await fetch(`https://analyticsdata.googleapis.com/v1beta/properties/${PROPERTY_ID}:runRealtimeReport`, {
-    method: 'POST',
-    headers: { 'Authorization': `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify(body)
-  });
-  if (!r.ok) return null;
-  return r.json();
+  try {
+    const r = await fetch(`https://analyticsdata.googleapis.com/v1beta/properties/${PROPERTY_ID}:runRealtimeReport`, {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    if (!r.ok) return null;
+    return r.json();
+  } catch(e) {
+    console.error('GA4 runRealtimeReport error:', e.message);
+    return null;
+  }
 }
 
 function getDateRange() {
@@ -945,41 +986,76 @@ async function loadAllData() {
 //  FETCH REAL DATA
 // ══════════════════════════════════════════════
 async function fetchAllMetrics(range) {
+  _apiErrors = [];
   const dateRange = { startDate: range, endDate: 'today' };
-  const prevStart = range === '7daysAgo' ? '14daysAgo' : range === '30daysAgo' ? '60daysAgo' : range === '90daysAgo' ? '180daysAgo' : '730daysAgo';
+  const prevLen = range === '7daysAgo' ? 7 : range === '30daysAgo' ? 30 : range === '90daysAgo' ? 90 : 365;
+  const prevStart = `${prevLen * 2}daysAgo`;
+  const prevEnd   = `${prevLen + 1}daysAgo`;
+  const prevRange = { startDate: prevStart, endDate: prevEnd };
 
-  const [overview, sessionsByDay, sources, devices, countries, browsers, topPages, events, landingPages, channelsByDay, newReturning, rt] = await Promise.all([
-    // Overview
-    runReport({ dateRanges:[dateRange], metrics:[{name:'sessions'},{name:'totalUsers'},{name:'newUsers'},{name:'screenPageViews'},{name:'averageSessionDuration'},{name:'bounceRate'},{name:'screenPageViewsPerSession'}] }),
+  const [overview, overviewPrev, sessionsByDay, sources, devices, countries, browsers, topPages, events, landingPages, channelsByDay, newReturning, engagementByDay, rt] = await Promise.all([
+    // Overview — current period
+    runReport({ dateRanges:[dateRange], metrics:[
+      {name:'sessions'},{name:'totalUsers'},{name:'newUsers'},{name:'screenPageViews'},
+      {name:'averageSessionDuration'},{name:'bounceRate'},{name:'screenPageViewsPerSession'},
+      {name:'engagedSessions'},{name:'engagementRate'},{name:'eventCount'}
+    ]}),
+    // Overview — prev period for deltas
+    runReport({ dateRanges:[prevRange], metrics:[
+      {name:'sessions'},{name:'totalUsers'},{name:'newUsers'},{name:'screenPageViews'},
+      {name:'averageSessionDuration'},{name:'bounceRate'},{name:'screenPageViewsPerSession'},
+      {name:'engagedSessions'},{name:'engagementRate'},{name:'eventCount'}
+    ]}),
     // Sessions by day
-    runReport({ dateRanges:[dateRange], dimensions:[{name:'date'}], metrics:[{name:'sessions'},{name:'totalUsers'}], orderBys:[{dimension:{dimensionName:'date'}}] }),
+    runReport({ dateRanges:[dateRange], dimensions:[{name:'date'}], metrics:[{name:'sessions'},{name:'totalUsers'},{name:'engagedSessions'}], orderBys:[{dimension:{dimensionName:'date'}}] }),
     // Sources
-    runReport({ dateRanges:[dateRange], dimensions:[{name:'sessionDefaultChannelGrouping'}], metrics:[{name:'sessions'}], orderBys:[{metric:{metricName:'sessions'},desc:true}] }),
+    runReport({ dateRanges:[dateRange], dimensions:[{name:'sessionDefaultChannelGrouping'}], metrics:[{name:'sessions'},{name:'totalUsers'}], orderBys:[{metric:{metricName:'sessions'},desc:true}] }),
     // Devices
     runReport({ dateRanges:[dateRange], dimensions:[{name:'deviceCategory'}], metrics:[{name:'sessions'}], orderBys:[{metric:{metricName:'sessions'},desc:true}] }),
     // Countries
-    runReport({ dateRanges:[dateRange], dimensions:[{name:'country'}], metrics:[{name:'sessions'}], orderBys:[{metric:{metricName:'sessions'},desc:true}], limit:10 }),
+    runReport({ dateRanges:[dateRange], dimensions:[{name:'country'}], metrics:[{name:'sessions'},{name:'totalUsers'}], orderBys:[{metric:{metricName:'sessions'},desc:true}], limit:10 }),
     // Browsers
     runReport({ dateRanges:[dateRange], dimensions:[{name:'browser'}], metrics:[{name:'sessions'}], orderBys:[{metric:{metricName:'sessions'},desc:true}], limit:8 }),
     // Top pages
-    runReport({ dateRanges:[dateRange], dimensions:[{name:'pagePath'}], metrics:[{name:'screenPageViews'},{name:'userEngagementDuration'}], orderBys:[{metric:{metricName:'screenPageViews'},desc:true}], limit:8 }),
+    runReport({ dateRanges:[dateRange], dimensions:[{name:'pagePath'}], metrics:[{name:'screenPageViews'},{name:'userEngagementDuration'},{name:'totalUsers'}], orderBys:[{metric:{metricName:'screenPageViews'},desc:true}], limit:10 }),
     // Events
-    runReport({ dateRanges:[dateRange], dimensions:[{name:'eventName'}], metrics:[{name:'eventCount'}], orderBys:[{metric:{metricName:'eventCount'},desc:true}], limit:10 }),
+    runReport({ dateRanges:[dateRange], dimensions:[{name:'eventName'}], metrics:[{name:'eventCount'}], orderBys:[{metric:{metricName:'eventCount'},desc:true}], limit:12 }),
     // Landing pages
-    runReport({ dateRanges:[dateRange], dimensions:[{name:'landingPage'}], metrics:[{name:'sessions'}], orderBys:[{metric:{metricName:'sessions'},desc:true}], limit:6 }),
-    // Channels by week
+    runReport({ dateRanges:[dateRange], dimensions:[{name:'landingPage'}], metrics:[{name:'sessions'},{name:'totalUsers'},{name:'bounceRate'}], orderBys:[{metric:{metricName:'sessions'},desc:true}], limit:8 }),
+    // Channels by day
     runReport({ dateRanges:[dateRange], dimensions:[{name:'date'},{name:'sessionDefaultChannelGrouping'}], metrics:[{name:'sessions'}], orderBys:[{dimension:{dimensionName:'date'}}] }),
     // New vs returning
-    runReport({ dateRanges:[dateRange], dimensions:[{name:'newVsReturning'}], metrics:[{name:'totalUsers'}] }),
+    runReport({ dateRanges:[dateRange], dimensions:[{name:'newVsReturning'}], metrics:[{name:'totalUsers'},{name:'sessions'},{name:'engagementRate'}] }),
+    // Engagement by day
+    runReport({ dateRanges:[dateRange], dimensions:[{name:'date'}], metrics:[{name:'engagementRate'},{name:'averageSessionDuration'}], orderBys:[{dimension:{dimensionName:'date'}}] }),
     // Realtime
     runRealtimeReport({ dimensions:[{name:'country'},{name:'unifiedScreenName'}], metrics:[{name:'activeUsers'}] }),
   ]);
 
-  return parseAllData({ overview, sessionsByDay, sources, devices, countries, browsers, topPages, events, landingPages, channelsByDay, newReturning, rt });
+  const hasData = overview?.rows?.length > 0;
+  if (!hasData && _apiErrors.length > 0) {
+    showApiStatus(false, `API error: ${_apiErrors[0]}`);
+  } else if (hasData) {
+    showApiStatus(true, `✓ Data loaded at ${new Date().toLocaleTimeString()}`);
+  } else {
+    // No errors but no rows — genuinely empty data range
+    document.getElementById('no-data-banner').style.display = 'block';
+    document.getElementById('no-data-banner').innerHTML = '<strong>No data for this period</strong> — Try selecting a wider date range, or GA4 may still be warming up.';
+  }
+
+  return parseAllData({ overview, overviewPrev, sessionsByDay, sources, devices, countries, browsers, topPages, events, landingPages, channelsByDay, newReturning, engagementByDay, rt });
 }
 
-function parseAllData({ overview, sessionsByDay, sources, devices, countries, browsers, topPages, events, landingPages, channelsByDay, newReturning, rt }) {
+function parseAllData({ overview, overviewPrev, sessionsByDay, sources, devices, countries, browsers, topPages, events, landingPages, channelsByDay, newReturning, engagementByDay, rt }) {
   const row0 = overview?.rows?.[0]?.metricValues || [];
+  const prev0 = overviewPrev?.rows?.[0]?.metricValues || [];
+
+  function pct(cur, prv) {
+    const c = parseFloat(cur?.value||0), p = parseFloat(prv?.value||0);
+    if (!p) return null;
+    return Math.round((c - p) / p * 100);
+  }
+
   const ov = {
     sessions: parseInt(row0[0]?.value||0),
     users: parseInt(row0[1]?.value||0),
@@ -988,23 +1064,38 @@ function parseAllData({ overview, sessionsByDay, sources, devices, countries, br
     duration: parseFloat(row0[4]?.value||0),
     bounce: parseFloat(row0[5]?.value||0),
     pagesPerSession: parseFloat(row0[6]?.value||0),
+    engagedSessions: parseInt(row0[7]?.value||0),
+    engagementRate: parseFloat(row0[8]?.value||0),
+    eventCount: parseInt(row0[9]?.value||0),
+    // Period deltas
+    dSessions: pct(row0[0], prev0[0]),
+    dUsers:    pct(row0[1], prev0[1]),
+    dNewUsers: pct(row0[2], prev0[2]),
+    dViews:    pct(row0[3], prev0[3]),
   };
 
-  const sd = (sessionsByDay?.rows||[]).map(r=>({ date:r.dimensionValues[0].value, sessions:parseInt(r.metricValues[0].value), users:parseInt(r.metricValues[1].value) }));
-  const src = (sources?.rows||[]).map(r=>({ ch:r.dimensionValues[0].value, s:parseInt(r.metricValues[0].value) }));
+  const sd = (sessionsByDay?.rows||[]).map(r=>({
+    date:r.dimensionValues[0].value,
+    sessions:parseInt(r.metricValues[0].value),
+    users:parseInt(r.metricValues[1].value),
+    engaged:parseInt(r.metricValues[2]?.value||0)
+  }));
+  const src = (sources?.rows||[]).map(r=>({ ch:r.dimensionValues[0].value, s:parseInt(r.metricValues[0].value), u:parseInt(r.metricValues[1]?.value||0) }));
   const dev = (devices?.rows||[]).map(r=>{ const n=r.dimensionValues[0].value; const icons={desktop:'💻',mobile:'📱',tablet:'📟'}; return {name:n.charAt(0).toUpperCase()+n.slice(1),icon:icons[n]||'💻',s:parseInt(r.metricValues[0].value)}; });
-  const ctry = (countries?.rows||[]).map(r=>({ c:r.dimensionValues[0].value, s:parseInt(r.metricValues[0].value) }));
+  const ctry = (countries?.rows||[]).map(r=>({ c:r.dimensionValues[0].value, s:parseInt(r.metricValues[0].value), u:parseInt(r.metricValues[1]?.value||0) }));
   const brw = (browsers?.rows||[]).map(r=>({ b:r.dimensionValues[0].value, s:parseInt(r.metricValues[0].value) }));
-  const tp = (topPages?.rows||[]).map(r=>({ p:r.dimensionValues[0].value, v:parseInt(r.metricValues[0].value), t:parseInt(parseFloat(r.metricValues[1].value)) }));
+  const tp = (topPages?.rows||[]).map(r=>({ p:r.dimensionValues[0].value, v:parseInt(r.metricValues[0].value), t:parseInt(parseFloat(r.metricValues[1].value)), u:parseInt(r.metricValues[2]?.value||0) }));
   const ev = (events?.rows||[]).map(r=>({ e:r.dimensionValues[0].value, c:parseInt(r.metricValues[0].value) }));
-  const lp = (landingPages?.rows||[]).map(r=>({ p:r.dimensionValues[0].value, s:parseInt(r.metricValues[0].value) }));
+  const lp = (landingPages?.rows||[]).map(r=>({ p:r.dimensionValues[0].value, s:parseInt(r.metricValues[0].value), u:parseInt(r.metricValues[1]?.value||0), b:parseFloat(r.metricValues[2]?.value||0) }));
 
   // Channels by day — pivot
   const dayMap = {};
   (channelsByDay?.rows||[]).forEach(r=>{ const d=r.dimensionValues[0].value; const ch=r.dimensionValues[1].value.toLowerCase(); const s=parseInt(r.metricValues[0].value); if(!dayMap[d])dayMap[d]={date:d,organic:0,direct:0,social:0,referral:0,email:0}; const k=ch.includes('organic')?'organic':ch.includes('direct')?'direct':ch.includes('social')?'social':ch.includes('referral')?'referral':ch.includes('email')?'email':'other'; dayMap[d][k]=(dayMap[d][k]||0)+s; });
   const cbd = Object.values(dayMap).sort((a,b)=>a.date.localeCompare(b.date));
 
-  const nr = (newReturning?.rows||[]).map(r=>({ type:r.dimensionValues[0].value, u:parseInt(r.metricValues[0].value) }));
+  const nr = (newReturning?.rows||[]).map(r=>({ type:r.dimensionValues[0].value, u:parseInt(r.metricValues[0].value), s:parseInt(r.metricValues[1]?.value||0), eng:parseFloat(r.metricValues[2]?.value||0) }));
+
+  const ebd = (engagementByDay?.rows||[]).map(r=>({ date:r.dimensionValues[0].value, eng:parseFloat(r.metricValues[0].value), dur:parseFloat(r.metricValues[1].value) }));
 
   // Realtime
   const rtRows = rt?.rows||[];
@@ -1013,7 +1104,7 @@ function parseAllData({ overview, sessionsByDay, sources, devices, countries, br
   const rtTotal = Object.values(rtCountries).reduce((a,b)=>a+b,0);
   const rtData = { total:rtTotal, countries:Object.entries(rtCountries).map(([c,u])=>({c,u})).sort((a,b)=>b.u-a.u).slice(0,6), pages:Object.entries(rtPages).map(([p,u])=>({p,u})).sort((a,b)=>b.u-a.u).slice(0,6) };
 
-  return { overview:ov, sessionsByDay:sd, sources:src, devices:dev, countries:ctry, browsers:brw, topPages:tp, events:ev, landingPages:lp, channelsByDay:cbd, newReturning:nr, realtime:rtData };
+  return { overview:ov, sessionsByDay:sd, sources:src, devices:dev, countries:ctry, browsers:brw, topPages:tp, events:ev, landingPages:lp, channelsByDay:cbd, newReturning:nr, engagementByDay:ebd, realtime:rtData };
 }
 
 // ══════════════════════════════════════════════
@@ -1034,10 +1125,26 @@ function renderKPIs(d) {
   document.getElementById('kpi-realtime').textContent = d.realtime?.total ?? '0';
   document.getElementById('rt-count').textContent = d.realtime?.total ?? '0';
 
-  // Deltas — placeholder for now
-  ['kpi-sessions-d','kpi-users-d','kpi-new-d','kpi-views-d'].forEach(id=>{
-    document.getElementById(id).textContent = '—';
-    document.getElementById(id).className = 'kpi-delta neutral';
+  // Engagement rate KPI
+  const engEl = document.getElementById('kpi-engagement');
+  if (engEl) engEl.textContent = fmtPct(o.engagementRate);
+  const engSessEl = document.getElementById('kpi-engaged-sessions');
+  if (engSessEl) engSessEl.textContent = fmt(o.engagedSessions);
+
+  // Period-over-period deltas
+  const pairs = [
+    ['kpi-sessions-d', o.dSessions],
+    ['kpi-users-d',    o.dUsers],
+    ['kpi-new-d',      o.dNewUsers],
+    ['kpi-views-d',    o.dViews],
+  ];
+  pairs.forEach(([id, val]) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    if (val === null) { el.textContent = '—'; el.className='kpi-delta neutral'; return; }
+    const up = val >= 0;
+    el.textContent = `${up?'↑':'↓'} ${Math.abs(val)}% vs prev`;
+    el.className = `kpi-delta ${up?'up':'down'}`;
   });
 }
 
@@ -1114,10 +1221,10 @@ function renderLandingPages(data) {
       <div class="funnel-num">${i+1}</div>
       <div class="funnel-bar-wrap">
         <div class="funnel-bar" style="width:${Math.round(d.s/max*100)}%"></div>
-        <div class="funnel-label">${d.p.length>30?d.p.slice(0,30)+'…':d.p}</div>
+        <div class="funnel-label">${d.p.length>32?d.p.slice(0,32)+'…':d.p}</div>
       </div>
-      <div class="funnel-pct">${Math.round(d.s/total*100)}%</div>
-      <div class="funnel-count">${fmt(d.s)}</div>
+      <div class="funnel-pct" title="Bounce rate">${d.b!=null ? fmtPct(d.b)+' bnc' : Math.round(d.s/total*100)+'%'}</div>
+      <div class="funnel-count">${fmt(d.s)} <span style="font-size:9px;color:var(--text-muted)">sess</span></div>
     </div>`).join('');
 }
 
