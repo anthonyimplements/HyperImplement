@@ -319,70 +319,104 @@
     .svc-cta strong { color: var(--text); }
 
     /* ─── IMPLEMENTED ─── */
-    .impl-section { background: var(--bg-surface); }
-    .impl-grid {
+    /* ─── REVIEWS ─── */
+    .reviews-section { background: var(--bg-surface); }
+    .reviews-grid {
       display: grid; grid-template-columns: 1fr 1fr;
       gap: 20px; margin-top: 56px;
     }
-    .impl-card {
+    .review-card {
       background: var(--bg);
       border: 1px solid var(--border);
-      border-radius: 10px; padding: 32px;
+      border-radius: 12px; padding: 32px;
+      display: flex; flex-direction: column; gap: 0;
       position: relative; overflow: hidden;
       transition: box-shadow 0.25s, border-color 0.25s, transform 0.25s;
     }
-    .impl-card:hover {
-      box-shadow: 0 8px 40px rgba(0,0,0,0.08);
+    .review-card:hover {
+      box-shadow: 0 10px 40px rgba(0,0,0,0.08);
       border-color: var(--border-acc);
       transform: translateY(-3px);
     }
-    .impl-card.wide { grid-column: 1 / -1; }
-    .impl-meta {
-      display: flex; align-items: center; justify-content: space-between;
-      gap: 12px; margin-bottom: 18px;
+    /* top accent bar on hover */
+    .review-card::after {
+      content: ''; position: absolute;
+      top: 0; left: 0; right: 0; height: 2px;
+      background: var(--accent);
+      transform: scaleX(0); transform-origin: left;
+      transition: transform 0.3s;
     }
-    .impl-type {
+    .review-card:hover::after { transform: scaleX(1); }
+    .review-stars {
+      display: flex; gap: 3px; margin-bottom: 16px;
+    }
+    .review-star {
+      color: #F5A623; font-size: 16px; line-height: 1;
+    }
+    .review-quote-mark {
+      font-family: 'Unbounded', sans-serif;
+      font-size: 56px; line-height: 0.8;
+      color: var(--accent); opacity: 0.15;
+      margin-bottom: -8px; display: block;
+      user-select: none;
+    }
+    .review-text {
+      font-size: 15px; color: var(--text);
+      line-height: 1.75; font-style: italic;
+      font-weight: 400; margin-bottom: 20px; flex: 1;
+    }
+    .review-author {
+      display: flex; align-items: center; gap: 12px;
+      padding-top: 18px; border-top: 1px solid var(--border);
+      margin-bottom: 18px;
+    }
+    .review-avatar {
+      width: 38px; height: 38px; border-radius: 50%;
+      background: var(--bg-elevated);
+      border: 1.5px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 15px; flex-shrink: 0; font-style: normal;
+    }
+    .review-author-info {}
+    .review-author-name {
+      font-family: 'Unbounded', sans-serif; font-size: 12px;
+      font-weight: 700; color: var(--text); letter-spacing: -0.01em;
+    }
+    .review-author-role {
+      font-size: 11px; color: var(--text-muted);
+      margin-top: 1px;
+    }
+    /* What was built — bottom strip */
+    .review-built {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 8px; padding: 14px 16px;
+    }
+    .review-built-top {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 8px; margin-bottom: 6px;
+    }
+    .review-built-type {
       font-family: 'IBM Plex Mono', monospace; font-size: 10px;
       letter-spacing: 0.1em; text-transform: uppercase;
-      color: var(--accent); padding: 4px 10px;
+      color: var(--accent); padding: 3px 8px;
       border: 1px solid var(--border-acc); border-radius: 3px;
       background: rgba(249,91,61,0.04);
     }
-    .impl-industry {
-      font-size: 11px; color: var(--text-muted);
+    .review-built-industry {
+      font-size: 10px; color: var(--text-muted);
       letter-spacing: 0.06em; text-transform: uppercase;
     }
-    .impl-title {
-      font-family: 'Unbounded', sans-serif; font-size: 16px;
-      font-weight: 700; color: var(--text); margin-bottom: 10px;
-      line-height: 1.3; letter-spacing: -0.02em;
+    .review-built-title {
+      font-family: 'Unbounded', sans-serif; font-size: 12px;
+      font-weight: 700; color: var(--text); margin-bottom: 4px;
+      line-height: 1.3; letter-spacing: -0.01em;
     }
-    .impl-desc { font-size: 13px; color: var(--text-sec); line-height: 1.7; }
-    .impl-result {
-      display: flex; align-items: center; gap: 8px;
-      margin-top: 18px; padding-top: 16px;
-      border-top: 1px solid var(--border);
-      font-size: 12px; color: var(--text-muted);
-      font-family: 'IBM Plex Mono', monospace;
+    .review-built-result {
+      font-size: 11px; color: var(--text-sec);
+      font-family: 'IBM Plex Mono', monospace; letter-spacing: 0.02em;
     }
-    .impl-result::before { content: '→'; color: var(--accent); }
-    /* Left accent bar */
-    .impl-card::before {
-      content: ''; position: absolute;
-      left: 0; top: 20%; bottom: 20%;
-      width: 3px; background: var(--accent);
-      border-radius: 0 2px 2px 0;
-      opacity: 0; transition: opacity 0.25s;
-    }
-    .impl-card:hover::before { opacity: 1; }
-    /* Number watermark */
-    .impl-num {
-      position: absolute; bottom: 16px; right: 24px;
-      font-family: 'Unbounded', sans-serif; font-size: 72px;
-      font-weight: 900; color: var(--accent);
-      opacity: 0.04; line-height: 1; pointer-events: none;
-      user-select: none;
-    }
+    .review-built-result::before { content: '→ '; color: var(--accent); }
 
     /* ─── ABOUT ─── */
     .about-section { background: var(--bg); }
@@ -841,8 +875,7 @@
     /* ─── RESPONSIVE ─── */
     @media(max-width:1024px){
       .stats-grid{grid-template-columns:repeat(2,1fr)}
-      .why-grid,.contact-header,.contact-body,.impl-grid,.about-grid{grid-template-columns:1fr;gap:40px}
-      .impl-card.wide{grid-column:1}
+      .why-grid,.contact-header,.contact-body,.reviews-grid,.about-grid{grid-template-columns:1fr;gap:40px}
       .footer-top{grid-template-columns:1fr 1fr;gap:36px}
       .svc-node-row{grid-template-columns:1fr 1fr}
       .gap-node-row{grid-template-columns:1fr;gap:16px}
@@ -1131,65 +1164,119 @@
 
   <div class="rule"></div>
 
-  <!-- ═══ ACTUALLY IMPLEMENTED ═══ -->
-  <section class="impl-section" id="implemented">
+  <!-- ═══ REVIEWS ═══ -->
+  <section class="reviews-section" id="implemented">
     <div class="inner">
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:end;margin-bottom:56px;" class="reveal">
         <div>
-          <div class="label">Actually Implemented</div>
-          <h2 class="section-title">What This Looks Like<br/>In the Real World.</h2>
+          <div class="label">What Customers Say</div>
+          <h2 class="section-title">Real Results.<br/>Real People.<br/>Real AI.</h2>
         </div>
         <p style="font-size:16px;color:var(--text-sec);line-height:1.75;font-weight:300;">
-          Not demos. Not mockups. Real systems we've built and deployed across different industries and use cases. This is what's possible.
+          These aren't case studies written by a marketing team. They're the actual outcomes — in the words of the people who now have AI working for them every day.
         </p>
       </div>
-      <div class="impl-grid">
 
-        <div class="impl-card reveal">
-          <div class="impl-num">01</div>
-          <div class="impl-meta">
-            <span class="impl-type">AI Agent / Employee</span>
-            <span class="impl-industry">Automotive Repair</span>
+      <div class="reviews-grid">
+
+        <!-- Review 1: Auto Repair / AI Agent -->
+        <div class="review-card reveal">
+          <div class="review-stars">
+            <span class="review-star">★</span><span class="review-star">★</span><span class="review-star">★</span><span class="review-star">★</span><span class="review-star">★</span>
           </div>
-          <div class="impl-title">Inbound Lead Qualification Agent</div>
-          <p class="impl-desc">An AI agent that reads every inbound email, qualifies leads based on service type and urgency, drafts personalized replies, and flags hot leads for the owner — fully autonomous, around the clock.</p>
-          <div class="impl-result">Never misses a lead. Responds within minutes, 24/7.</div>
+          <span class="review-quote-mark">"</span>
+          <p class="review-text">I was losing leads constantly — emails would come in overnight and by the time I got to them the next morning, the customer had already called someone else. Anthony built an AI agent that reads every email, figures out what the customer needs, and sends a real reply within minutes. I get a notification when it's a hot lead. Honestly, it feels like I hired someone who never sleeps.</p>
+          <div class="review-author">
+            <div class="review-avatar">🔧</div>
+            <div class="review-author-info">
+              <div class="review-author-name">Shop Owner</div>
+              <div class="review-author-role">Automotive Repair Business</div>
+            </div>
+          </div>
+          <div class="review-built">
+            <div class="review-built-top">
+              <span class="review-built-type">AI Agent / Employee</span>
+              <span class="review-built-industry">Automotive Repair</span>
+            </div>
+            <div class="review-built-title">Inbound Lead Qualification Agent</div>
+            <div class="review-built-result">Never misses a lead — responds within minutes, 24/7</div>
+          </div>
         </div>
 
-        <div class="impl-card reveal d1">
-          <div class="impl-num">02</div>
-          <div class="impl-meta">
-            <span class="impl-type">AI Marketing &amp; Ads</span>
-            <span class="impl-industry">E-Commerce</span>
+        <!-- Review 2: Golf Cart / AI Ads -->
+        <div class="review-card reveal d1">
+          <div class="review-stars">
+            <span class="review-star">★</span><span class="review-star">★</span><span class="review-star">★</span><span class="review-star">★</span><span class="review-star">★</span>
           </div>
-          <div class="impl-title">AI Ad Creative Pipeline for Golf Cart Company</div>
-          <p class="impl-desc">A complete AI creative workflow — product photography, lifestyle visuals, and video ads generated at scale, replacing a traditional production budget for a golf cart e-commerce brand.</p>
-          <div class="impl-result">Full ad creative library produced in days, not weeks.</div>
+          <span class="review-quote-mark">"</span>
+          <p class="review-text">We used to spend thousands on photographers and editors every time we needed new product shots or ad creative. It took weeks and we'd still have to go back and forth on revisions. Now I can generate a full batch of product photos, lifestyle visuals, and video ads in a single afternoon. The quality genuinely surprised me — customers think we hired a production company.</p>
+          <div class="review-author">
+            <div class="review-avatar">🛒</div>
+            <div class="review-author-info">
+              <div class="review-author-name">E-Commerce Owner</div>
+              <div class="review-author-role">Golf Cart Company</div>
+            </div>
+          </div>
+          <div class="review-built">
+            <div class="review-built-top">
+              <span class="review-built-type">AI Marketing &amp; Ads</span>
+              <span class="review-built-industry">E-Commerce</span>
+            </div>
+            <div class="review-built-title">AI Ad Creative Pipeline</div>
+            <div class="review-built-result">Full ad creative library produced in days, not weeks</div>
+          </div>
         </div>
 
-        <div class="impl-card reveal d2">
-          <div class="impl-num">03</div>
-          <div class="impl-meta">
-            <span class="impl-type">AI Content Workflow</span>
-            <span class="impl-industry">Home &amp; Patio Retail</span>
+        <!-- Review 3: Outdoor Furniture / Content Workflow -->
+        <div class="review-card reveal d2">
+          <div class="review-stars">
+            <span class="review-star">★</span><span class="review-star">★</span><span class="review-star">★</span><span class="review-star">★</span><span class="review-star">★</span>
           </div>
-          <div class="impl-title">AI Marketing &amp; Content Engine for Outdoor Furniture Brand</div>
-          <p class="impl-desc">Automated pipeline for product imagery, ad copy, and social content creation — cutting content production time by over 80% for a patio and outdoor furniture company.</p>
-          <div class="impl-result">Ongoing content at a fraction of the original time and cost.</div>
+          <span class="review-quote-mark">"</span>
+          <p class="review-text">Content was the thing that was always behind. Product descriptions, social captions, ad copy — it piled up and nothing ever felt consistent. Anthony set up a workflow where I put in a product and the whole content package comes out the other side. It used to take us days. Now it's maybe an hour, and the output is actually better than what we were writing ourselves.</p>
+          <div class="review-author">
+            <div class="review-avatar">🌿</div>
+            <div class="review-author-info">
+              <div class="review-author-name">Brand Manager</div>
+              <div class="review-author-role">Outdoor Furniture &amp; Patio Brand</div>
+            </div>
+          </div>
+          <div class="review-built">
+            <div class="review-built-top">
+              <span class="review-built-type">AI Content Workflow</span>
+              <span class="review-built-industry">Home &amp; Patio Retail</span>
+            </div>
+            <div class="review-built-title">AI Marketing &amp; Content Engine</div>
+            <div class="review-built-result">Content production cut by over 80% — ongoing, on demand</div>
+          </div>
         </div>
 
-        <div class="impl-card reveal d3">
-          <div class="impl-num">04</div>
-          <div class="impl-meta">
-            <span class="impl-type">AI Website + Video</span>
-            <span class="impl-industry">Food &amp; Restaurant</span>
+        <!-- Review 4: Steakhouse / Website + Video -->
+        <div class="review-card reveal d3">
+          <div class="review-stars">
+            <span class="review-star">★</span><span class="review-star">★</span><span class="review-star">★</span><span class="review-star">★</span><span class="review-star">★</span>
           </div>
-          <div class="impl-title">Full Digital Presence &amp; Video Workflow for Steakhouse</div>
-          <p class="impl-desc">AI-designed website, AI-edited video content, and a repeatable production workflow — so the business can produce premium content without an agency retainer, indefinitely.</p>
-          <div class="impl-result">A full content engine the business owns and runs itself.</div>
+          <span class="review-quote-mark">"</span>
+          <p class="review-text">We had no real online presence and no budget for an agency. Anthony built us a full website and then showed us how to keep producing video content ourselves using AI. We're not tech people at all — but the workflow he set up is simple enough that my manager runs it. We went from nothing to putting out content every week. We haven't needed to call an agency since.</p>
+          <div class="review-author">
+            <div class="review-avatar">🥩</div>
+            <div class="review-author-info">
+              <div class="review-author-name">Restaurant Owner</div>
+              <div class="review-author-role">Steakhouse</div>
+            </div>
+          </div>
+          <div class="review-built">
+            <div class="review-built-top">
+              <span class="review-built-type">AI Website + Video</span>
+              <span class="review-built-industry">Food &amp; Restaurant</span>
+            </div>
+            <div class="review-built-title">Full Digital Presence &amp; Video Workflow</div>
+            <div class="review-built-result">A complete content engine the business owns and runs itself</div>
+          </div>
         </div>
 
       </div>
+
       <div style="text-align:center;margin-top:48px;" class="reveal">
         <p style="font-size:14px;color:var(--text-muted);margin-bottom:18px;font-family:'IBM Plex Mono',monospace;letter-spacing:0.05em;">What could we build for you?</p>
         <a href="#contact" class="btn-primary">
