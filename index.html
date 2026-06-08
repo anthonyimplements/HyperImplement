@@ -463,7 +463,7 @@
       background: var(--bg);
     }
     .about-avatar {
-      width: 76px; height: 76px; border-radius: 50%;
+      width: 96px; height: 96px; border-radius: 50%;
       overflow: hidden; flex-shrink: 0;
       border: 3px solid var(--bg-surface);
       box-shadow: 0 0 0 2px var(--accent), 0 4px 16px rgba(249,91,61,0.2);
@@ -920,7 +920,7 @@
       .svc-cta{flex-direction:column;align-items:flex-start}
       /* About card mobile */
       .about-header{padding:20px;gap:14px}
-      .about-avatar{width:60px;height:60px}
+      .about-avatar{width:80px;height:80px}
       .about-name{font-size:20px}
       .about-body{padding:20px}
       /* Reviews mobile */
@@ -945,6 +945,65 @@
       }
       .review-card:hover::after,.svc-card-new:hover::before{transform:scaleX(0)}
     }
+    /* ─── HAMBURGER ─── */
+    .nav-hamburger {
+      display: none;
+      flex-direction: column; justify-content: center; align-items: center;
+      gap: 5px; width: 40px; height: 40px;
+      background: transparent; border: none; cursor: pointer;
+      padding: 8px; border-radius: 6px;
+      transition: background 0.2s;
+    }
+    .nav-hamburger:hover { background: var(--bg-surface); }
+    .nav-hamburger span {
+      display: block; width: 22px; height: 2px;
+      background: var(--text); border-radius: 2px;
+      transition: transform 0.25s, opacity 0.25s;
+    }
+    .nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .nav-hamburger.open span:nth-child(2) { opacity: 0; }
+    .nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    /* Mobile dropdown */
+    .nav-mobile-menu {
+      display: none;
+      position: fixed; top: 0; left: 0; right: 0;
+      padding-top: max(72px, calc(56px + env(safe-area-inset-top)));
+      background: rgba(255,255,255,0.97);
+      -webkit-backdrop-filter: blur(20px);
+      backdrop-filter: blur(20px);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+      z-index: 99;
+      flex-direction: column;
+      transform: translateY(-8px); opacity: 0;
+      transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1), opacity 0.2s;
+    }
+    .nav-mobile-menu.open {
+      transform: translateY(0); opacity: 1;
+    }
+    .nav-mobile-link {
+      display: block; padding: 16px 24px;
+      font-size: 15px; font-weight: 500;
+      color: var(--text-sec); text-decoration: none;
+      border-bottom: 1px solid var(--border);
+      letter-spacing: 0.01em;
+      transition: color 0.2s, background 0.2s;
+    }
+    .nav-mobile-link:hover { color: var(--accent); background: var(--bg-surface); }
+    .nav-mobile-cta {
+      margin: 16px 24px 20px;
+      background: var(--text); color: white !important;
+      border-radius: 6px; border-bottom: none;
+      font-family: 'Unbounded', sans-serif;
+      font-size: 12px !important; font-weight: 700;
+      letter-spacing: 0.05em; text-align: center;
+    }
+    .nav-mobile-cta:hover { background: var(--accent) !important; color: white !important; }
+
+    @media(max-width:768px) {
+      .nav-hamburger { display: flex; }
+      .nav-mobile-menu { display: flex; }
+    }
   </style>
 </head>
 <body>
@@ -960,7 +1019,18 @@
       <a href="#about">About</a>
       <a href="#contact" class="nav-cta">Book an Implementation Call</a>
     </div>
+    <!-- Mobile hamburger -->
+    <button class="nav-hamburger" id="navHamburger" aria-label="Open menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
   </nav>
+  <!-- Mobile dropdown menu -->
+  <div class="nav-mobile-menu" id="navMobileMenu">
+    <a href="#services" class="nav-mobile-link" onclick="closeMobileMenu()">Services</a>
+    <a href="#implemented" class="nav-mobile-link" onclick="closeMobileMenu()">Real Work</a>
+    <a href="#about" class="nav-mobile-link" onclick="closeMobileMenu()">About</a>
+    <a href="#contact" class="nav-mobile-link nav-mobile-cta" onclick="closeMobileMenu()">Book an Implementation Call</a>
+  </div>
 
   <!-- ═══ HERO ═══ -->
   <section class="hero" id="home">
@@ -969,7 +1039,7 @@
     <div class="hero-inner">
       <div class="hero-eyebrow reveal">
         <span class="hero-eyebrow-dot"></span>
-        AI Implementation Agency &mdash; Since December 2025
+        AI Implementation Agency &mdash; Since May 2025
       </div>
       <h1 class="reveal d1">
         You've Heard the Hype.<br/>
@@ -1358,6 +1428,7 @@
             <div class="about-role">Founder, HyperImplement</div>
             <div class="about-prev">
               <span class="about-prev-badge">ex</span>
+              <img src="SalesforceLogo.jpg" alt="Salesforce" style="height:14px;width:auto;display:inline-block;vertical-align:middle;border-radius:2px;opacity:0.85;" />
               Salesforce
             </div>
           </div>
@@ -1366,9 +1437,9 @@
         <!-- Body -->
         <div class="about-body">
           <p class="about-bio">
-            I built HyperImplement because I kept seeing the same thing: people and businesses that knew AI was important, wanted to use it, and had no idea how to actually get there. After working at Salesforce and studying the intersection of business and technology, I decided to stop advising from the sidelines and start building — for real, with people, until something was live and working.
+            I take real passion in helping people and businesses escape the noise — the endless wave of new AI tools, features, and hype that never seems to translate into actual results. My focus is on cutting through the overload and implementing digital employees and AI workflows that genuinely move the needle for a business.
             <br/><br/>
-            Every client I work with leaves with something deployed. Not a strategy doc. Not a roadmap. An actual system that runs for them.
+            Every client I work with leaves with something deployed. Not a strategy doc. Not a roadmap. An actual system running for them.
           </p>
           <div class="about-edu">
             <div class="about-edu-icon">🎓</div>
@@ -1599,6 +1670,28 @@
 
   <script>
     // NAV
+    // ─── HAMBURGER MENU ───
+    const hamburger = document.getElementById('navHamburger');
+    const mobileMenu = document.getElementById('navMobileMenu');
+    hamburger.addEventListener('click', () => {
+      const isOpen = hamburger.classList.toggle('open');
+      mobileMenu.classList.toggle('open', isOpen);
+      hamburger.setAttribute('aria-expanded', isOpen);
+      document.body.style.overflow = isOpen ? 'hidden' : '';
+    });
+    function closeMobileMenu() {
+      hamburger.classList.remove('open');
+      mobileMenu.classList.remove('open');
+      hamburger.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+    }
+    // Close on outside click
+    document.addEventListener('click', (e) => {
+      if (!hamburger.contains(e.target) && !mobileMenu.contains(e.target)) {
+        closeMobileMenu();
+      }
+    });
+
     const nav = document.getElementById('navbar');
     window.addEventListener('scroll', () => nav.classList.toggle('scrolled', scrollY > 40));
 
