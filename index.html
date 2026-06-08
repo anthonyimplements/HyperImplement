@@ -164,6 +164,21 @@
       background: radial-gradient(circle, rgba(249,91,61,0.08) 0%, transparent 70%);
       pointer-events: none;
     }
+    /* ChipLogo hero decoration */
+    .hero-chip {
+      position: absolute; right: -60px; top: 50%;
+      transform: translateY(-54%) rotate(-12deg);
+      width: clamp(280px, 30vw, 420px);
+      opacity: 0.92; pointer-events: none; z-index: 1;
+      filter: drop-shadow(0 32px 64px rgba(249,91,61,0.22)) drop-shadow(0 8px 24px rgba(0,0,0,0.12));
+      animation: chipFloat 6s ease-in-out infinite;
+    }
+    @keyframes chipFloat {
+      0%,100% { transform: translateY(-54%) rotate(-12deg); }
+      50%      { transform: translateY(-58%) rotate(-10deg); }
+    }
+    @media(max-width:1100px){ .hero-chip { width: clamp(200px,26vw,320px); right:-40px; } }
+    @media(max-width:768px) { .hero-chip { display:none; } }
     .hero-bg-shape-2 {
       position: absolute; bottom: -100px; left: -120px;
       width: 500px; height: 500px; border-radius: 50%;
@@ -1036,6 +1051,7 @@
   <section class="hero" id="home">
     <div class="hero-bg-shape"></div>
     <div class="hero-bg-shape-2"></div>
+    <img src="ChipLogo.png" alt="" class="hero-chip" aria-hidden="true" />
     <div class="hero-inner">
       <div class="hero-eyebrow reveal">
         <span class="hero-eyebrow-dot"></span>
@@ -1428,7 +1444,7 @@
             <div class="about-role">Founder, HyperImplement</div>
             <div class="about-prev">
               <span class="about-prev-badge">ex</span>
-              <img src="SalesforceLogo.jpg" alt="Salesforce" style="height:14px;width:auto;display:inline-block;vertical-align:middle;border-radius:2px;opacity:0.85;" />
+              <img src="SalesforceLogo.jpg" alt="Salesforce" style="height:18px;width:auto;display:inline-block;vertical-align:middle;mix-blend-mode:multiply;opacity:0.9;" />
               Salesforce
             </div>
           </div>
