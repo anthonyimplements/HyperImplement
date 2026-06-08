@@ -720,17 +720,17 @@ function initGoogleAuth() {
   const waitForGSI = setInterval(() => {
     if (window.google?.accounts?.oauth2) {
       clearInterval(waitForGSI);
+
       tokenClient = google.accounts.oauth2.initTokenClient({
         client_id: CLIENT_ID,
         scope: 'https://www.googleapis.com/auth/analytics.readonly',
         callback: (response) => {
           if (response.error) {
-            console.error(response);
+            console.error('Auth error:', response);
             showAuthWall();
             return;
           }
           accessToken = response.access_token;
-          // Store expiry (tokens last ~1hr)
           sessionStorage.setItem('hi_token', accessToken);
           sessionStorage.setItem('hi_token_exp', Date.now() + 55*60*1000);
           hideAuthWall();
@@ -739,18 +739,16 @@ function initGoogleAuth() {
         },
       });
 
-      // Try to use cached token first
+      // Use cached token if still valid — no popup needed
       const cached = sessionStorage.getItem('hi_token');
-      const exp = parseInt(sessionStorage.getItem('hi_token_exp')||0);
+      const exp = parseInt(sessionStorage.getItem('hi_token_exp') || 0);
       if (cached && Date.now() < exp) {
         accessToken = cached;
-        hideAuthWall();
         showDashboard();
         loadAllData();
       } else {
-        // Try silent first, fall back to prompt
-        tokenClient.requestAccessToken({ prompt: 'none' });
-        // If silent fails GIS will call callback with error → showAuthWall
+        // No valid token — show the sign-in wall, wait for user to click
+        showAuthWall();
       }
     }
   }, 200);
@@ -758,7 +756,8 @@ function initGoogleAuth() {
 
 function signIn() {
   if (!tokenClient) { initGoogleAuth(); return; }
-  tokenClient.requestAccessToken({ prompt: 'select_account' });
+  // prompt:'' uses existing Google session if browser has one — no account picker
+  tokenClient.requestAccessToken({ prompt: '' });
 }
 
 function showAuthWall() {
