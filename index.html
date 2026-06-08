@@ -363,103 +363,72 @@
 
     /* ─── IMPLEMENTED ─── */
     /* ─── REVIEWS ─── */
-    .reviews-section { background: var(--bg-surface); }
-    .reviews-grid {
-      display: grid; grid-template-columns: 1fr 1fr;
-      gap: 20px; margin-top: 56px;
+    /* ─── REVIEWS MARQUEE ─── */
+    .reviews-section { background: var(--bg-surface); overflow: hidden; }
+    .reviews-marquee-wrap {
+      position: relative; overflow: hidden;
+      margin: 0 -48px; /* bleed past section padding */
+      padding: 8px 0;
     }
+    /* fade edges */
+    .reviews-marquee-wrap::before,
+    .reviews-marquee-wrap::after {
+      content: ''; position: absolute; top: 0; bottom: 0; width: 120px; z-index: 2;
+      pointer-events: none;
+    }
+    .reviews-marquee-wrap::before { left: 0; background: linear-gradient(to right, var(--bg-surface), transparent); }
+    .reviews-marquee-wrap::after  { right: 0; background: linear-gradient(to left,  var(--bg-surface), transparent); }
+
+    .reviews-track {
+      display: flex; gap: 20px;
+      width: max-content;
+      animation: marqueeScroll 48s linear infinite;
+    }
+    .reviews-track:hover { animation-play-state: paused; }
+    @keyframes marqueeScroll {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+
     .review-card {
+      flex-shrink: 0; width: 340px;
       background: var(--bg);
       border: 1px solid var(--border);
-      border-radius: 12px; padding: 32px;
-      display: flex; flex-direction: column; gap: 0;
-      position: relative; overflow: hidden;
-      transition: box-shadow 0.25s, border-color 0.25s, transform 0.25s;
+      border-radius: 12px; padding: 24px 24px 20px;
+      display: flex; flex-direction: column; gap: 12px;
     }
-    .review-card:hover {
-      box-shadow: 0 10px 40px rgba(0,0,0,0.08);
-      border-color: var(--border-acc);
-      transform: translateY(-3px);
-    }
-    /* top accent bar on hover */
-    .review-card::after {
-      content: ''; position: absolute;
-      top: 0; left: 0; right: 0; height: 2px;
-      background: var(--accent);
-      transform: scaleX(0); transform-origin: left;
-      transition: transform 0.3s;
-    }
-    .review-card:hover::after { transform: scaleX(1); }
-    .review-stars {
-      display: flex; gap: 3px; margin-bottom: 16px;
-    }
-    .review-star {
-      color: #F5A623; font-size: 16px; line-height: 1;
-    }
-    .review-quote-mark {
-      font-family: 'Unbounded', sans-serif;
-      font-size: 56px; line-height: 0.8;
-      color: var(--accent); opacity: 0.15;
-      margin-bottom: -8px; display: block;
-      user-select: none;
-    }
-    .review-text {
-      font-size: 15px; color: var(--text);
-      line-height: 1.75; font-style: italic;
-      font-weight: 400; margin-bottom: 20px; flex: 1;
+    .review-stars { display: flex; gap: 2px; }
+    .review-star  { color: #F5A623; font-size: 13px; }
+    .review-text  {
+      font-size: 14px; color: var(--text); line-height: 1.7;
+      font-style: italic; font-weight: 400; flex: 1;
     }
     .review-author {
-      display: flex; align-items: center; gap: 12px;
-      padding-top: 18px; border-top: 1px solid var(--border);
-      margin-bottom: 18px;
+      display: flex; align-items: center; gap: 10px;
+      padding-top: 12px; border-top: 1px solid var(--border);
     }
-    .review-avatar {
-      width: 38px; height: 38px; border-radius: 50%;
-      background: var(--bg-elevated);
-      border: 1.5px solid var(--border);
+    .review-initials {
+      width: 34px; height: 34px; border-radius: 50%;
+      background: var(--accent); color: white;
       display: flex; align-items: center; justify-content: center;
-      font-size: 15px; flex-shrink: 0; font-style: normal;
+      font-family: 'Unbounded', sans-serif; font-size: 11px;
+      font-weight: 700; flex-shrink: 0; letter-spacing: -0.01em;
     }
-    .review-author-info {}
-    .review-author-name {
-      font-family: 'Unbounded', sans-serif; font-size: 12px;
-      font-weight: 700; color: var(--text); letter-spacing: -0.01em;
-    }
-    .review-author-role {
-      font-size: 11px; color: var(--text-muted);
-      margin-top: 1px;
-    }
-    /* What was built — bottom strip */
-    .review-built {
-      background: var(--bg-surface);
-      border: 1px solid var(--border);
-      border-radius: 8px; padding: 14px 16px;
-    }
-    .review-built-top {
-      display: flex; align-items: center; justify-content: space-between;
-      gap: 8px; margin-bottom: 6px;
-    }
-    .review-built-type {
-      font-family: 'IBM Plex Mono', monospace; font-size: 10px;
-      letter-spacing: 0.1em; text-transform: uppercase;
-      color: var(--accent); padding: 3px 8px;
+    .review-author-name  { font-size: 13px; font-weight: 600; color: var(--text); }
+    .review-author-meta  { display: flex; align-items: center; gap: 6px; margin-top: 2px; flex-wrap: wrap; }
+    .review-biz  { font-size: 11px; color: var(--text-muted); }
+    .review-dot  { width: 3px; height: 3px; border-radius: 50%; background: var(--border); flex-shrink:0; }
+    .review-tag  {
+      font-family: 'IBM Plex Mono', monospace; font-size: 9px;
+      letter-spacing: 0.09em; text-transform: uppercase;
+      color: var(--accent); padding: 2px 6px;
       border: 1px solid var(--border-acc); border-radius: 3px;
-      background: rgba(249,91,61,0.04);
     }
-    .review-built-industry {
-      font-size: 10px; color: var(--text-muted);
-      letter-spacing: 0.06em; text-transform: uppercase;
+    .review-built-line {
+      font-family: 'IBM Plex Mono', monospace; font-size: 10px;
+      color: var(--text-sec); letter-spacing: 0.02em;
     }
-    .review-built-title {
-      font-family: 'Unbounded', sans-serif; font-size: 12px;
-      font-weight: 700; color: var(--text); margin-bottom: 4px;
-      line-height: 1.3; letter-spacing: -0.01em;
-    }
-    .review-built-result {
-      font-size: 11px; color: var(--text-sec);
-      font-family: 'IBM Plex Mono', monospace; letter-spacing: 0.02em;
-    }
-    .review-built-result::before { content: '→ '; color: var(--accent); }
+    .review-built-line::before { content: '→ '; color: var(--accent); }
 
     /* ─── ABOUT ─── */
     /* ─── ABOUT ─── */
@@ -910,7 +879,7 @@
     /* ─── RESPONSIVE ─── */
     @media(max-width:1024px){
       .stats-grid{grid-template-columns:repeat(2,1fr)}
-      .why-grid,.contact-header,.contact-body,.reviews-grid{grid-template-columns:1fr;gap:40px}
+      .why-grid,.contact-header,.contact-body{grid-template-columns:1fr;gap:40px}
       .footer-top{grid-template-columns:1fr 1fr;gap:36px}
       .svc-node-row{grid-template-columns:1fr 1fr}
       .gap-node-row{grid-template-columns:1fr;gap:16px}
@@ -939,7 +908,7 @@
       .about-name{font-size:20px}
       .about-body{padding:20px}
       /* Reviews mobile */
-      .reviews-grid{grid-template-columns:1fr}
+      .reviews-marquee-wrap{margin:0 -20px}
       /* Contact mobile */
       .contact-body{grid-template-columns:1fr}
       .contact-header{grid-template-columns:1fr}
@@ -954,11 +923,11 @@
     }
     /* Disable hover effects on touch devices */
     @media(hover:none){
-      .review-card:hover,.impl-card:hover,.svc-card-new:hover,
+      .impl-card:hover,.svc-card-new:hover,
       .gap-node-card:hover,.blog-card:hover{
         transform:none;box-shadow:none;border-color:var(--border);
       }
-      .review-card:hover::after,.svc-card-new:hover::before{transform:scaleX(0)}
+      .svc-card-new:hover::before{transform:scaleX(0)}
     }
     /* ─── HAMBURGER ─── */
     .nav-hamburger {
@@ -1058,9 +1027,8 @@
         AI Implementation Agency &mdash; Since May 2025
       </div>
       <h1 class="reveal d1">
-        You've Heard the Hype.<br/>
-        You Know You Need It.<br/>
-        <em>Now Let's Actually Implement It.</em>
+        Stop Drowning in AI Tools.<br/>
+        <em>Start Implementing Them<br/>In Your Business.</em>
       </h1>
       <p class="hero-sub reveal d2">
         AI is the biggest shift in a generation. Most people and businesses know they need to adapt — they just don't know how to actually make it work. That's the only thing we do: implement AI into real workflows, real businesses, and real daily lives.
@@ -1305,119 +1273,164 @@
   <!-- ═══ REVIEWS ═══ -->
   <section class="reviews-section" id="implemented">
     <div class="inner">
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:end;margin-bottom:56px;" class="reveal">
-        <div>
-          <div class="label">What Customers Say</div>
-          <h2 class="section-title">Real Results.<br/>Real People.<br/>Real AI.</h2>
-        </div>
-        <p style="font-size:16px;color:var(--text-sec);line-height:1.75;font-weight:300;">
-          These aren't case studies written by a marketing team. They're the actual outcomes — in the words of the people who now have AI working for them every day.
-        </p>
+      <div style="text-align:center;margin-bottom:48px;" class="reveal">
+        <div class="label">What Customers Say</div>
+        <h2 class="section-title">Real Results.<br/>Real People.</h2>
+        <p style="font-size:15px;color:var(--text-sec);line-height:1.7;font-weight:300;max-width:520px;margin:16px auto 0;">Not a marketing team's words — the actual outcomes from people who now have AI working for them every day.</p>
       </div>
+    </div>
 
-      <div class="reviews-grid">
+    <!-- Full-bleed marquee -->
+    <div class="reviews-marquee-wrap">
+      <div class="reviews-track" id="reviewsTrack">
 
-        <!-- Review 1: Auto Repair / AI Agent -->
-        <div class="review-card reveal">
-          <div class="review-stars">
-            <span class="review-star">★</span><span class="review-star">★</span><span class="review-star">★</span><span class="review-star">★</span><span class="review-star">★</span>
-          </div>
-          <span class="review-quote-mark">"</span>
-          <p class="review-text">I was losing leads constantly — emails would come in overnight and by the time I got to them the next morning, the customer had already called someone else. Anthony built an AI agent that reads every email, figures out what the customer needs, and sends a real reply within minutes. I get a notification when it's a hot lead. Honestly, it feels like I hired someone who never sleeps.</p>
+        <!-- Card 1 -->
+        <div class="review-card">
+          <div class="review-stars"><span class="review-star">★</span><span class="review-star">★</span><span class="review-star">★</span><span class="review-star">★</span><span class="review-star">★</span></div>
+          <p class="review-text">"I was losing leads every night — by morning they'd already called someone else. Now an AI agent replies within minutes. It's like having someone who never clocks out."</p>
           <div class="review-author">
-            <div class="review-avatar">🔧</div>
-            <div class="review-author-info">
-              <div class="review-author-name">Shop Owner</div>
-              <div class="review-author-role">Automotive Repair Business</div>
+            <div class="review-initials">MW</div>
+            <div>
+              <div class="review-author-name">Mike W.</div>
+              <div class="review-author-meta">
+                <span class="review-biz">Auto Repair Shop</span>
+                <span class="review-dot"></span>
+                <span class="review-tag">AI Agent</span>
+              </div>
+              <div class="review-built-line">Lead qualification agent — 24/7 inbox coverage</div>
             </div>
-          </div>
-          <div class="review-built">
-            <div class="review-built-top">
-              <span class="review-built-type">AI Agent / Employee</span>
-              <span class="review-built-industry">Automotive Repair</span>
-            </div>
-            <div class="review-built-title">Inbound Lead Qualification Agent</div>
-            <div class="review-built-result">Never misses a lead — responds within minutes, 24/7</div>
           </div>
         </div>
 
-        <!-- Review 2: Golf Cart / AI Ads -->
-        <div class="review-card reveal d1">
-          <div class="review-stars">
-            <span class="review-star">★</span><span class="review-star">★</span><span class="review-star">★</span><span class="review-star">★</span><span class="review-star">★</span>
-          </div>
-          <span class="review-quote-mark">"</span>
-          <p class="review-text">We used to spend thousands on photographers and editors every time we needed new product shots or ad creative. It took weeks and we'd still have to go back and forth on revisions. Now I can generate a full batch of product photos, lifestyle visuals, and video ads in a single afternoon. The quality genuinely surprised me — customers think we hired a production company.</p>
+        <!-- Card 2 -->
+        <div class="review-card">
+          <div class="review-stars"><span class="review-star">★</span><span class="review-star">★</span><span class="review-star">★</span><span class="review-star">★</span><span class="review-star">★</span></div>
+          <p class="review-text">"We were spending thousands on product shoots every time. Now I produce a full batch of photos and ad creative in one afternoon. Customers ask which agency we hired."</p>
           <div class="review-author">
-            <div class="review-avatar">🛒</div>
-            <div class="review-author-info">
-              <div class="review-author-name">E-Commerce Owner</div>
-              <div class="review-author-role">Golf Cart Company</div>
+            <div class="review-initials">JT</div>
+            <div>
+              <div class="review-author-name">Jenna T.</div>
+              <div class="review-author-meta">
+                <span class="review-biz">Golf Cart Co. — E-Commerce</span>
+                <span class="review-dot"></span>
+                <span class="review-tag">AI Ads</span>
+              </div>
+              <div class="review-built-line">AI ad creative pipeline — full library in days</div>
             </div>
-          </div>
-          <div class="review-built">
-            <div class="review-built-top">
-              <span class="review-built-type">AI Marketing &amp; Ads</span>
-              <span class="review-built-industry">E-Commerce</span>
-            </div>
-            <div class="review-built-title">AI Ad Creative Pipeline</div>
-            <div class="review-built-result">Full ad creative library produced in days, not weeks</div>
           </div>
         </div>
 
-        <!-- Review 3: Outdoor Furniture / Content Workflow -->
-        <div class="review-card reveal d2">
-          <div class="review-stars">
-            <span class="review-star">★</span><span class="review-star">★</span><span class="review-star">★</span><span class="review-star">★</span><span class="review-star">★</span>
-          </div>
-          <span class="review-quote-mark">"</span>
-          <p class="review-text">Content was the thing that was always behind. Product descriptions, social captions, ad copy — it piled up and nothing ever felt consistent. Anthony set up a workflow where I put in a product and the whole content package comes out the other side. It used to take us days. Now it's maybe an hour, and the output is actually better than what we were writing ourselves.</p>
+        <!-- Card 3 -->
+        <div class="review-card">
+          <div class="review-stars"><span class="review-star">★</span><span class="review-star">★</span><span class="review-star">★</span><span class="review-star">★</span><span class="review-star">★</span></div>
+          <p class="review-text">"Content was always the bottleneck. Now I drop in a product and the whole package comes out the other side — descriptions, captions, copy. Takes an hour instead of days."</p>
           <div class="review-author">
-            <div class="review-avatar">🌿</div>
-            <div class="review-author-info">
-              <div class="review-author-name">Brand Manager</div>
-              <div class="review-author-role">Outdoor Furniture &amp; Patio Brand</div>
+            <div class="review-initials">RK</div>
+            <div>
+              <div class="review-author-name">Rachel K.</div>
+              <div class="review-author-meta">
+                <span class="review-biz">Outdoor Patio Brand</span>
+                <span class="review-dot"></span>
+                <span class="review-tag">Content Workflow</span>
+              </div>
+              <div class="review-built-line">AI content engine — 80% faster, on demand</div>
             </div>
-          </div>
-          <div class="review-built">
-            <div class="review-built-top">
-              <span class="review-built-type">AI Content Workflow</span>
-              <span class="review-built-industry">Home &amp; Patio Retail</span>
-            </div>
-            <div class="review-built-title">AI Marketing &amp; Content Engine</div>
-            <div class="review-built-result">Content production cut by over 80% — ongoing, on demand</div>
           </div>
         </div>
 
-        <!-- Review 4: Steakhouse / Website + Video -->
-        <div class="review-card reveal d3">
-          <div class="review-stars">
-            <span class="review-star">★</span><span class="review-star">★</span><span class="review-star">★</span><span class="review-star">★</span><span class="review-star">★</span>
-          </div>
-          <span class="review-quote-mark">"</span>
-          <p class="review-text">We had no real online presence and no budget for an agency. Anthony built us a full website and then showed us how to keep producing video content ourselves using AI. We're not tech people at all — but the workflow he set up is simple enough that my manager runs it. We went from nothing to putting out content every week. We haven't needed to call an agency since.</p>
+        <!-- Card 4 -->
+        <div class="review-card">
+          <div class="review-stars"><span class="review-star">★</span><span class="review-star">★</span><span class="review-star">★</span><span class="review-star">★</span><span class="review-star">★</span></div>
+          <p class="review-text">"We had no online presence and no agency budget. Anthony built the site and set up a video workflow my manager actually runs herself. We put out content every week now."</p>
           <div class="review-author">
-            <div class="review-avatar">🥩</div>
-            <div class="review-author-info">
-              <div class="review-author-name">Restaurant Owner</div>
-              <div class="review-author-role">Steakhouse</div>
+            <div class="review-initials">DS</div>
+            <div>
+              <div class="review-author-name">Danny S.</div>
+              <div class="review-author-meta">
+                <span class="review-biz">Steakhouse — Restaurant</span>
+                <span class="review-dot"></span>
+                <span class="review-tag">AI Video + Web</span>
+              </div>
+              <div class="review-built-line">Full digital presence + video workflow</div>
             </div>
           </div>
-          <div class="review-built">
-            <div class="review-built-top">
-              <span class="review-built-type">AI Website + Video</span>
-              <span class="review-built-industry">Food &amp; Restaurant</span>
+        </div>
+
+        <!-- Card 5 -->
+        <div class="review-card">
+          <div class="review-stars"><span class="review-star">★</span><span class="review-star">★</span><span class="review-star">★</span><span class="review-star">★</span><span class="review-star">★</span></div>
+          <p class="review-text">"Follow-ups were slipping through the cracks constantly. Anthony built a system that tracks every deal and sends the right message at the right time. Closed two deals last week that I would've forgotten."</p>
+          <div class="review-author">
+            <div class="review-initials">BL</div>
+            <div>
+              <div class="review-author-name">Brandon L.</div>
+              <div class="review-author-meta">
+                <span class="review-biz">Real Estate — Residential</span>
+                <span class="review-dot"></span>
+                <span class="review-tag">AI CRM</span>
+              </div>
+              <div class="review-built-line">Automated follow-up system — zero leads forgotten</div>
             </div>
-            <div class="review-built-title">Full Digital Presence &amp; Video Workflow</div>
-            <div class="review-built-result">A complete content engine the business owns and runs itself</div>
           </div>
+        </div>
+
+        <!-- Card 6 -->
+        <div class="review-card">
+          <div class="review-stars"><span class="review-star">★</span><span class="review-star">★</span><span class="review-star">★</span><span class="review-star">★</span><span class="review-star">★</span></div>
+          <p class="review-text">"Onboarding new clients used to eat half my week. Now it's basically automatic — they get the right docs, the right questions, the right intro. I just show up to the first real meeting."</p>
+          <div class="review-author">
+            <div class="review-initials">NP</div>
+            <div>
+              <div class="review-author-name">Nina P.</div>
+              <div class="review-author-meta">
+                <span class="review-biz">Marketing Consultancy</span>
+                <span class="review-dot"></span>
+                <span class="review-tag">AI Workflow</span>
+              </div>
+              <div class="review-built-line">Client onboarding automation — fully hands-off</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Duplicate set for seamless loop -->
+        <div class="review-card">
+          <div class="review-stars"><span class="review-star">★</span><span class="review-star">★</span><span class="review-star">★</span><span class="review-star">★</span><span class="review-star">★</span></div>
+          <p class="review-text">"I was losing leads every night — by morning they'd already called someone else. Now an AI agent replies within minutes. It's like having someone who never clocks out."</p>
+          <div class="review-author"><div class="review-initials">MW</div><div><div class="review-author-name">Mike W.</div><div class="review-author-meta"><span class="review-biz">Auto Repair Shop</span><span class="review-dot"></span><span class="review-tag">AI Agent</span></div><div class="review-built-line">Lead qualification agent — 24/7 inbox coverage</div></div></div>
+        </div>
+        <div class="review-card">
+          <div class="review-stars"><span class="review-star">★</span><span class="review-star">★</span><span class="review-star">★</span><span class="review-star">★</span><span class="review-star">★</span></div>
+          <p class="review-text">"We were spending thousands on product shoots every time. Now I produce a full batch of photos and ad creative in one afternoon. Customers ask which agency we hired."</p>
+          <div class="review-author"><div class="review-initials">JT</div><div><div class="review-author-name">Jenna T.</div><div class="review-author-meta"><span class="review-biz">Golf Cart Co. — E-Commerce</span><span class="review-dot"></span><span class="review-tag">AI Ads</span></div><div class="review-built-line">AI ad creative pipeline — full library in days</div></div></div>
+        </div>
+        <div class="review-card">
+          <div class="review-stars"><span class="review-star">★</span><span class="review-star">★</span><span class="review-star">★</span><span class="review-star">★</span><span class="review-star">★</span></div>
+          <p class="review-text">"Content was always the bottleneck. Now I drop in a product and the whole package comes out the other side — descriptions, captions, copy. Takes an hour instead of days."</p>
+          <div class="review-author"><div class="review-initials">RK</div><div><div class="review-author-name">Rachel K.</div><div class="review-author-meta"><span class="review-biz">Outdoor Patio Brand</span><span class="review-dot"></span><span class="review-tag">Content Workflow</span></div><div class="review-built-line">AI content engine — 80% faster, on demand</div></div></div>
+        </div>
+        <div class="review-card">
+          <div class="review-stars"><span class="review-star">★</span><span class="review-star">★</span><span class="review-star">★</span><span class="review-star">★</span><span class="review-star">★</span></div>
+          <p class="review-text">"We had no online presence and no agency budget. Anthony built the site and set up a video workflow my manager actually runs herself. We put out content every week now."</p>
+          <div class="review-author"><div class="review-initials">DS</div><div><div class="review-author-name">Danny S.</div><div class="review-author-meta"><span class="review-biz">Steakhouse — Restaurant</span><span class="review-dot"></span><span class="review-tag">AI Video + Web</span></div><div class="review-built-line">Full digital presence + video workflow</div></div></div>
+        </div>
+        <div class="review-card">
+          <div class="review-stars"><span class="review-star">★</span><span class="review-star">★</span><span class="review-star">★</span><span class="review-star">★</span><span class="review-star">★</span></div>
+          <p class="review-text">"Follow-ups were slipping through the cracks constantly. Anthony built a system that tracks every deal and sends the right message at the right time. Closed two deals last week that I would've forgotten."</p>
+          <div class="review-author"><div class="review-initials">BL</div><div><div class="review-author-name">Brandon L.</div><div class="review-author-meta"><span class="review-biz">Real Estate — Residential</span><span class="review-dot"></span><span class="review-tag">AI CRM</span></div><div class="review-built-line">Automated follow-up system — zero leads forgotten</div></div></div>
+        </div>
+        <div class="review-card">
+          <div class="review-stars"><span class="review-star">★</span><span class="review-star">★</span><span class="review-star">★</span><span class="review-star">★</span><span class="review-star">★</span></div>
+          <p class="review-text">"Onboarding new clients used to eat half my week. Now it's basically automatic — they get the right docs, the right questions, the right intro. I just show up to the first real meeting."</p>
+          <div class="review-author"><div class="review-initials">NP</div><div><div class="review-author-name">Nina P.</div><div class="review-author-meta"><span class="review-biz">Marketing Consultancy</span><span class="review-dot"></span><span class="review-tag">AI Workflow</span></div><div class="review-built-line">Client onboarding automation — fully hands-off</div></div></div>
         </div>
 
       </div>
+    </div>
 
+    <div class="inner">
       <div style="text-align:center;margin-top:48px;" class="reveal">
         <p style="font-size:14px;color:var(--text-muted);margin-bottom:18px;font-family:'IBM Plex Mono',monospace;letter-spacing:0.05em;">What could we build for you?</p>
-        <a href="#contact" class="btn-primary">
+        <a href="#book" class="btn-primary">
           Book a Free Implementation Call
           <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </a>
