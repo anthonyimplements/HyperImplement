@@ -312,6 +312,32 @@
       font-size:13px;color:var(--text-sec);
     }
     #no-data-banner strong{color:var(--accent);}
+
+    /* ── AUTH WALL ── */
+    #auth-wall{
+      display:none;position:fixed;inset:0;z-index:200;
+      background:var(--bg);
+      align-items:center;justify-content:center;flex-direction:column;gap:24px;
+    }
+    #auth-wall.show{display:flex;}
+    .auth-wall-card{
+      background:var(--surface);border:1px solid var(--border);
+      border-radius:16px;padding:40px 48px;text-align:center;
+      box-shadow:0 0 60px rgba(249,91,61,0.1);
+      max-width:420px;width:90%;
+    }
+    .auth-wall-logo{height:48px;margin-bottom:20px;}
+    .auth-wall-title{font-family:'Unbounded',sans-serif;font-size:18px;font-weight:700;margin-bottom:8px;letter-spacing:-0.02em;}
+    .auth-wall-sub{font-size:13px;color:var(--text-sec);line-height:1.6;margin-bottom:28px;}
+    .auth-wall-btn{
+      display:inline-flex;align-items:center;gap:10px;
+      background:var(--accent);color:white;border:none;
+      border-radius:10px;padding:14px 28px;
+      font-family:'Unbounded',sans-serif;font-size:12px;font-weight:700;letter-spacing:0.04em;
+      cursor:pointer;transition:background 0.2s,transform 0.15s;
+    }
+    .auth-wall-btn:hover{background:#D94828;transform:translateY(-1px);}
+    .auth-wall-note{font-size:10px;color:var(--text-muted);font-family:'IBM Plex Mono',monospace;margin-top:14px;}
   </style>
 </head>
 <body>
@@ -357,6 +383,20 @@
         <a href="#" onclick="loadDemo();return false;" style="font-size:11px;color:var(--text-muted);font-family:'IBM Plex Mono',monospace;letter-spacing:0.05em;">or load demo data →</a>
       </div>
     </div>
+  </div>
+</div>
+
+<!-- ═══ AUTH WALL ═══ -->
+<div id="auth-wall">
+  <div class="auth-wall-card">
+    <img src="ChipLogo.png" class="auth-wall-logo" alt="" />
+    <div class="auth-wall-title">Session Expired</div>
+    <div class="auth-wall-sub">Google OAuth tokens expire after 1 hour. Click below to sign back in — takes 2 seconds.</div>
+    <button class="auth-wall-btn" onclick="signIn()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12.545 10.239v3.821h5.445c-.712 2.315-2.647 3.972-5.445 3.972a6.033 6.033 0 110-12.064c1.498 0 2.866.549 3.921 1.453l2.814-2.814A9.969 9.969 0 0012.545 2C7.021 2 2.543 6.477 2.543 12s4.478 10 10.002 10c8.396 0 10.249-7.85 9.426-11.748l-9.426-.013z"/></svg>
+      Sign in with Google
+    </button>
+    <div class="auth-wall-note">Read-only access to your GA4 data. Nobody else sees this page.</div>
   </div>
 </div>
 
@@ -677,7 +717,6 @@ function initGoogleAuth() {
   if (isDemoMode) return;
   if (!CLIENT_ID) { loadDemo(); return; }
 
-  // Wait for GIS to load
   const waitForGSI = setInterval(() => {
     if (window.google?.accounts?.oauth2) {
       clearInterval(waitForGSI);
@@ -685,15 +724,48 @@ function initGoogleAuth() {
         client_id: CLIENT_ID,
         scope: 'https://www.googleapis.com/auth/analytics.readonly',
         callback: (response) => {
-          if (response.error) { console.error(response); loadDemo(); return; }
+          if (response.error) {
+            console.error(response);
+            showAuthWall();
+            return;
+          }
           accessToken = response.access_token;
+          // Store expiry (tokens last ~1hr)
+          sessionStorage.setItem('hi_token', accessToken);
+          sessionStorage.setItem('hi_token_exp', Date.now() + 55*60*1000);
+          hideAuthWall();
           showDashboard();
           loadAllData();
         },
       });
-      tokenClient.requestAccessToken({ prompt: '' });
+
+      // Try to use cached token first
+      const cached = sessionStorage.getItem('hi_token');
+      const exp = parseInt(sessionStorage.getItem('hi_token_exp')||0);
+      if (cached && Date.now() < exp) {
+        accessToken = cached;
+        hideAuthWall();
+        showDashboard();
+        loadAllData();
+      } else {
+        // Try silent first, fall back to prompt
+        tokenClient.requestAccessToken({ prompt: 'none' });
+        // If silent fails GIS will call callback with error → showAuthWall
+      }
     }
   }, 200);
+}
+
+function signIn() {
+  if (!tokenClient) { initGoogleAuth(); return; }
+  tokenClient.requestAccessToken({ prompt: 'select_account' });
+}
+
+function showAuthWall() {
+  document.getElementById('auth-wall').classList.add('show');
+}
+function hideAuthWall() {
+  document.getElementById('auth-wall').classList.remove('show');
 }
 
 // ══════════════════════════════════════════════
@@ -779,6 +851,10 @@ let charts = {};
 let refreshTimer = null;
 
 async function loadAllData() {
+  // Re-auth if token expired
+  if (!isDemoMode && (!accessToken || Date.now() > parseInt(sessionStorage.getItem('hi_token_exp')||0))) {
+    showAuthWall(); return;
+  }
   const btn = document.getElementById('refresh-btn');
   btn.classList.add('spinning');
   const range = getDateRange();
