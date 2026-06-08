@@ -700,12 +700,24 @@ function loadDemo() {
   loadAllData();
 }
 
-// Auto-launch — credentials are pre-configured
+// Detect if running via local server or live site
+const IS_LOCAL = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+const API_BASE = IS_LOCAL ? 'http://localhost:3001' : null;
+
 window.addEventListener('load', () => {
-  document.getElementById('input-client-id').value = CLIENT_ID;
-  document.getElementById('input-property-id').value = PROPERTY_ID;
-  document.getElementById('setup-overlay').style.display='none';
-  initGoogleAuth();
+  if (IS_LOCAL) {
+    // Running via dashboard-server.mjs — use server-side auth, no OAuth popup
+    document.getElementById('setup-overlay').style.display='none';
+    document.getElementById('auth-wall').classList.remove('show');
+    showDashboard();
+    loadAllData();
+  } else {
+    // Running on hyperimplement.com — use OAuth popup flow
+    document.getElementById('input-client-id').value = CLIENT_ID;
+    document.getElementById('input-property-id').value = PROPERTY_ID;
+    document.getElementById('setup-overlay').style.display='none';
+    initGoogleAuth();
+  }
 });
 
 // ══════════════════════════════════════════════
@@ -850,13 +862,45 @@ let charts = {};
 let refreshTimer = null;
 
 async function loadAllData() {
-  // Re-auth if token expired
-  if (!isDemoMode && (!accessToken || Date.now() > parseInt(sessionStorage.getItem('hi_token_exp')||0))) {
-    showAuthWall(); return;
-  }
   const btn = document.getElementById('refresh-btn');
   btn.classList.add('spinning');
   const range = getDateRange();
+
+  // If running via local server — fetch from Node API
+  if (IS_LOCAL && API_BASE) {
+    try {
+      const res = await fetch(`${API_BASE}/api/data?range=${range}`);
+      if (res.status === 401) {
+        // Need to auth — open auth URL
+        const ar = await fetch(`${API_BASE}/api/auth-url`);
+        const { url } = await ar.json();
+        window.open(url, '_blank', 'width=500,height=600');
+        btn.classList.remove('spinning');
+        return;
+      }
+      if (!res.ok) throw new Error('Server error ' + res.status);
+      const raw = await res.json();
+      const d = parseAllData(raw);
+      renderKPIs(d); renderSessionsChart(d.sessionsByDay); renderSourcesChart(d.sources);
+      renderDevices(d.devices); renderCountries(d.countries); renderBrowsers(d.browsers);
+      renderTopPages(d.topPages); renderEvents(d.events); renderLandingPages(d.landingPages);
+      renderChannelsChart(d.channelsByDay); renderBounce(d.overview.bounce);
+      renderPagesPerSession(d.overview.pagesPerSession); renderNewReturning(d.newReturning);
+      renderRealtime(d.realtime);
+      document.getElementById('last-updated').textContent = 'Updated ' + new Date().toLocaleTimeString();
+    } catch(e) {
+      console.error(e);
+    }
+    btn.classList.remove('spinning');
+    if (refreshTimer) clearTimeout(refreshTimer);
+    refreshTimer = setTimeout(loadAllData, 5*60*1000);
+    return;
+  }
+
+  // Re-auth if token expired (live site OAuth flow)
+  if (!isDemoMode && (!accessToken || Date.now() > parseInt(sessionStorage.getItem('hi_token_exp')||0))) {
+    showAuthWall(); btn.classList.remove('spinning'); return;
+  }
 
   // Update range label
   const labels = {'7daysAgo':'7 days','30daysAgo':'30 days','90daysAgo':'90 days','365daysAgo':'12 months'};
