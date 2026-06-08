@@ -2,7 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="format-detection" content="telephone=no" />
+  <meta name="theme-color" content="#ffffff" />
   <title>HyperImplement — AI Implementation for People & Businesses</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -24,13 +28,28 @@
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
+    html {
+      scroll-behavior: smooth;
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
+    }
     body {
       background: var(--bg);
       color: var(--text);
       font-family: 'IBM Plex Sans', sans-serif;
       line-height: 1.7;
       overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    /* Prevent 300ms tap delay sitewide */
+    a, button, [role="button"] {
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+    }
+    /* iOS input zoom fix — keep all inputs at 16px+ */
+    input, select, textarea {
+      font-size: 16px !important;
     }
     h1,h2,h3,.display { font-family: 'Unbounded', sans-serif; letter-spacing: -0.03em; line-height: 1.1; }
 
@@ -42,14 +61,20 @@
     .nav {
       position: fixed; top: 0; left: 0; right: 0; z-index: 100;
       padding: 18px 48px;
+      padding-top: max(18px, env(safe-area-inset-top));
+      padding-left: max(48px, env(safe-area-inset-left));
+      padding-right: max(48px, env(safe-area-inset-right));
       display: flex; align-items: center; justify-content: space-between;
       transition: background 0.3s, box-shadow 0.3s, padding 0.3s;
       background: rgba(255,255,255,0);
     }
     .nav.scrolled {
       background: rgba(255,255,255,0.96);
+      -webkit-backdrop-filter: blur(16px);
       backdrop-filter: blur(16px);
       padding: 12px 48px;
+      padding-left: max(48px, env(safe-area-inset-left));
+      padding-right: max(48px, env(safe-area-inset-right));
       box-shadow: 0 1px 0 var(--border), 0 4px 24px rgba(0,0,0,0.06);
     }
     .nav-logo img { height: 34px; display: block; }
@@ -125,8 +150,11 @@
 
     /* ─── HERO ─── */
     .hero {
-      min-height: 100vh; display: flex; align-items: center;
+      min-height: 100vh;
+      min-height: 100svh;
+      display: flex; align-items: center;
       padding: 140px 48px 80px;
+      padding-top: max(140px, calc(120px + env(safe-area-inset-top)));
       background: var(--bg);
       position: relative; overflow: hidden;
     }
@@ -419,86 +447,76 @@
     .review-built-result::before { content: '→ '; color: var(--accent); }
 
     /* ─── ABOUT ─── */
+    /* ─── ABOUT ─── */
     .about-section { background: var(--bg); }
-    .about-grid {
-      display: grid; grid-template-columns: 1fr 2fr;
-      gap: 80px; align-items: start;
-    }
-    .about-photo {
-      aspect-ratio: 1;
-      background: var(--bg-elevated);
-      border-radius: 12px;
-      border: 1px solid var(--border);
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center; gap: 10px;
-      color: var(--text-muted);
-      font-size: 13px;
-      position: relative; overflow: hidden;
-    }
-    .about-photo-icon {
-      width: 64px; height: 64px; border-radius: 50%;
+    .about-card {
       background: var(--bg-surface);
-      border: 2px dashed rgba(0,0,0,0.12);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 28px;
+      border: 1px solid var(--border);
+      border-radius: 16px; overflow: hidden;
+      max-width: 860px; margin: 0 auto;
     }
-    .about-photo-label {
-      font-family: 'IBM Plex Mono', monospace; font-size: 10px;
-      letter-spacing: 0.1em; text-transform: uppercase;
-      color: var(--text-muted);
+    /* Top band with headshot + name */
+    .about-header {
+      display: flex; align-items: center; gap: 20px;
+      padding: 28px 32px 24px;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg);
     }
-    .about-right {}
+    .about-avatar {
+      width: 76px; height: 76px; border-radius: 50%;
+      overflow: hidden; flex-shrink: 0;
+      border: 3px solid var(--bg-surface);
+      box-shadow: 0 0 0 2px var(--accent), 0 4px 16px rgba(249,91,61,0.2);
+    }
+    .about-avatar img {
+      width: 100%; height: 100%;
+      object-fit: cover; object-position: center top;
+      display: block;
+    }
+    .about-header-text {}
     .about-name {
-      font-family: 'Unbounded', sans-serif; font-size: clamp(28px, 3.5vw, 48px);
-      font-weight: 900; color: var(--text); margin-bottom: 6px;
-      letter-spacing: -0.03em;
+      font-family: 'Unbounded', sans-serif; font-size: clamp(20px, 3vw, 28px);
+      font-weight: 900; color: var(--text); margin-bottom: 3px;
+      letter-spacing: -0.025em; line-height: 1.1;
     }
     .about-role {
-      font-size: 16px; color: var(--accent); font-weight: 600;
-      margin-bottom: 4px;
+      font-size: 13px; color: var(--accent); font-weight: 600; margin-bottom: 4px;
     }
     .about-prev {
-      display: inline-flex; align-items: center; gap: 8px;
-      font-family: 'IBM Plex Mono', monospace; font-size: 11px;
-      letter-spacing: 0.08em; text-transform: uppercase;
-      color: var(--text-muted); margin-bottom: 28px;
+      display: inline-flex; align-items: center; gap: 6px;
+      font-family: 'IBM Plex Mono', monospace; font-size: 10px;
+      letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted);
     }
-    .about-prev::before {
-      content: 'ex';
-      background: var(--bg-surface);
-      border: 1px solid var(--border);
-      border-radius: 3px;
-      padding: 2px 7px;
-      font-size: 9px; letter-spacing: 0.1em;
-      color: var(--text-muted);
+    .about-prev-badge {
+      background: var(--bg-elevated); border: 1px solid var(--border);
+      border-radius: 3px; padding: 1px 6px;
+      font-size: 9px; letter-spacing: 0.1em; color: var(--text-muted);
     }
+    /* Body of card */
+    .about-body { padding: 28px 32px; display: flex; flex-direction: column; gap: 20px; }
     .about-bio {
-      font-size: 16px; color: var(--text-sec);
-      line-height: 1.8; margin-bottom: 28px; font-weight: 300;
+      font-size: 15px; color: var(--text-sec);
+      line-height: 1.8; font-weight: 300;
     }
     .about-edu {
       display: flex; gap: 12px; align-items: flex-start;
-      padding: 18px 20px;
-      background: var(--bg-surface); border: 1px solid var(--border);
-      border-radius: 8px; margin-bottom: 28px;
+      padding: 16px 18px;
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: 8px;
     }
-    .about-edu-icon {
-      font-size: 18px; flex-shrink: 0; margin-top: 1px;
-    }
+    .about-edu-icon { font-size: 16px; flex-shrink: 0; margin-top: 2px; }
     .about-edu-text { font-size: 13px; color: var(--text-sec); line-height: 1.6; }
     .about-edu-text strong { color: var(--text); font-weight: 600; }
     .about-socials { display: flex; flex-direction: column; gap: 10px; }
     .about-socials-label {
       font-family: 'IBM Plex Mono', monospace; font-size: 10px;
       letter-spacing: 0.12em; text-transform: uppercase;
-      color: var(--text-muted); margin-bottom: 4px;
+      color: var(--text-muted);
     }
-    .social-row {
-      display: flex; flex-wrap: wrap; gap: 10px;
-    }
+    .social-row { display: flex; flex-wrap: wrap; gap: 8px; }
     .social-chip {
       display: inline-flex; align-items: center; gap: 8px;
-      background: var(--bg-surface);
+      background: var(--bg);
       border: 1px solid var(--border);
       border-radius: 5px; padding: 8px 14px;
       font-size: 13px; color: var(--text-sec);
@@ -659,7 +677,9 @@
 
     /* ─── FOOTER ─── */
     footer {
-      background: var(--text); padding: 56px 48px 32px;
+      background: var(--text);
+      padding: 56px 48px 32px;
+      padding-bottom: max(32px, calc(24px + env(safe-area-inset-bottom)));
     }
     .footer-top {
       display: grid; grid-template-columns: 1.6fr 1fr 1fr 1fr;
@@ -875,7 +895,7 @@
     /* ─── RESPONSIVE ─── */
     @media(max-width:1024px){
       .stats-grid{grid-template-columns:repeat(2,1fr)}
-      .why-grid,.contact-header,.contact-body,.reviews-grid,.about-grid{grid-template-columns:1fr;gap:40px}
+      .why-grid,.contact-header,.contact-body,.reviews-grid{grid-template-columns:1fr;gap:40px}
       .footer-top{grid-template-columns:1fr 1fr;gap:36px}
       .svc-node-row{grid-template-columns:1fr 1fr}
       .gap-node-row{grid-template-columns:1fr;gap:16px}
@@ -883,15 +903,47 @@
       .gap-node-vertical-wrap{display:none}
     }
     @media(max-width:768px){
-      section{padding:72px 24px}
-      .nav{padding:16px 24px}.nav.scrolled{padding:12px 24px}
-      .hero{padding:110px 24px 72px}
+      section{padding:64px 20px}
+      .inner{padding:0}
+      .nav{padding:14px 20px;padding-top:max(14px,env(safe-area-inset-top))}
+      .nav.scrolled{padding:10px 20px;padding-top:max(10px,env(safe-area-inset-top))}
+      .hero{padding:100px 20px 64px;padding-top:max(100px,calc(80px + env(safe-area-inset-top)))}
+      .hero h1{font-size:clamp(34px,9vw,52px)}
       .nav-links{display:none}
       .stats-grid{grid-template-columns:1fr 1fr}
+      .stat-item{padding:20px 16px}
+      .stat-value{font-size:clamp(22px,7vw,34px)}
       .svc-node-row{grid-template-columns:1fr}
+      .svc-node-rail{display:none}
       .footer-top{grid-template-columns:1fr;gap:28px}
       .footer-bottom{flex-direction:column;gap:8px;text-align:center}
       .svc-cta{flex-direction:column;align-items:flex-start}
+      /* About card mobile */
+      .about-header{padding:20px;gap:14px}
+      .about-avatar{width:60px;height:60px}
+      .about-name{font-size:20px}
+      .about-body{padding:20px}
+      /* Reviews mobile */
+      .reviews-grid{grid-template-columns:1fr}
+      /* Contact mobile */
+      .contact-body{grid-template-columns:1fr}
+      .contact-header{grid-template-columns:1fr}
+      /* Gap nodes mobile */
+      .gap-node-row{grid-template-columns:1fr}
+      .node-connector-h,.gap-node-vertical-wrap{display:none}
+      /* Booking mobile */
+      .booking-container{grid-template-columns:1fr}
+      /* All tap targets at least 44px */
+      .btn-primary,.btn-dark,.btn-outline,.nav-cta{min-height:44px}
+      .social-chip{min-height:44px}
+    }
+    /* Disable hover effects on touch devices */
+    @media(hover:none){
+      .review-card:hover,.impl-card:hover,.svc-card-new:hover,
+      .gap-node-card:hover,.blog-card:hover{
+        transform:none;box-shadow:none;border-color:var(--border);
+      }
+      .review-card:hover::after,.svc-card-new:hover::before{transform:scaleX(0)}
     }
   </style>
 </head>
@@ -1290,21 +1342,29 @@
   <!-- ═══ ABOUT / FOUNDER ═══ -->
   <section class="about-section" id="about">
     <div class="inner">
-      <div class="reveal" style="margin-bottom:48px;">
+      <div class="reveal" style="margin-bottom:40px;">
         <div class="label">The Person Behind It</div>
         <h2 class="section-title">Why This Exists.</h2>
       </div>
-      <div class="about-grid">
-        <div class="reveal">
-          <div class="about-photo">
-            <div class="about-photo-icon">👤</div>
-            <div class="about-photo-label">Profile photo</div>
+      <div class="about-card reveal d1">
+
+        <!-- Header: avatar + name -->
+        <div class="about-header">
+          <div class="about-avatar">
+            <img src="Headshot.png" alt="Anthony Collins — Founder, HyperImplement" />
+          </div>
+          <div class="about-header-text">
+            <div class="about-name">Anthony Collins</div>
+            <div class="about-role">Founder, HyperImplement</div>
+            <div class="about-prev">
+              <span class="about-prev-badge">ex</span>
+              Salesforce
+            </div>
           </div>
         </div>
-        <div class="reveal d1">
-          <div class="about-name">Anthony Collins</div>
-          <div class="about-role">Founder, HyperImplement</div>
-          <div class="about-prev">Salesforce</div>
+
+        <!-- Body -->
+        <div class="about-body">
           <p class="about-bio">
             I built HyperImplement because I kept seeing the same thing: people and businesses that knew AI was important, wanted to use it, and had no idea how to actually get there. After working at Salesforce and studying the intersection of business and technology, I decided to stop advising from the sidelines and start building — for real, with people, until something was live and working.
             <br/><br/>
@@ -1320,25 +1380,14 @@
           <div class="about-socials">
             <div class="about-socials-label">Find me at @anthonyimplements</div>
             <div class="social-row">
-              <div class="social-chip">
-                <span class="social-platform">YouTube</span>
-                @anthonyimplements
-              </div>
-              <div class="social-chip">
-                <span class="social-platform">TikTok</span>
-                @anthonyimplements
-              </div>
-              <div class="social-chip">
-                <span class="social-platform">Instagram</span>
-                @anthonyimplements
-              </div>
-              <div class="social-chip">
-                <span class="social-platform">X / Twitter</span>
-                @anthonyimplements
-              </div>
+              <div class="social-chip"><span class="social-platform">YouTube</span>@anthonyimplements</div>
+              <div class="social-chip"><span class="social-platform">TikTok</span>@anthonyimplements</div>
+              <div class="social-chip"><span class="social-platform">Instagram</span>@anthonyimplements</div>
+              <div class="social-chip"><span class="social-platform">X / Twitter</span>@anthonyimplements</div>
             </div>
           </div>
         </div>
+
       </div>
     </div>
   </section>
