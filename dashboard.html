@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HyperImplement — Analytics</title>
+  <link rel="icon" type="image/png" href="ChipLogo.png" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700;900&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <style>
+    :root {
+      --bg:        #07070D;
+      --surface:   #0D0D18;
+      --card:      rgba(255,255,255,0.03);
+      --border:    rgba(249,91,61,0.18);
+      --border-dim:rgba(255,255,255,0.07);
+      --accent:    #F95B3D;
+      --cyan:      #00C8FF;
+      --purple:    #8B5CF6;
+      --green:     #10D98C;
+      --text:      #EEEEF0;
+      --text-sec:  #8A8A9A;
+      --text-muted:#4A4A5A;
+      --glow:      rgba(249,91,61,0.15);
+    }
+    *{box-sizing:border-box;margin:0;padding:0;}
+    html,body{height:100%;background:var(--bg);color:var(--text);font-family:'IBM Plex Sans',sans-serif;-webkit-font-smoothing:antialiased;}
+    body{overflow-x:hidden;}
+
+    /* ── BG GRID ── */
+    body::before{
+      content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+      background-image:
+        linear-gradient(rgba(249,91,61,0.03) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(249,91,61,0.03) 1px,transparent 1px);
+      background-size:48px 48px;
+    }
+    /* radial glow top-right */
+    body::after{
+      content:'';position:fixed;top:-200px;right:-200px;width:700px;height:700px;
+      background:radial-gradient(circle,rgba(249,91,61,0.07) 0%,transparent 65%);
+      pointer-events:none;z-index:0;
+    }
+
+    /* ── SETUP OVERLAY ── */
+    #setup-overlay{
+      position:fixed;inset:0;z-index:999;
+      background:rgba(7,7,13,0.97);
+      -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
+      display:flex;align-items:center;justify-content:center;
+    }
+    .setup-card{
+      width:480px;max-width:90vw;
+      background:var(--surface);
+      border:1px solid var(--border);
+      border-radius:16px;padding:40px;
+      box-shadow:0 0 60px rgba(249,91,61,0.12),0 24px 64px rgba(0,0,0,0.5);
+    }
+    .setup-logo{display:flex;align-items:center;gap:12px;margin-bottom:28px;}
+    .setup-logo img{height:32px;}
+    .setup-logo span{font-family:'Unbounded',sans-serif;font-size:14px;font-weight:700;letter-spacing:-0.02em;}
+    .setup-title{font-family:'Unbounded',sans-serif;font-size:20px;font-weight:700;margin-bottom:8px;letter-spacing:-0.02em;}
+    .setup-sub{font-size:13px;color:var(--text-sec);line-height:1.6;margin-bottom:28px;}
+    .setup-step{
+      display:flex;gap:14px;align-items:flex-start;
+      background:rgba(255,255,255,0.03);border:1px solid var(--border-dim);
+      border-radius:10px;padding:14px 16px;margin-bottom:12px;
+    }
+    .setup-step-num{
+      width:22px;height:22px;border-radius:50%;
+      background:var(--accent);color:white;
+      font-family:'Unbounded',sans-serif;font-size:10px;font-weight:700;
+      display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;
+    }
+    .setup-step-text{font-size:12px;color:var(--text-sec);line-height:1.6;}
+    .setup-step-text strong{color:var(--text);display:block;margin-bottom:2px;font-size:13px;}
+    .setup-step-text a{color:var(--accent);text-decoration:none;}
+    .setup-inputs{margin-top:20px;display:flex;flex-direction:column;gap:12px;}
+    .setup-input-group label{display:block;font-size:11px;font-family:'IBM Plex Mono',monospace;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-sec);margin-bottom:6px;}
+    .setup-input-group input{
+      width:100%;background:rgba(255,255,255,0.04);border:1px solid var(--border-dim);
+      border-radius:8px;padding:10px 14px;color:var(--text);font-size:13px;font-family:'IBM Plex Mono',monospace;
+      outline:none;transition:border-color 0.2s;
+    }
+    .setup-input-group input:focus{border-color:var(--accent);}
+    .setup-input-group input::placeholder{color:var(--text-muted);}
+    .setup-btn{
+      margin-top:20px;width:100%;padding:13px;
+      background:var(--accent);color:white;border:none;border-radius:8px;
+      font-family:'Unbounded',sans-serif;font-size:12px;font-weight:700;letter-spacing:0.04em;
+      cursor:pointer;transition:background 0.2s,transform 0.15s;
+    }
+    .setup-btn:hover{background:#D94828;transform:translateY(-1px);}
+    .setup-error{font-size:12px;color:#FF6B6B;margin-top:8px;display:none;}
+
+    /* ── HEADER ── */
+    .header{
+      position:fixed;top:0;left:0;right:0;z-index:100;
+      height:60px;
+      background:rgba(7,7,13,0.9);
+      -webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);
+      border-bottom:1px solid var(--border-dim);
+      display:flex;align-items:center;justify-content:space-between;
+      padding:0 32px;
+    }
+    .header-left{display:flex;align-items:center;gap:20px;}
+    .header-logo{display:flex;align-items:center;gap:10px;}
+    .header-logo img{height:26px;}
+    .header-logo span{font-family:'Unbounded',sans-serif;font-size:12px;font-weight:700;letter-spacing:-0.01em;color:var(--text);}
+    .header-sep{width:1px;height:20px;background:var(--border-dim);}
+    .header-title{font-size:12px;color:var(--text-sec);font-family:'IBM Plex Mono',monospace;letter-spacing:0.06em;text-transform:uppercase;}
+    .live-badge{
+      display:flex;align-items:center;gap:7px;
+      background:rgba(16,217,140,0.08);border:1px solid rgba(16,217,140,0.2);
+      border-radius:20px;padding:4px 12px;
+      font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:0.08em;
+      color:var(--green);
+    }
+    .live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:livePulse 2s infinite;}
+    @keyframes livePulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(16,217,140,0.4);}50%{opacity:0.7;box-shadow:0 0 0 5px rgba(16,217,140,0);}}
+    .header-right{display:flex;align-items:center;gap:12px;}
+    .range-select{
+      background:rgba(255,255,255,0.04);border:1px solid var(--border-dim);
+      border-radius:8px;padding:6px 12px;color:var(--text);
+      font-size:12px;font-family:'IBM Plex Mono',monospace;
+      cursor:pointer;outline:none;
+      transition:border-color 0.2s;
+    }
+    .range-select:focus{border-color:var(--accent);}
+    .range-select option{background:var(--surface);}
+    .refresh-btn{
+      width:34px;height:34px;border-radius:8px;
+      background:rgba(255,255,255,0.04);border:1px solid var(--border-dim);
+      color:var(--text-sec);cursor:pointer;font-size:14px;
+      display:flex;align-items:center;justify-content:center;
+      transition:background 0.2s,color 0.2s;
+    }
+    .refresh-btn:hover{background:rgba(249,91,61,0.1);color:var(--accent);border-color:var(--border);}
+    .refresh-btn.spinning{animation:spin 1s linear infinite;}
+    @keyframes spin{to{transform:rotate(360deg);}}
+    .settings-btn{
+      display:flex;align-items:center;gap:6px;
+      background:rgba(255,255,255,0.04);border:1px solid var(--border-dim);
+      border-radius:8px;padding:6px 12px;color:var(--text-sec);
+      font-size:11px;font-family:'IBM Plex Mono',monospace;cursor:pointer;
+      transition:background 0.2s,color 0.2s;
+    }
+    .settings-btn:hover{background:rgba(249,91,61,0.08);color:var(--accent);}
+
+    /* ── MAIN ── */
+    .main{position:relative;z-index:1;padding:80px 32px 48px;max-width:1480px;margin:0 auto;}
+
+    /* ── SECTION LABEL ── */
+    .section-label{
+      font-family:'IBM Plex Mono',monospace;font-size:10px;
+      letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);
+      margin-bottom:14px;margin-top:32px;
+      display:flex;align-items:center;gap:8px;
+    }
+    .section-label::after{content:'';flex:1;height:1px;background:var(--border-dim);}
+
+    /* ── KPI GRID ── */
+    .kpi-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:14px;margin-bottom:4px;}
+    .kpi-card{
+      background:var(--card);border:1px solid var(--border-dim);
+      border-radius:12px;padding:20px 18px;
+      position:relative;overflow:hidden;
+      transition:border-color 0.25s,box-shadow 0.25s;
+    }
+    .kpi-card:hover{border-color:var(--border);box-shadow:0 0 24px var(--glow);}
+    .kpi-card::before{
+      content:'';position:absolute;top:0;left:0;right:0;height:2px;
+      background:linear-gradient(90deg,transparent,var(--kpi-color,var(--accent)),transparent);
+      opacity:0.6;
+    }
+    .kpi-label{font-size:10px;font-family:'IBM Plex Mono',monospace;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-sec);margin-bottom:10px;}
+    .kpi-value{font-family:'Unbounded',sans-serif;font-size:26px;font-weight:700;letter-spacing:-0.03em;color:var(--text);margin-bottom:6px;line-height:1;}
+    .kpi-delta{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-family:'IBM Plex Mono',monospace;padding:2px 7px;border-radius:4px;}
+    .kpi-delta.up{background:rgba(16,217,140,0.1);color:var(--green);}
+    .kpi-delta.down{background:rgba(255,80,80,0.1);color:#FF6B6B;}
+    .kpi-delta.neutral{background:rgba(255,255,255,0.05);color:var(--text-muted);}
+    .kpi-sub{font-size:10px;color:var(--text-muted);margin-top:4px;font-family:'IBM Plex Mono',monospace;}
+
+    /* Realtime card special */
+    .kpi-realtime .kpi-value{color:var(--green);}
+
+    /* ── CHART GRID ── */
+    .chart-grid-2{display:grid;grid-template-columns:1.8fr 1fr;gap:14px;margin-bottom:14px;}
+    .chart-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px;}
+    .chart-grid-half{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
+
+    .chart-card{
+      background:var(--card);border:1px solid var(--border-dim);
+      border-radius:12px;padding:22px 24px;
+      transition:border-color 0.25s;
+    }
+    .chart-card:hover{border-color:var(--border);}
+    .chart-card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;}
+    .chart-card-title{font-family:'Unbounded',sans-serif;font-size:12px;font-weight:700;letter-spacing:-0.01em;color:var(--text);}
+    .chart-card-sub{font-size:11px;color:var(--text-muted);font-family:'IBM Plex Mono',monospace;margin-top:2px;}
+    .chart-card-badge{
+      font-size:9px;font-family:'IBM Plex Mono',monospace;letter-spacing:0.08em;text-transform:uppercase;
+      padding:3px 8px;border-radius:4px;background:rgba(249,91,61,0.1);color:var(--accent);border:1px solid rgba(249,91,61,0.2);
+    }
+    .chart-wrap{position:relative;}
+    .chart-wrap canvas{max-height:220px;}
+
+    /* ── TABLE ── */
+    .data-table{width:100%;border-collapse:collapse;}
+    .data-table th{
+      font-size:9px;font-family:'IBM Plex Mono',monospace;letter-spacing:0.1em;text-transform:uppercase;
+      color:var(--text-muted);padding:0 0 10px;text-align:left;border-bottom:1px solid var(--border-dim);
+    }
+    .data-table th:last-child,.data-table td:last-child{text-align:right;}
+    .data-table td{
+      padding:10px 0;font-size:13px;color:var(--text-sec);
+      border-bottom:1px solid rgba(255,255,255,0.03);
+      vertical-align:middle;
+    }
+    .data-table tr:last-child td{border-bottom:none;}
+    .data-table tr:hover td{color:var(--text);}
+    .table-bar-wrap{display:flex;align-items:center;gap:10px;}
+    .table-bar{height:4px;border-radius:2px;background:var(--accent);opacity:0.7;min-width:4px;transition:width 0.6s ease;}
+    .table-rank{
+      font-size:10px;font-family:'IBM Plex Mono',monospace;color:var(--text-muted);
+      width:20px;display:inline-block;
+    }
+    .table-source-dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:8px;flex-shrink:0;}
+    .country-flag{font-size:16px;margin-right:8px;}
+
+    /* ── HEATMAP ── */
+    .heatmap-grid{display:grid;grid-template-columns:auto repeat(24,1fr);gap:3px;align-items:center;}
+    .heatmap-label{font-size:9px;font-family:'IBM Plex Mono',monospace;color:var(--text-muted);text-align:right;padding-right:8px;white-space:nowrap;}
+    .heatmap-cell{
+      aspect-ratio:1;border-radius:3px;background:rgba(249,91,61,var(--intensity,0.04));
+      transition:background 0.3s;cursor:default;
+    }
+    .heatmap-cell:hover{outline:1px solid rgba(249,91,61,0.4);}
+    .heatmap-hours{display:contents;}
+    .heatmap-hour-label{font-size:8px;font-family:'IBM Plex Mono',monospace;color:var(--text-muted);text-align:center;}
+
+    /* ── FUNNEL ── */
+    .funnel-step{
+      display:flex;align-items:center;gap:14px;
+      padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.04);
+    }
+    .funnel-step:last-child{border-bottom:none;}
+    .funnel-num{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text-muted);width:16px;}
+    .funnel-bar-wrap{flex:1;height:28px;background:rgba(255,255,255,0.03);border-radius:4px;overflow:hidden;position:relative;}
+    .funnel-bar{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--accent),rgba(249,91,61,0.4));transition:width 0.8s cubic-bezier(0.16,1,0.3,1);}
+    .funnel-label{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:11px;color:var(--text);font-weight:500;white-space:nowrap;}
+    .funnel-pct{font-family:'Unbounded',sans-serif;font-size:12px;font-weight:700;color:var(--text);min-width:44px;text-align:right;}
+    .funnel-count{font-size:10px;color:var(--text-muted);font-family:'IBM Plex Mono',monospace;min-width:56px;text-align:right;}
+
+    /* ── DEVICE ICONS ── */
+    .device-row{display:flex;flex-direction:column;gap:10px;margin-top:4px;}
+    .device-item{display:flex;align-items:center;gap:10px;}
+    .device-icon{font-size:16px;width:24px;text-align:center;}
+    .device-name{font-size:12px;color:var(--text-sec);flex:1;}
+    .device-pct-bar{flex:2;height:4px;border-radius:2px;background:rgba(255,255,255,0.06);overflow:hidden;}
+    .device-pct-fill{height:100%;border-radius:2px;background:var(--accent);transition:width 0.6s ease;}
+    .device-pct-num{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text);min-width:36px;text-align:right;}
+
+    /* ── SKELETON LOADER ── */
+    .skeleton{
+      background:linear-gradient(90deg,rgba(255,255,255,0.04) 25%,rgba(255,255,255,0.07) 50%,rgba(255,255,255,0.04) 75%);
+      background-size:200% 100%;
+      animation:shimmer 1.4s infinite;
+      border-radius:4px;
+    }
+    @keyframes shimmer{0%{background-position:200% 0;}100%{background-position:-200% 0;}}
+
+    /* ── EMPTY STATE ── */
+    .empty-state{text-align:center;padding:32px 16px;color:var(--text-muted);font-size:12px;font-family:'IBM Plex Mono',monospace;}
+    .empty-state span{display:block;font-size:24px;margin-bottom:8px;opacity:0.4;}
+
+    /* ── FOOTER ── */
+    .footer{
+      position:relative;z-index:1;text-align:center;
+      padding:16px 32px 32px;
+      font-size:10px;color:var(--text-muted);font-family:'IBM Plex Mono',monospace;letter-spacing:0.05em;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media(max-width:1200px){
+      .kpi-grid{grid-template-columns:repeat(3,1fr);}
+      .chart-grid-2{grid-template-columns:1fr;}
+      .chart-grid-3{grid-template-columns:1fr 1fr;}
+    }
+    @media(max-width:768px){
+      .main{padding:72px 16px 40px;}
+      .header{padding:0 16px;}
+      .kpi-grid{grid-template-columns:repeat(2,1fr);}
+      .chart-grid-3,.chart-grid-half{grid-template-columns:1fr;}
+      .header-title,.live-badge{display:none;}
+    }
+
+    /* ── COUNT-UP ANIMATION ── */
+    .count-up{transition:all 0.3s;}
+
+    /* ── AUTH SECTION ── */
+    .auth-section{margin-bottom:24px;display:none;}
+    #g_id_onload,.g_id_signin{display:inline-block;}
+
+    /* ── NO DATA ── */
+    #no-data-banner{
+      display:none;
+      background:rgba(249,91,61,0.06);border:1px solid rgba(249,91,61,0.2);
+      border-radius:10px;padding:14px 18px;margin-bottom:20px;
+      font-size:13px;color:var(--text-sec);
+    }
+    #no-data-banner strong{color:var(--accent);}
+  </style>
+</head>
+<body>
+
+<!-- ═══ SETUP OVERLAY ═══ -->
+<div id="setup-overlay">
+  <div class="setup-card">
+    <div class="setup-logo">
+      <img src="ChipLogo.png" alt="HyperImplement" />
+      <span>HyperImplement</span>
+    </div>
+    <div class="setup-title">Connect Analytics</div>
+    <div class="setup-sub">Two quick steps to unlock your full dashboard. You only do this once.</div>
+
+    <div class="setup-step">
+      <div class="setup-step-num">1</div>
+      <div class="setup-step-text">
+        <strong>Enable GA4 Data API</strong>
+        Go to <a href="https://console.cloud.google.com/apis/library/analyticsdata.googleapis.com" target="_blank">Google Cloud Console</a> → Enable "Google Analytics Data API v1". Then create an OAuth2 Web Client ID under Credentials. Add <code style="font-size:11px;color:var(--accent);">http://localhost:3000</code> as an Authorized JavaScript Origin.
+      </div>
+    </div>
+
+    <div class="setup-step">
+      <div class="setup-step-num">2</div>
+      <div class="setup-step-text">
+        <strong>Find your GA4 Property ID</strong>
+        In Google Analytics → Admin → Property Settings → Property ID (looks like <code style="font-size:11px;color:var(--accent);">123456789</code>, NOT the G-xxx ID).
+      </div>
+    </div>
+
+    <div class="setup-inputs">
+      <div class="setup-input-group">
+        <label>OAuth2 Client ID</label>
+        <input type="text" id="input-client-id" placeholder="xxxxxxxxxx-xxxx.apps.googleusercontent.com" />
+      </div>
+      <div class="setup-input-group">
+        <label>GA4 Property ID (numeric)</label>
+        <input type="text" id="input-property-id" placeholder="123456789" />
+      </div>
+      <button class="setup-btn" onclick="saveSetup()">Launch Dashboard →</button>
+      <div class="setup-error" id="setup-error">Please fill in both fields.</div>
+      <div style="text-align:center;margin-top:12px;">
+        <a href="#" onclick="loadDemo();return false;" style="font-size:11px;color:var(--text-muted);font-family:'IBM Plex Mono',monospace;letter-spacing:0.05em;">or load demo data →</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ HEADER ═══ -->
+<header class="header">
+  <div class="header-left">
+    <div class="header-logo">
+      <img src="ChipLogo.png" alt="" />
+      <span>HyperImplement</span>
+    </div>
+    <div class="header-sep"></div>
+    <div class="header-title">Analytics Dashboard</div>
+    <div class="live-badge"><span class="live-dot"></span> LIVE</div>
+  </div>
+  <div class="header-right">
+    <div id="realtime-header" style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--green);display:none;">
+      <span id="rt-count">—</span> active now
+    </div>
+    <select class="range-select" id="date-range" onchange="loadAllData()">
+      <option value="7daysAgo">Last 7 days</option>
+      <option value="30daysAgo" selected>Last 30 days</option>
+      <option value="90daysAgo">Last 90 days</option>
+      <option value="365daysAgo">Last 12 months</option>
+    </select>
+    <button class="refresh-btn" id="refresh-btn" onclick="loadAllData()" title="Refresh">↻</button>
+    <button class="settings-btn" onclick="resetSetup()">⚙ Settings</button>
+  </div>
+</header>
+
+<!-- ═══ MAIN ═══ -->
+<main class="main" id="dashboard" style="display:none;">
+
+  <div id="no-data-banner">
+    <strong>No data yet</strong> — GA4 just got connected. Data typically appears within 24–48 hours. The dashboard will populate automatically.
+  </div>
+
+  <!-- KPI ROW -->
+  <div class="section-label">Core Metrics</div>
+  <div class="kpi-grid">
+    <div class="kpi-card" style="--kpi-color:var(--accent);">
+      <div class="kpi-label">Total Sessions</div>
+      <div class="kpi-value" id="kpi-sessions">—</div>
+      <span class="kpi-delta neutral" id="kpi-sessions-d">—</span>
+    </div>
+    <div class="kpi-card" style="--kpi-color:var(--cyan);">
+      <div class="kpi-label">Total Users</div>
+      <div class="kpi-value" id="kpi-users">—</div>
+      <span class="kpi-delta neutral" id="kpi-users-d">—</span>
+    </div>
+    <div class="kpi-card" style="--kpi-color:var(--purple);">
+      <div class="kpi-label">New Users</div>
+      <div class="kpi-value" id="kpi-new">—</div>
+      <span class="kpi-delta neutral" id="kpi-new-d">—</span>
+    </div>
+    <div class="kpi-card" style="--kpi-color:var(--green);">
+      <div class="kpi-label">Page Views</div>
+      <div class="kpi-value" id="kpi-views">—</div>
+      <span class="kpi-delta neutral" id="kpi-views-d">—</span>
+    </div>
+    <div class="kpi-card" style="--kpi-color:var(--accent);">
+      <div class="kpi-label">Avg. Session</div>
+      <div class="kpi-value" id="kpi-duration">—</div>
+      <div class="kpi-sub">minutes:seconds</div>
+    </div>
+    <div class="kpi-card kpi-realtime" style="--kpi-color:var(--green);">
+      <div class="kpi-label">Active Right Now</div>
+      <div class="kpi-value" id="kpi-realtime">—</div>
+      <div class="kpi-sub">live visitors</div>
+    </div>
+  </div>
+
+  <!-- SESSIONS + SOURCES -->
+  <div class="section-label">Traffic Overview</div>
+  <div class="chart-grid-2">
+    <div class="chart-card">
+      <div class="chart-card-header">
+        <div>
+          <div class="chart-card-title">Sessions Over Time</div>
+          <div class="chart-card-sub">Daily sessions & users</div>
+        </div>
+        <div class="chart-card-badge" id="sessions-range-label">30 days</div>
+      </div>
+      <div class="chart-wrap"><canvas id="chart-sessions"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-card-header">
+        <div>
+          <div class="chart-card-title">Traffic Sources</div>
+          <div class="chart-card-sub">How people find you</div>
+        </div>
+      </div>
+      <div class="chart-wrap" style="max-height:200px;display:flex;align-items:center;justify-content:center;">
+        <canvas id="chart-sources" style="max-height:200px;max-width:200px;"></canvas>
+      </div>
+      <div id="sources-legend" style="margin-top:14px;display:flex;flex-wrap:wrap;gap:8px;"></div>
+    </div>
+  </div>
+
+  <!-- DEVICE + COUNTRIES + BROWSERS -->
+  <div class="section-label">Audience</div>
+  <div class="chart-grid-3">
+    <div class="chart-card">
+      <div class="chart-card-header">
+        <div class="chart-card-title">Device Breakdown</div>
+      </div>
+      <div class="device-row" id="device-rows">
+        <div class="empty-state"><span>📱</span>Loading…</div>
+      </div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-card-header">
+        <div class="chart-card-title">Top Countries</div>
+      </div>
+      <table class="data-table" id="countries-table">
+        <thead><tr><th>Country</th><th>Sessions</th><th>%</th></tr></thead>
+        <tbody id="countries-body"></tbody>
+      </table>
+    </div>
+    <div class="chart-card">
+      <div class="chart-card-header">
+        <div class="chart-card-title">Browsers & OS</div>
+      </div>
+      <table class="data-table" id="browsers-table">
+        <thead><tr><th>Browser</th><th>Sessions</th><th>%</th></tr></thead>
+        <tbody id="browsers-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- TOP PAGES + EVENTS -->
+  <div class="section-label">Content & Behaviour</div>
+  <div class="chart-grid-half">
+    <div class="chart-card">
+      <div class="chart-card-header">
+        <div class="chart-card-title">Top Pages</div>
+        <div class="chart-card-sub">By pageviews</div>
+      </div>
+      <table class="data-table">
+        <thead><tr><th>#</th><th>Page</th><th>Views</th><th>Avg Time</th></tr></thead>
+        <tbody id="pages-body"></tbody>
+      </table>
+    </div>
+    <div class="chart-card">
+      <div class="chart-card-header">
+        <div class="chart-card-title">Top Events</div>
+        <div class="chart-card-sub">User interactions tracked</div>
+      </div>
+      <table class="data-table">
+        <thead><tr><th>#</th><th>Event</th><th>Count</th></tr></thead>
+        <tbody id="events-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- LANDING PAGES + ACQUISITION TREND -->
+  <div class="section-label">Acquisition</div>
+  <div class="chart-grid-half">
+    <div class="chart-card">
+      <div class="chart-card-header">
+        <div class="chart-card-title">Landing Pages</div>
+        <div class="chart-card-sub">First page visitors land on</div>
+      </div>
+      <div id="landing-funnel"></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-card-header">
+        <div class="chart-card-title">Acquisition Channels</div>
+        <div class="chart-card-sub">Sessions by channel over time</div>
+      </div>
+      <div class="chart-wrap"><canvas id="chart-channels"></canvas></div>
+    </div>
+  </div>
+
+  <!-- ENGAGEMENT METRICS -->
+  <div class="section-label">Engagement</div>
+  <div class="chart-grid-3">
+    <div class="chart-card">
+      <div class="chart-card-header">
+        <div class="chart-card-title">Bounce Rate</div>
+        <div class="chart-card-sub">% single-page sessions</div>
+      </div>
+      <div class="chart-wrap" style="max-height:160px;display:flex;align-items:center;justify-content:center;">
+        <canvas id="chart-bounce" style="max-height:160px;max-width:160px;"></canvas>
+      </div>
+      <div style="text-align:center;margin-top:10px;">
+        <div style="font-family:'Unbounded',sans-serif;font-size:28px;font-weight:700;" id="bounce-number">—</div>
+        <div style="font-size:10px;color:var(--text-muted);font-family:'IBM Plex Mono',monospace;margin-top:4px;">bounce rate</div>
+      </div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-card-header">
+        <div class="chart-card-title">Pages / Session</div>
+        <div class="chart-card-sub">Depth of engagement</div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:center;height:140px;">
+        <div style="text-align:center;">
+          <div style="font-family:'Unbounded',sans-serif;font-size:52px;font-weight:900;color:var(--accent);letter-spacing:-0.04em;" id="pages-per-session">—</div>
+          <div style="font-size:11px;color:var(--text-muted);font-family:'IBM Plex Mono',monospace;margin-top:6px;">pages per session</div>
+        </div>
+      </div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-card-header">
+        <div class="chart-card-title">New vs Returning</div>
+        <div class="chart-card-sub">User loyalty</div>
+      </div>
+      <div class="chart-wrap" style="max-height:160px;display:flex;align-items:center;justify-content:center;">
+        <canvas id="chart-new-returning" style="max-height:160px;max-width:160px;"></canvas>
+      </div>
+      <div id="new-returning-legend" style="display:flex;gap:16px;justify-content:center;margin-top:10px;font-size:10px;font-family:'IBM Plex Mono',monospace;color:var(--text-sec);"></div>
+    </div>
+  </div>
+
+  <!-- REALTIME DETAIL -->
+  <div class="section-label">Real-Time</div>
+  <div class="chart-grid-half">
+    <div class="chart-card">
+      <div class="chart-card-header">
+        <div>
+          <div class="chart-card-title">Active Users by Country</div>
+          <div class="chart-card-sub">Refreshes every 30s</div>
+        </div>
+        <div class="live-badge"><span class="live-dot"></span> LIVE</div>
+      </div>
+      <table class="data-table">
+        <thead><tr><th>Country</th><th>Active Users</th></tr></thead>
+        <tbody id="realtime-countries"></tbody>
+      </table>
+    </div>
+    <div class="chart-card">
+      <div class="chart-card-header">
+        <div>
+          <div class="chart-card-title">Active Users by Page</div>
+          <div class="chart-card-sub">Right now</div>
+        </div>
+        <div class="live-badge"><span class="live-dot"></span> LIVE</div>
+      </div>
+      <table class="data-table">
+        <thead><tr><th>Page</th><th>Users</th></tr></thead>
+        <tbody id="realtime-pages"></tbody>
+      </table>
+    </div>
+  </div>
+
+</main>
+
+<div class="footer" id="dash-footer" style="display:none;">
+  HyperImplement Analytics · Data from Google Analytics 4 · Auto-refreshes every 5 min · <span id="last-updated">—</span>
+</div>
+
+<script>
+// ══════════════════════════════════════════════
+//  CONFIG
+// ══════════════════════════════════════════════
+let CLIENT_ID = localStorage.getItem('hi_client_id') || '';
+let PROPERTY_ID = localStorage.getItem('hi_property_id') || '';
+let accessToken = null;
+let isDemoMode = false;
+
+const MEASUREMENT_ID = 'G-DW4LEG1DV7';
+
+const CHART_COLORS = {
+  accent:  '#F95B3D',
+  cyan:    '#00C8FF',
+  purple:  '#8B5CF6',
+  green:   '#10D98C',
+  yellow:  '#F5A623',
+  pink:    '#F472B6',
+  indigo:  '#6366F1',
+};
+const SOURCE_COLORS = [CHART_COLORS.accent, CHART_COLORS.cyan, CHART_COLORS.purple, CHART_COLORS.green, CHART_COLORS.yellow, CHART_COLORS.pink, CHART_COLORS.indigo];
+
+Chart.defaults.color = '#8A8A9A';
+Chart.defaults.font.family = "'IBM Plex Mono', monospace";
+Chart.defaults.font.size = 10;
+
+// ══════════════════════════════════════════════
+//  SETUP
+// ══════════════════════════════════════════════
+function saveSetup() {
+  const c = document.getElementById('input-client-id').value.trim();
+  const p = document.getElementById('input-property-id').value.trim();
+  if (!c || !p) { document.getElementById('setup-error').style.display='block'; return; }
+  localStorage.setItem('hi_client_id', c);
+  localStorage.setItem('hi_property_id', p);
+  CLIENT_ID = c; PROPERTY_ID = p;
+  document.getElementById('setup-overlay').style.display='none';
+  initGoogleAuth();
+}
+
+function resetSetup() {
+  document.getElementById('input-client-id').value = CLIENT_ID;
+  document.getElementById('input-property-id').value = PROPERTY_ID;
+  document.getElementById('setup-overlay').style.display='flex';
+}
+
+function loadDemo() {
+  isDemoMode = true;
+  document.getElementById('setup-overlay').style.display='none';
+  showDashboard();
+  loadAllData();
+}
+
+// Auto-launch if already configured
+window.addEventListener('load', () => {
+  if (CLIENT_ID && PROPERTY_ID) {
+    document.getElementById('setup-overlay').style.display='none';
+    initGoogleAuth();
+  } else {
+    // pre-fill if empty defaults
+    document.getElementById('input-client-id').value = CLIENT_ID;
+    document.getElementById('input-property-id').value = PROPERTY_ID;
+  }
+});
+
+// ══════════════════════════════════════════════
+//  AUTH
+// ══════════════════════════════════════════════
+let tokenClient;
+
+function initGoogleAuth() {
+  if (isDemoMode) return;
+  if (!CLIENT_ID) { loadDemo(); return; }
+
+  // Wait for GIS to load
+  const waitForGSI = setInterval(() => {
+    if (window.google?.accounts?.oauth2) {
+      clearInterval(waitForGSI);
+      tokenClient = google.accounts.oauth2.initTokenClient({
+        client_id: CLIENT_ID,
+        scope: 'https://www.googleapis.com/auth/analytics.readonly',
+        callback: (response) => {
+          if (response.error) { console.error(response); loadDemo(); return; }
+          accessToken = response.access_token;
+          showDashboard();
+          loadAllData();
+        },
+      });
+      tokenClient.requestAccessToken({ prompt: '' });
+    }
+  }, 200);
+}
+
+// ══════════════════════════════════════════════
+//  SHOW DASHBOARD
+// ══════════════════════════════════════════════
+function showDashboard() {
+  document.getElementById('dashboard').style.display='block';
+  document.getElementById('dash-footer').style.display='block';
+  document.getElementById('realtime-header').style.display='flex';
+}
+
+// ══════════════════════════════════════════════
+//  GA4 API
+// ══════════════════════════════════════════════
+async function runReport(body) {
+  if (isDemoMode) return null;
+  const r = await fetch(`https://analyticsdata.googleapis.com/v1beta/properties/${PROPERTY_ID}:runReport`, {
+    method: 'POST',
+    headers: { 'Authorization': `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  });
+  if (!r.ok) { const e = await r.json(); console.error(e); return null; }
+  return r.json();
+}
+
+async function runRealtimeReport(body) {
+  if (isDemoMode) return null;
+  const r = await fetch(`https://analyticsdata.googleapis.com/v1beta/properties/${PROPERTY_ID}:runRealtimeReport`, {
+    method: 'POST',
+    headers: { 'Authorization': `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  });
+  if (!r.ok) return null;
+  return r.json();
+}
+
+function getDateRange() {
+  return document.getElementById('date-range').value;
+}
+
+// ══════════════════════════════════════════════
+//  DEMO DATA GENERATOR
+// ══════════════════════════════════════════════
+function genDemoData() {
+  const days = 30;
+  const dates = Array.from({length:days},(_,i)=>{
+    const d=new Date(); d.setDate(d.getDate()-days+i+1);
+    return d.toISOString().slice(0,10).replace(/-/g,'');
+  });
+  return {
+    overview: { sessions:1842, users:1340, newUsers:1109, views:4217, duration:142, bounce:0.42, pagesPerSession:2.3 },
+    sessionsByDay: dates.map(d=>({date:d, sessions:Math.floor(40+Math.random()*80), users:Math.floor(30+Math.random()*60)})),
+    sources: [{ch:'Organic Search',s:641},{ch:'Direct',s:520},{ch:'Social',s:340},{ch:'Referral',s:198},{ch:'Email',s:87},{ch:'(Other)',s:56}],
+    devices: [{name:'Mobile',icon:'📱',s:920},{name:'Desktop',icon:'💻',s:798},{name:'Tablet',icon:'📟',s:124}],
+    countries: [{c:'United States',s:1180},{c:'United Kingdom',s:210},{c:'Canada',s:164},{c:'Australia',s:98},{c:'Germany',s:67},{c:'India',s:54},{c:'France',s:42},{c:'Netherlands',s:27}],
+    browsers: [{b:'Chrome',s:980},{b:'Safari',s:540},{b:'Firefox',s:180},{b:'Edge',s:92},{b:'Other',s:50}],
+    topPages: [
+      {p:'/',v:2210,t:87},{p:'/#services',v:870,t:64},{p:'/#about',v:620,t:48},
+      {p:'/#contact',v:510,t:112},{p:'/#implemented',v:380,t:55},{p:'/#why',v:240,t:41}
+    ],
+    events: [
+      {e:'page_view',c:4217},{e:'scroll',c:3102},{e:'session_start',c:1842},
+      {e:'click_book_call',c:287},{e:'form_submit',c:94},{e:'first_visit',c:1109},
+      {e:'click_nav',c:876},{e:'user_engagement',c:1540}
+    ],
+    landingPages: [{p:'/',s:1420},{p:'/#services',s:220},{p:'/#about',s:98},{p:'/#contact',s:104}],
+    channelsByDay: dates.map(d=>({
+      date:d,
+      organic:Math.floor(15+Math.random()*30),
+      direct:Math.floor(10+Math.random()*25),
+      social:Math.floor(5+Math.random()*20),
+      referral:Math.floor(2+Math.random()*10)
+    })),
+    newReturning: [{type:'new',u:1109},{type:'returning',u:231}],
+    realtime: { total:3, countries:[{c:'United States',u:2},{c:'Canada',u:1}], pages:[{p:'/',u:2},{p:'/#services',u:1}] }
+  };
+}
+
+// ══════════════════════════════════════════════
+//  LOAD ALL DATA
+// ══════════════════════════════════════════════
+let charts = {};
+let refreshTimer = null;
+
+async function loadAllData() {
+  const btn = document.getElementById('refresh-btn');
+  btn.classList.add('spinning');
+  const range = getDateRange();
+
+  // Update range label
+  const labels = {'7daysAgo':'7 days','30daysAgo':'30 days','90daysAgo':'90 days','365daysAgo':'12 months'};
+  document.getElementById('sessions-range-label').textContent = labels[range] || '30 days';
+
+  try {
+    let d;
+    if (isDemoMode) {
+      d = genDemoData();
+      document.getElementById('no-data-banner').style.display='block';
+      document.getElementById('no-data-banner').innerHTML='<strong>Demo Mode</strong> — Enter your OAuth Client ID and GA4 Property ID in Settings to see real data.';
+    } else {
+      d = await fetchAllMetrics(range);
+    }
+
+    renderKPIs(d);
+    renderSessionsChart(d.sessionsByDay);
+    renderSourcesChart(d.sources);
+    renderDevices(d.devices);
+    renderCountries(d.countries);
+    renderBrowsers(d.browsers);
+    renderTopPages(d.topPages);
+    renderEvents(d.events);
+    renderLandingPages(d.landingPages);
+    renderChannelsChart(d.channelsByDay);
+    renderBounce(d.overview.bounce);
+    renderPagesPerSession(d.overview.pagesPerSession);
+    renderNewReturning(d.newReturning);
+    renderRealtime(d.realtime);
+
+    document.getElementById('last-updated').textContent = 'Updated ' + new Date().toLocaleTimeString();
+  } catch(e) {
+    console.error(e);
+  }
+
+  btn.classList.remove('spinning');
+  if (refreshTimer) clearTimeout(refreshTimer);
+  refreshTimer = setTimeout(loadAllData, 5*60*1000);
+}
+
+// ══════════════════════════════════════════════
+//  FETCH REAL DATA
+// ══════════════════════════════════════════════
+async function fetchAllMetrics(range) {
+  const dateRange = { startDate: range, endDate: 'today' };
+  const prevStart = range === '7daysAgo' ? '14daysAgo' : range === '30daysAgo' ? '60daysAgo' : range === '90daysAgo' ? '180daysAgo' : '730daysAgo';
+
+  const [overview, sessionsByDay, sources, devices, countries, browsers, topPages, events, landingPages, channelsByDay, newReturning, rt] = await Promise.all([
+    // Overview
+    runReport({ dateRanges:[dateRange], metrics:[{name:'sessions'},{name:'totalUsers'},{name:'newUsers'},{name:'screenPageViews'},{name:'averageSessionDuration'},{name:'bounceRate'},{name:'screenPageViewsPerSession'}] }),
+    // Sessions by day
+    runReport({ dateRanges:[dateRange], dimensions:[{name:'date'}], metrics:[{name:'sessions'},{name:'totalUsers'}], orderBys:[{dimension:{dimensionName:'date'}}] }),
+    // Sources
+    runReport({ dateRanges:[dateRange], dimensions:[{name:'sessionDefaultChannelGrouping'}], metrics:[{name:'sessions'}], orderBys:[{metric:{metricName:'sessions'},desc:true}] }),
+    // Devices
+    runReport({ dateRanges:[dateRange], dimensions:[{name:'deviceCategory'}], metrics:[{name:'sessions'}], orderBys:[{metric:{metricName:'sessions'},desc:true}] }),
+    // Countries
+    runReport({ dateRanges:[dateRange], dimensions:[{name:'country'}], metrics:[{name:'sessions'}], orderBys:[{metric:{metricName:'sessions'},desc:true}], limit:10 }),
+    // Browsers
+    runReport({ dateRanges:[dateRange], dimensions:[{name:'browser'}], metrics:[{name:'sessions'}], orderBys:[{metric:{metricName:'sessions'},desc:true}], limit:8 }),
+    // Top pages
+    runReport({ dateRanges:[dateRange], dimensions:[{name:'pagePath'}], metrics:[{name:'screenPageViews'},{name:'userEngagementDuration'}], orderBys:[{metric:{metricName:'screenPageViews'},desc:true}], limit:8 }),
+    // Events
+    runReport({ dateRanges:[dateRange], dimensions:[{name:'eventName'}], metrics:[{name:'eventCount'}], orderBys:[{metric:{metricName:'eventCount'},desc:true}], limit:10 }),
+    // Landing pages
+    runReport({ dateRanges:[dateRange], dimensions:[{name:'landingPage'}], metrics:[{name:'sessions'}], orderBys:[{metric:{metricName:'sessions'},desc:true}], limit:6 }),
+    // Channels by week
+    runReport({ dateRanges:[dateRange], dimensions:[{name:'date'},{name:'sessionDefaultChannelGrouping'}], metrics:[{name:'sessions'}], orderBys:[{dimension:{dimensionName:'date'}}] }),
+    // New vs returning
+    runReport({ dateRanges:[dateRange], dimensions:[{name:'newVsReturning'}], metrics:[{name:'totalUsers'}] }),
+    // Realtime
+    runRealtimeReport({ dimensions:[{name:'country'},{name:'unifiedScreenName'}], metrics:[{name:'activeUsers'}] }),
+  ]);
+
+  return parseAllData({ overview, sessionsByDay, sources, devices, countries, browsers, topPages, events, landingPages, channelsByDay, newReturning, rt });
+}
+
+function parseAllData({ overview, sessionsByDay, sources, devices, countries, browsers, topPages, events, landingPages, channelsByDay, newReturning, rt }) {
+  const row0 = overview?.rows?.[0]?.metricValues || [];
+  const ov = {
+    sessions: parseInt(row0[0]?.value||0),
+    users: parseInt(row0[1]?.value||0),
+    newUsers: parseInt(row0[2]?.value||0),
+    views: parseInt(row0[3]?.value||0),
+    duration: parseFloat(row0[4]?.value||0),
+    bounce: parseFloat(row0[5]?.value||0),
+    pagesPerSession: parseFloat(row0[6]?.value||0),
+  };
+
+  const sd = (sessionsByDay?.rows||[]).map(r=>({ date:r.dimensionValues[0].value, sessions:parseInt(r.metricValues[0].value), users:parseInt(r.metricValues[1].value) }));
+  const src = (sources?.rows||[]).map(r=>({ ch:r.dimensionValues[0].value, s:parseInt(r.metricValues[0].value) }));
+  const dev = (devices?.rows||[]).map(r=>{ const n=r.dimensionValues[0].value; const icons={desktop:'💻',mobile:'📱',tablet:'📟'}; return {name:n.charAt(0).toUpperCase()+n.slice(1),icon:icons[n]||'💻',s:parseInt(r.metricValues[0].value)}; });
+  const ctry = (countries?.rows||[]).map(r=>({ c:r.dimensionValues[0].value, s:parseInt(r.metricValues[0].value) }));
+  const brw = (browsers?.rows||[]).map(r=>({ b:r.dimensionValues[0].value, s:parseInt(r.metricValues[0].value) }));
+  const tp = (topPages?.rows||[]).map(r=>({ p:r.dimensionValues[0].value, v:parseInt(r.metricValues[0].value), t:parseInt(parseFloat(r.metricValues[1].value)) }));
+  const ev = (events?.rows||[]).map(r=>({ e:r.dimensionValues[0].value, c:parseInt(r.metricValues[0].value) }));
+  const lp = (landingPages?.rows||[]).map(r=>({ p:r.dimensionValues[0].value, s:parseInt(r.metricValues[0].value) }));
+
+  // Channels by day — pivot
+  const dayMap = {};
+  (channelsByDay?.rows||[]).forEach(r=>{ const d=r.dimensionValues[0].value; const ch=r.dimensionValues[1].value.toLowerCase(); const s=parseInt(r.metricValues[0].value); if(!dayMap[d])dayMap[d]={date:d,organic:0,direct:0,social:0,referral:0,email:0}; const k=ch.includes('organic')?'organic':ch.includes('direct')?'direct':ch.includes('social')?'social':ch.includes('referral')?'referral':ch.includes('email')?'email':'other'; dayMap[d][k]=(dayMap[d][k]||0)+s; });
+  const cbd = Object.values(dayMap).sort((a,b)=>a.date.localeCompare(b.date));
+
+  const nr = (newReturning?.rows||[]).map(r=>({ type:r.dimensionValues[0].value, u:parseInt(r.metricValues[0].value) }));
+
+  // Realtime
+  const rtRows = rt?.rows||[];
+  const rtCountries = {}, rtPages = {};
+  rtRows.forEach(r=>{ const c=r.dimensionValues[0].value; const p=r.dimensionValues[1].value; const u=parseInt(r.metricValues[0].value); rtCountries[c]=(rtCountries[c]||0)+u; rtPages[p]=(rtPages[p]||0)+u; });
+  const rtTotal = Object.values(rtCountries).reduce((a,b)=>a+b,0);
+  const rtData = { total:rtTotal, countries:Object.entries(rtCountries).map(([c,u])=>({c,u})).sort((a,b)=>b.u-a.u).slice(0,6), pages:Object.entries(rtPages).map(([p,u])=>({p,u})).sort((a,b)=>b.u-a.u).slice(0,6) };
+
+  return { overview:ov, sessionsByDay:sd, sources:src, devices:dev, countries:ctry, browsers:brw, topPages:tp, events:ev, landingPages:lp, channelsByDay:cbd, newReturning:nr, realtime:rtData };
+}
+
+// ══════════════════════════════════════════════
+//  RENDERERS
+// ══════════════════════════════════════════════
+function fmt(n) { if(n===undefined||n===null)return'—'; if(n>=1000000)return(n/1000000).toFixed(1)+'M'; if(n>=1000)return(n/1000).toFixed(1)+'K'; return n.toLocaleString(); }
+function fmtDuration(s) { const m=Math.floor(s/60); const sec=Math.floor(s%60); return `${m}:${String(sec).padStart(2,'0')}`; }
+function fmtPct(n) { return (n*100).toFixed(1)+'%'; }
+function delta(v,cls='up') { return `<span class="kpi-delta ${cls}">${cls==='up'?'↑':'↓'} ${v}</span>`; }
+
+function renderKPIs(d) {
+  const o = d.overview;
+  document.getElementById('kpi-sessions').textContent = fmt(o.sessions);
+  document.getElementById('kpi-users').textContent = fmt(o.users);
+  document.getElementById('kpi-new').textContent = fmt(o.newUsers);
+  document.getElementById('kpi-views').textContent = fmt(o.views);
+  document.getElementById('kpi-duration').textContent = fmtDuration(o.duration);
+  document.getElementById('kpi-realtime').textContent = d.realtime?.total ?? '0';
+  document.getElementById('rt-count').textContent = d.realtime?.total ?? '0';
+
+  // Deltas — placeholder for now
+  ['kpi-sessions-d','kpi-users-d','kpi-new-d','kpi-views-d'].forEach(id=>{
+    document.getElementById(id).textContent = '—';
+    document.getElementById(id).className = 'kpi-delta neutral';
+  });
+}
+
+function renderSessionsChart(data) {
+  const ctx = document.getElementById('chart-sessions').getContext('2d');
+  if (charts.sessions) charts.sessions.destroy();
+  const labels = data.map(d=>{ const s=String(d.date); return `${s.slice(4,6)}/${s.slice(6,8)}`; });
+  charts.sessions = new Chart(ctx, {
+    type:'line',
+    data:{
+      labels,
+      datasets:[
+        { label:'Sessions', data:data.map(d=>d.sessions), borderColor:CHART_COLORS.accent, backgroundColor:'rgba(249,91,61,0.08)', borderWidth:2, pointRadius:0, pointHoverRadius:4, fill:true, tension:0.4 },
+        { label:'Users',    data:data.map(d=>d.users),    borderColor:CHART_COLORS.cyan,   backgroundColor:'rgba(0,200,255,0.05)', borderWidth:1.5, pointRadius:0, pointHoverRadius:3, fill:true, tension:0.4, borderDash:[4,3] },
+      ]
+    },
+    options:{ responsive:true, maintainAspectRatio:true, interaction:{mode:'index',intersect:false}, plugins:{ legend:{display:true,labels:{boxWidth:8,padding:16,color:'#8A8A9A',font:{size:10}}}, tooltip:{backgroundColor:'rgba(13,13,24,0.95)',borderColor:'rgba(249,91,61,0.3)',borderWidth:1,padding:10,titleFont:{family:"'Unbounded',sans-serif",size:10},bodyFont:{size:10}} }, scales:{ x:{grid:{color:'rgba(255,255,255,0.03)'},ticks:{maxTicksLimit:8,color:'#4A4A5A'}}, y:{grid:{color:'rgba(255,255,255,0.05)'},ticks:{color:'#4A4A5A'},beginAtZero:true} } }
+  });
+}
+
+function renderSourcesChart(data) {
+  const ctx = document.getElementById('chart-sources').getContext('2d');
+  if (charts.sources) charts.sources.destroy();
+  charts.sources = new Chart(ctx, {
+    type:'doughnut',
+    data:{ labels:data.map(d=>d.ch), datasets:[{ data:data.map(d=>d.s), backgroundColor:SOURCE_COLORS, borderColor:'rgba(7,7,13,0.8)', borderWidth:3, hoverBorderWidth:0 }] },
+    options:{ responsive:true, maintainAspectRatio:true, cutout:'72%', plugins:{ legend:{display:false}, tooltip:{backgroundColor:'rgba(13,13,24,0.95)',borderColor:'rgba(249,91,61,0.3)',borderWidth:1,padding:10} } }
+  });
+  const total = data.reduce((a,b)=>a+b.s,0);
+  const legend = document.getElementById('sources-legend');
+  legend.innerHTML = data.map((d,i)=>`<span style="display:inline-flex;align-items:center;gap:5px;font-size:10px;font-family:'IBM Plex Mono',monospace;color:var(--text-sec);"><span style="width:8px;height:8px;border-radius:50%;background:${SOURCE_COLORS[i]};display:inline-block;flex-shrink:0;"></span>${d.ch} <strong style="color:var(--text);">${Math.round(d.s/total*100)}%</strong></span>`).join('');
+}
+
+function renderDevices(data) {
+  const total = data.reduce((a,b)=>a+b.s,0)||1;
+  document.getElementById('device-rows').innerHTML = data.map(d=>`
+    <div class="device-item">
+      <span class="device-icon">${d.icon}</span>
+      <span class="device-name">${d.name}</span>
+      <div class="device-pct-bar"><div class="device-pct-fill" style="width:${Math.round(d.s/total*100)}%"></div></div>
+      <span class="device-pct-num">${Math.round(d.s/total*100)}%</span>
+    </div>`).join('');
+}
+
+function renderCountries(data) {
+  const total = data.reduce((a,b)=>a+b.s,0)||1;
+  const flags = {'United States':'🇺🇸','United Kingdom':'🇬🇧','Canada':'🇨🇦','Australia':'🇦🇺','Germany':'🇩🇪','India':'🇮🇳','France':'🇫🇷','Netherlands':'🇳🇱','Brazil':'🇧🇷','Japan':'🇯🇵','Mexico':'🇲🇽','Spain':'🇪🇸','Italy':'🇮🇹'};
+  document.getElementById('countries-body').innerHTML = data.map(d=>`
+    <tr><td><span class="country-flag">${flags[d.c]||'🌍'}</span>${d.c}</td><td>${fmt(d.s)}</td><td style="color:var(--text-muted)">${Math.round(d.s/total*100)}%</td></tr>`).join('');
+}
+
+function renderBrowsers(data) {
+  const total = data.reduce((a,b)=>a+b.s,0)||1;
+  const icons = {'Chrome':'🟡','Safari':'🔵','Firefox':'🟠','Edge':'🔷','Opera':'🔴'};
+  document.getElementById('browsers-body').innerHTML = data.map(d=>`
+    <tr><td><span style="margin-right:8px;">${icons[d.b]||'🌐'}</span>${d.b}</td><td>${fmt(d.s)}</td><td style="color:var(--text-muted)">${Math.round(d.s/total*100)}%</td></tr>`).join('');
+}
+
+function renderTopPages(data) {
+  document.getElementById('pages-body').innerHTML = data.map((d,i)=>`
+    <tr><td><span class="table-rank">${i+1}</span></td><td style="font-family:'IBM Plex Mono',monospace;font-size:11px;">${d.p.length>28?d.p.slice(0,28)+'…':d.p}</td><td>${fmt(d.v)}</td><td style="color:var(--text-muted)">${fmtDuration(d.t)}</td></tr>`).join('');
+}
+
+function renderEvents(data) {
+  document.getElementById('events-body').innerHTML = data.map((d,i)=>`
+    <tr><td><span class="table-rank">${i+1}</span></td><td style="font-family:'IBM Plex Mono',monospace;font-size:11px;">${d.e}</td><td><strong style="color:var(--accent)">${fmt(d.c)}</strong></td></tr>`).join('');
+}
+
+function renderLandingPages(data) {
+  const total = data.reduce((a,b)=>a+b.s,0)||1;
+  const max = data[0]?.s||1;
+  document.getElementById('landing-funnel').innerHTML = data.map((d,i)=>`
+    <div class="funnel-step">
+      <div class="funnel-num">${i+1}</div>
+      <div class="funnel-bar-wrap">
+        <div class="funnel-bar" style="width:${Math.round(d.s/max*100)}%"></div>
+        <div class="funnel-label">${d.p.length>30?d.p.slice(0,30)+'…':d.p}</div>
+      </div>
+      <div class="funnel-pct">${Math.round(d.s/total*100)}%</div>
+      <div class="funnel-count">${fmt(d.s)}</div>
+    </div>`).join('');
+}
+
+function renderChannelsChart(data) {
+  const ctx = document.getElementById('chart-channels').getContext('2d');
+  if (charts.channels) charts.channels.destroy();
+  const labels = data.map(d=>{ const s=String(d.date); return `${s.slice(4,6)}/${s.slice(6,8)}`; });
+  charts.channels = new Chart(ctx, {
+    type:'bar',
+    data:{ labels, datasets:[
+      { label:'Organic',  data:data.map(d=>d.organic||0),  backgroundColor:'rgba(249,91,61,0.7)', borderRadius:2, borderSkipped:false },
+      { label:'Direct',   data:data.map(d=>d.direct||0),   backgroundColor:'rgba(0,200,255,0.7)', borderRadius:2, borderSkipped:false },
+      { label:'Social',   data:data.map(d=>d.social||0),   backgroundColor:'rgba(139,92,246,0.7)', borderRadius:2, borderSkipped:false },
+      { label:'Referral', data:data.map(d=>d.referral||0), backgroundColor:'rgba(16,217,140,0.7)', borderRadius:2, borderSkipped:false },
+    ]},
+    options:{ responsive:true, maintainAspectRatio:true, interaction:{mode:'index',intersect:false}, plugins:{ legend:{display:true,labels:{boxWidth:8,padding:12,color:'#8A8A9A',font:{size:9}}}, tooltip:{backgroundColor:'rgba(13,13,24,0.95)',borderColor:'rgba(249,91,61,0.3)',borderWidth:1,padding:10} }, scales:{ x:{stacked:true,grid:{display:false},ticks:{maxTicksLimit:8,color:'#4A4A5A'}}, y:{stacked:true,grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#4A4A5A'},beginAtZero:true} } }
+  });
+}
+
+function renderBounce(rate) {
+  const pct = Math.round((rate||0)*100);
+  document.getElementById('bounce-number').textContent = pct + '%';
+  document.getElementById('bounce-number').style.color = pct > 60 ? '#FF6B6B' : pct > 40 ? CHART_COLORS.yellow : CHART_COLORS.green;
+  const ctx = document.getElementById('chart-bounce').getContext('2d');
+  if (charts.bounce) charts.bounce.destroy();
+  charts.bounce = new Chart(ctx, {
+    type:'doughnut',
+    data:{ datasets:[{ data:[pct,100-pct], backgroundColor:[pct>60?'rgba(255,107,107,0.8)':pct>40?'rgba(245,166,35,0.8)':'rgba(16,217,140,0.8)','rgba(255,255,255,0.05)'], borderWidth:0 }] },
+    options:{ responsive:true, maintainAspectRatio:true, cutout:'80%', plugins:{legend:{display:false},tooltip:{enabled:false}} }
+  });
+}
+
+function renderPagesPerSession(v) {
+  document.getElementById('pages-per-session').textContent = (v||0).toFixed(1);
+}
+
+function renderNewReturning(data) {
+  const newU = data.find(d=>d.type==='new')?.u || data.find(d=>d.type==='New Visitor')?.u || 0;
+  const retU = data.find(d=>d.type==='returning')?.u || data.find(d=>d.type==='Returning Visitor')?.u || 0;
+  const ctx = document.getElementById('chart-new-returning').getContext('2d');
+  if (charts.nr) charts.nr.destroy();
+  charts.nr = new Chart(ctx, {
+    type:'doughnut',
+    data:{ labels:['New','Returning'], datasets:[{ data:[newU,retU], backgroundColor:[CHART_COLORS.accent,'rgba(0,200,255,0.7)'], borderColor:'rgba(7,7,13,0.8)', borderWidth:3 }] },
+    options:{ responsive:true, maintainAspectRatio:true, cutout:'72%', plugins:{legend:{display:false},tooltip:{backgroundColor:'rgba(13,13,24,0.95)',borderColor:'rgba(249,91,61,0.3)',borderWidth:1,padding:10}} }
+  });
+  const total=(newU+retU)||1;
+  document.getElementById('new-returning-legend').innerHTML=`
+    <span style="display:flex;align-items:center;gap:5px;"><span style="width:8px;height:8px;border-radius:50%;background:${CHART_COLORS.accent};display:inline-block;"></span>New ${Math.round(newU/total*100)}%</span>
+    <span style="display:flex;align-items:center;gap:5px;"><span style="width:8px;height:8px;border-radius:50%;background:rgba(0,200,255,0.7);display:inline-block;"></span>Returning ${Math.round(retU/total*100)}%</span>`;
+}
+
+function renderRealtime(rt) {
+  document.getElementById('realtime-countries').innerHTML = rt.countries.length
+    ? rt.countries.map(d=>`<tr><td>${d.c}</td><td><strong style="color:var(--green)">${d.u}</strong></td></tr>`).join('')
+    : `<tr><td colspan="2" class="empty-state">No active users right now</td></tr>`;
+  document.getElementById('realtime-pages').innerHTML = rt.pages.length
+    ? rt.pages.map(d=>`<tr><td style="font-family:'IBM Plex Mono',monospace;font-size:11px;">${d.p}</td><td><strong style="color:var(--green)">${d.u}</strong></td></tr>`).join('')
+    : `<tr><td colspan="2" class="empty-state">No active users right now</td></tr>`;
+}
+
+// Realtime auto-refresh every 30s
+setInterval(async () => {
+  if (!accessToken && !isDemoMode) return;
+  if (isDemoMode) {
+    const rt = genDemoData().realtime;
+    renderRealtime(rt);
+    document.getElementById('kpi-realtime').textContent = rt.total;
+    document.getElementById('rt-count').textContent = rt.total;
+    return;
+  }
+  const rt = await runRealtimeReport({ dimensions:[{name:'country'},{name:'unifiedScreenName'}], metrics:[{name:'activeUsers'}] });
+  if (!rt) return;
+  const d = parseAllData({ rt }).realtime;
+  renderRealtime(d);
+  document.getElementById('kpi-realtime').textContent = d.total;
+  document.getElementById('rt-count').textContent = d.total;
+}, 30000);
+
+</script>
+</body>
+</html>
