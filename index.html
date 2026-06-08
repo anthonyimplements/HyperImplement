@@ -1,0 +1,1510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HyperImplement — AI Implementation for People & Businesses</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700;900&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:           #FFFFFF;
+      --bg-surface:   #F6F5F3;
+      --bg-elevated:  #EDECE9;
+      --text:         #0D0D0D;
+      --text-sec:     #525252;
+      --text-muted:   #959595;
+      --accent:       #F95B3D;
+      --accent-dark:  #D94828;
+      --accent-deep:  #B83820;
+      --border:       rgba(0,0,0,0.09);
+      --border-acc:   rgba(249,91,61,0.28);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'IBM Plex Sans', sans-serif;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+    h1,h2,h3,.display { font-family: 'Unbounded', sans-serif; letter-spacing: -0.03em; line-height: 1.1; }
+
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--bg-surface); }
+    ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 2px; }
+
+    /* ─── NAV ─── */
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      padding: 18px 48px;
+      display: flex; align-items: center; justify-content: space-between;
+      transition: background 0.3s, box-shadow 0.3s, padding 0.3s;
+      background: rgba(255,255,255,0);
+    }
+    .nav.scrolled {
+      background: rgba(255,255,255,0.96);
+      backdrop-filter: blur(16px);
+      padding: 12px 48px;
+      box-shadow: 0 1px 0 var(--border), 0 4px 24px rgba(0,0,0,0.06);
+    }
+    .nav-logo img { height: 34px; display: block; }
+    .nav-links { display: flex; gap: 32px; align-items: center; }
+    .nav-links a {
+      font-size: 13px; font-weight: 500; letter-spacing: 0.05em;
+      text-transform: uppercase; color: var(--text-sec);
+      text-decoration: none; transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--accent); }
+    .nav-cta {
+      background: var(--text) !important;
+      color: white !important;
+      padding: 10px 22px; border-radius: 5px;
+      font-family: 'Unbounded', sans-serif;
+      font-size: 11px !important; font-weight: 700 !important;
+      letter-spacing: 0.05em;
+      transition: background 0.2s, transform 0.15s !important;
+    }
+    .nav-cta:hover { background: var(--accent) !important; transform: translateY(-1px); color: white !important; }
+
+    /* ─── BUTTONS ─── */
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: var(--accent); color: white;
+      font-family: 'Unbounded', sans-serif; font-size: 12px;
+      font-weight: 700; letter-spacing: 0.05em;
+      padding: 16px 32px; border-radius: 5px;
+      text-decoration: none; border: none; cursor: pointer;
+      transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+      box-shadow: 0 4px 20px rgba(249,91,61,0.3);
+    }
+    .btn-primary:hover { background: var(--accent-dark); transform: translateY(-2px); box-shadow: 0 8px 28px rgba(249,91,61,0.4); }
+    .btn-primary:active { transform: translateY(0); }
+    .btn-dark {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: var(--text); color: white;
+      font-family: 'Unbounded', sans-serif; font-size: 12px;
+      font-weight: 700; letter-spacing: 0.05em;
+      padding: 16px 32px; border-radius: 5px;
+      text-decoration: none; border: none; cursor: pointer;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .btn-dark:hover { background: #2a2a2a; transform: translateY(-2px); color: white; }
+    .btn-outline {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: transparent; color: var(--text);
+      font-family: 'Unbounded', sans-serif; font-size: 12px;
+      font-weight: 700; letter-spacing: 0.05em;
+      padding: 15px 30px; border-radius: 5px;
+      text-decoration: none;
+      border: 1.5px solid var(--border);
+      transition: border-color 0.2s, color 0.2s, transform 0.15s;
+    }
+    .btn-outline:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-2px); }
+
+    /* ─── SECTION ─── */
+    section { padding: 96px 48px; }
+    .inner { max-width: 1240px; margin: 0 auto; }
+    .label {
+      font-family: 'IBM Plex Mono', monospace; font-size: 11px;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 14px;
+    }
+    .section-title {
+      font-size: clamp(30px, 3.8vw, 52px);
+      font-weight: 900; color: var(--text); margin-bottom: 18px;
+    }
+    .section-sub {
+      font-size: 17px; color: var(--text-sec);
+      max-width: 560px; line-height: 1.75; font-weight: 300;
+    }
+
+    /* ─── HERO ─── */
+    .hero {
+      min-height: 100vh; display: flex; align-items: center;
+      padding: 140px 48px 80px;
+      background: var(--bg);
+      position: relative; overflow: hidden;
+    }
+    .hero-bg-shape {
+      position: absolute; top: -120px; right: -180px;
+      width: 700px; height: 700px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(249,91,61,0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-bg-shape-2 {
+      position: absolute; bottom: -100px; left: -120px;
+      width: 500px; height: 500px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(249,91,61,0.05) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-inner {
+      position: relative; z-index: 2;
+      max-width: 1240px; margin: 0 auto; width: 100%;
+    }
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: 'IBM Plex Mono', monospace; font-size: 11px;
+      letter-spacing: 0.13em; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 28px;
+      padding: 6px 14px;
+      border: 1px solid var(--border-acc);
+      border-radius: 3px; background: rgba(249,91,61,0.05);
+    }
+    .hero-eyebrow-dot {
+      width: 6px; height: 6px; background: var(--accent);
+      border-radius: 50%; animation: blink 2s infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1}50%{opacity:0.4} }
+    .hero h1 {
+      font-size: clamp(42px, 6vw, 82px);
+      font-weight: 900; color: var(--text);
+      margin-bottom: 28px; max-width: 880px;
+    }
+    .hero h1 em { color: var(--accent); font-style: normal; }
+    .hero-sub {
+      font-size: clamp(16px, 1.7vw, 19px);
+      color: var(--text-sec); max-width: 600px;
+      line-height: 1.75; font-weight: 300; margin-bottom: 44px;
+    }
+    .hero-cta-group { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; }
+    .hero-note {
+      font-size: 12px; color: var(--text-muted);
+      font-family: 'IBM Plex Mono', monospace; letter-spacing: 0.05em;
+    }
+
+    /* ─── STATS ─── */
+    .stats-section {
+      background: var(--text);
+      padding: 56px 48px;
+    }
+    .stats-grid {
+      max-width: 1240px; margin: 0 auto;
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+    }
+    .stat-item {
+      padding: 32px 36px;
+      border-right: 1px solid rgba(255,255,255,0.08);
+      position: relative;
+    }
+    .stat-item:last-child { border-right: none; }
+    .stat-category {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px; letter-spacing: 0.14em;
+      text-transform: uppercase; color: var(--accent);
+      margin-bottom: 16px; display: block;
+    }
+    .stat-value {
+      font-family: 'Unbounded', sans-serif;
+      font-size: clamp(28px, 3vw, 44px);
+      font-weight: 900; color: white; line-height: 1;
+      margin-bottom: 10px;
+    }
+    .stat-value span {
+      display: inline-block;
+      border-bottom: 3px solid var(--accent);
+      padding-bottom: 2px;
+    }
+    .stat-label {
+      font-size: 13px; color: rgba(255,255,255,0.45);
+      line-height: 1.5; max-width: 180px;
+    }
+
+    /* ─── TICKER ─── */
+    .ticker-wrap {
+      overflow: hidden; background: var(--accent);
+      padding: 11px 0;
+    }
+    .ticker-inner {
+      display: flex; white-space: nowrap;
+      animation: ticker 30s linear infinite;
+    }
+    .ticker-item {
+      display: inline-flex; align-items: center; gap: 18px;
+      font-family: 'Unbounded', sans-serif; font-size: 10px;
+      font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+      color: white; padding: 0 28px;
+    }
+    .tdot { width: 4px; height: 4px; background: rgba(255,255,255,0.5); border-radius: 50%; flex-shrink:0; }
+    @keyframes ticker { 0%{transform:translateX(0)}100%{transform:translateX(-50%)} }
+
+    /* ─── GAP / PROBLEM ─── */
+    .gap-section { background: var(--bg-surface); }
+    .gap-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 80px; align-items: center;
+    }
+    .gap-headline {
+      font-family: 'Unbounded', sans-serif;
+      font-size: clamp(26px, 3vw, 42px);
+      font-weight: 900; line-height: 1.2;
+      letter-spacing: -0.025em; color: var(--text);
+    }
+    .gap-headline em { color: var(--accent); font-style: normal; }
+    .gap-body {
+      font-size: 16px; color: var(--text-sec);
+      line-height: 1.75; margin-top: 20px;
+    }
+    .gap-points { display: flex; flex-direction: column; gap: 14px; }
+    .gap-point {
+      display: flex; gap: 16px; align-items: flex-start;
+      padding: 20px 22px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .gap-point:hover {
+      border-color: var(--border-acc);
+      box-shadow: 0 4px 20px rgba(249,91,61,0.07);
+    }
+    .gap-icon { font-size: 22px; flex-shrink: 0; margin-top: 1px; }
+    .gap-point h4 {
+      font-family: 'Unbounded', sans-serif; font-size: 13px;
+      font-weight: 700; margin-bottom: 4px; color: var(--text);
+    }
+    .gap-point p { font-size: 13px; color: var(--text-sec); line-height: 1.6; }
+
+    /* ─── SERVICES ─── */
+    .services-section { background: var(--bg); }
+    .services-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 2px; margin-top: 56px;
+      border: 1px solid var(--border); border-radius: 10px; overflow: hidden;
+    }
+    .svc-card {
+      background: var(--bg); padding: 36px;
+      position: relative; transition: background 0.25s;
+    }
+    .svc-card:hover { background: var(--bg-surface); }
+    .svc-card::after {
+      content: ''; position: absolute;
+      top: 0; left: 0; right: 0; height: 2px;
+      background: var(--accent);
+      transform: scaleX(0); transform-origin: left;
+      transition: transform 0.3s;
+    }
+    .svc-card:hover::after { transform: scaleX(1); }
+    .svc-num {
+      font-family: 'IBM Plex Mono', monospace; font-size: 11px;
+      color: var(--border-acc); letter-spacing: 0.1em; margin-bottom: 18px;
+    }
+    .svc-title {
+      font-family: 'Unbounded', sans-serif; font-size: 16px;
+      font-weight: 700; color: var(--text);
+      margin-bottom: 10px; line-height: 1.3; letter-spacing: -0.02em;
+    }
+    .svc-desc { font-size: 13px; color: var(--text-sec); line-height: 1.7; }
+    .svc-tag {
+      display: inline-block; margin-top: 18px;
+      font-family: 'IBM Plex Mono', monospace; font-size: 10px;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--accent); padding: 4px 10px;
+      border: 1px solid var(--border-acc); border-radius: 3px;
+    }
+    .svc-cta {
+      grid-column: 1 / -1;
+      background: var(--bg-surface);
+      padding: 32px 36px;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 24px; flex-wrap: wrap;
+      border-top: 1px solid var(--border);
+    }
+    .svc-cta p { font-size: 15px; color: var(--text-sec); max-width: 560px; line-height: 1.6; }
+    .svc-cta strong { color: var(--text); }
+
+    /* ─── IMPLEMENTED ─── */
+    .impl-section { background: var(--bg-surface); }
+    .impl-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 20px; margin-top: 56px;
+    }
+    .impl-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px; padding: 32px;
+      position: relative; overflow: hidden;
+      transition: box-shadow 0.25s, border-color 0.25s, transform 0.25s;
+    }
+    .impl-card:hover {
+      box-shadow: 0 8px 40px rgba(0,0,0,0.08);
+      border-color: var(--border-acc);
+      transform: translateY(-3px);
+    }
+    .impl-card.wide { grid-column: 1 / -1; }
+    .impl-meta {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 12px; margin-bottom: 18px;
+    }
+    .impl-type {
+      font-family: 'IBM Plex Mono', monospace; font-size: 10px;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--accent); padding: 4px 10px;
+      border: 1px solid var(--border-acc); border-radius: 3px;
+      background: rgba(249,91,61,0.04);
+    }
+    .impl-industry {
+      font-size: 11px; color: var(--text-muted);
+      letter-spacing: 0.06em; text-transform: uppercase;
+    }
+    .impl-title {
+      font-family: 'Unbounded', sans-serif; font-size: 16px;
+      font-weight: 700; color: var(--text); margin-bottom: 10px;
+      line-height: 1.3; letter-spacing: -0.02em;
+    }
+    .impl-desc { font-size: 13px; color: var(--text-sec); line-height: 1.7; }
+    .impl-result {
+      display: flex; align-items: center; gap: 8px;
+      margin-top: 18px; padding-top: 16px;
+      border-top: 1px solid var(--border);
+      font-size: 12px; color: var(--text-muted);
+      font-family: 'IBM Plex Mono', monospace;
+    }
+    .impl-result::before { content: '→'; color: var(--accent); }
+    /* Left accent bar */
+    .impl-card::before {
+      content: ''; position: absolute;
+      left: 0; top: 20%; bottom: 20%;
+      width: 3px; background: var(--accent);
+      border-radius: 0 2px 2px 0;
+      opacity: 0; transition: opacity 0.25s;
+    }
+    .impl-card:hover::before { opacity: 1; }
+    /* Number watermark */
+    .impl-num {
+      position: absolute; bottom: 16px; right: 24px;
+      font-family: 'Unbounded', sans-serif; font-size: 72px;
+      font-weight: 900; color: var(--accent);
+      opacity: 0.04; line-height: 1; pointer-events: none;
+      user-select: none;
+    }
+
+    /* ─── ABOUT ─── */
+    .about-section { background: var(--bg); }
+    .about-grid {
+      display: grid; grid-template-columns: 1fr 2fr;
+      gap: 80px; align-items: start;
+    }
+    .about-photo {
+      aspect-ratio: 1;
+      background: var(--bg-elevated);
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 10px;
+      color: var(--text-muted);
+      font-size: 13px;
+      position: relative; overflow: hidden;
+    }
+    .about-photo-icon {
+      width: 64px; height: 64px; border-radius: 50%;
+      background: var(--bg-surface);
+      border: 2px dashed rgba(0,0,0,0.12);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 28px;
+    }
+    .about-photo-label {
+      font-family: 'IBM Plex Mono', monospace; font-size: 10px;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--text-muted);
+    }
+    .about-right {}
+    .about-name {
+      font-family: 'Unbounded', sans-serif; font-size: clamp(28px, 3.5vw, 48px);
+      font-weight: 900; color: var(--text); margin-bottom: 6px;
+      letter-spacing: -0.03em;
+    }
+    .about-role {
+      font-size: 16px; color: var(--accent); font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .about-prev {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: 'IBM Plex Mono', monospace; font-size: 11px;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--text-muted); margin-bottom: 28px;
+    }
+    .about-prev::before {
+      content: 'ex';
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 2px 7px;
+      font-size: 9px; letter-spacing: 0.1em;
+      color: var(--text-muted);
+    }
+    .about-bio {
+      font-size: 16px; color: var(--text-sec);
+      line-height: 1.8; margin-bottom: 28px; font-weight: 300;
+    }
+    .about-edu {
+      display: flex; gap: 12px; align-items: flex-start;
+      padding: 18px 20px;
+      background: var(--bg-surface); border: 1px solid var(--border);
+      border-radius: 8px; margin-bottom: 28px;
+    }
+    .about-edu-icon {
+      font-size: 18px; flex-shrink: 0; margin-top: 1px;
+    }
+    .about-edu-text { font-size: 13px; color: var(--text-sec); line-height: 1.6; }
+    .about-edu-text strong { color: var(--text); font-weight: 600; }
+    .about-socials { display: flex; flex-direction: column; gap: 10px; }
+    .about-socials-label {
+      font-family: 'IBM Plex Mono', monospace; font-size: 10px;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--text-muted); margin-bottom: 4px;
+    }
+    .social-row {
+      display: flex; flex-wrap: wrap; gap: 10px;
+    }
+    .social-chip {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 5px; padding: 8px 14px;
+      font-size: 13px; color: var(--text-sec);
+      font-weight: 500; white-space: nowrap;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .social-chip:hover { border-color: var(--accent); color: var(--accent); }
+    .social-platform {
+      font-family: 'IBM Plex Mono', monospace; font-size: 10px;
+      text-transform: uppercase; letter-spacing: 0.08em;
+      color: var(--text-muted);
+    }
+
+    /* ─── WHY ─── */
+    .why-section { background: var(--bg-elevated); }
+    .why-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 80px; align-items: start; margin-top: 56px;
+    }
+    .why-statement {
+      font-size: clamp(18px, 2vw, 26px); font-weight: 300;
+      line-height: 1.65; color: var(--text-sec);
+    }
+    .why-statement strong { font-weight: 600; color: var(--text); }
+    .diff-item {
+      display: flex; gap: 20px; padding: 22px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .diff-item:last-child { border-bottom: none; }
+    .diff-num {
+      font-family: 'Unbounded', sans-serif; font-size: 12px;
+      font-weight: 900; color: var(--accent); min-width: 26px; padding-top: 2px;
+    }
+    .diff-content h4 {
+      font-family: 'Unbounded', sans-serif; font-size: 14px;
+      font-weight: 700; margin-bottom: 6px;
+    }
+    .diff-content p { font-size: 13px; color: var(--text-sec); line-height: 1.7; }
+
+    /* ─── BLOG ─── */
+    .blog-section { background: var(--bg-surface); }
+    .blog-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 20px; margin-top: 56px;
+    }
+    .blog-card {
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: 10px; overflow: hidden;
+      transition: box-shadow 0.25s, border-color 0.25s, transform 0.25s;
+      cursor: pointer;
+    }
+    .blog-card:hover {
+      box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+      border-color: var(--border-acc);
+      transform: translateY(-4px);
+    }
+    .blog-thumb {
+      height: 180px; background: var(--bg-elevated);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 32px; position: relative;
+    }
+    .blog-content { padding: 24px; }
+    .blog-cat {
+      font-family: 'IBM Plex Mono', monospace; font-size: 10px;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 10px;
+    }
+    .blog-title {
+      font-family: 'Unbounded', sans-serif; font-size: 15px;
+      font-weight: 700; line-height: 1.35; margin-bottom: 10px;
+      letter-spacing: -0.02em; color: var(--text);
+    }
+    .blog-excerpt { font-size: 13px; color: var(--text-sec); line-height: 1.6; }
+    .blog-meta {
+      display: flex; align-items: center; gap: 8px;
+      margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--border);
+      font-size: 11px; color: var(--text-muted);
+    }
+    .blog-dot { width: 3px; height: 3px; background: var(--border); border-radius: 50%; }
+
+    /* ─── CONTACT + BOOK ─── */
+    .contact-section { background: var(--bg); }
+    .contact-header {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 60px; align-items: end; margin-bottom: 56px;
+    }
+    .contact-body { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+    .contact-form-wrap, .contact-book-wrap {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 12px; padding: 40px; overflow: hidden;
+    }
+    .contact-form-wrap { position: relative; }
+    .contact-book-wrap { display: flex; flex-direction: column; }
+    .contact-pane-label {
+      font-family: 'IBM Plex Mono', monospace; font-size: 10px;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--text-muted); margin-bottom: 16px;
+    }
+    .contact-pane-title {
+      font-family: 'Unbounded', sans-serif; font-size: 22px;
+      font-weight: 700; color: var(--text); margin-bottom: 8px;
+      line-height: 1.2; letter-spacing: -0.02em;
+    }
+    .contact-pane-sub { font-size: 14px; color: var(--text-sec); margin-bottom: 28px; line-height: 1.6; }
+    .form-group { margin-bottom: 16px; }
+    .form-label {
+      display: block; font-size: 11px; font-weight: 500;
+      letter-spacing: 0.07em; text-transform: uppercase;
+      color: var(--text-sec); margin-bottom: 6px;
+    }
+    .form-input, .form-select, .form-textarea {
+      width: 100%; background: var(--bg);
+      border: 1px solid var(--border); border-radius: 6px;
+      padding: 12px 14px;
+      font-family: 'IBM Plex Sans', sans-serif; font-size: 14px;
+      color: var(--text); outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      -webkit-appearance: none; appearance: none;
+    }
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      border-color: var(--accent); box-shadow: 0 0 0 3px rgba(249,91,61,0.1);
+    }
+    .form-input::placeholder, .form-textarea::placeholder { color: var(--text-muted); }
+    .form-textarea { resize: vertical; min-height: 88px; }
+    .form-select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%23999' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 12px center;
+      background-size: 20px; cursor: pointer;
+    }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .form-note { font-size: 11px; color: var(--text-muted); margin-top: 12px; line-height: 1.5; }
+    /* Book pane */
+    .book-perks { display: flex; flex-direction: column; gap: 14px; margin-bottom: 28px; }
+    .book-perk {
+      display: flex; gap: 14px; align-items: flex-start;
+    }
+    .book-perk-bar {
+      width: 3px; border-radius: 2px;
+      background: var(--accent); flex-shrink: 0;
+      align-self: stretch; min-height: 32px;
+    }
+    .book-perk-content h5 {
+      font-family: 'Unbounded', sans-serif; font-size: 13px;
+      font-weight: 700; color: var(--text); margin-bottom: 3px;
+    }
+    .book-perk-content p { font-size: 12px; color: var(--text-sec); line-height: 1.5; }
+    .calendly-wrap {
+      background: var(--bg-elevated); border: 1px dashed var(--border);
+      border-radius: 8px; flex: 1; min-height: 280px;
+      display: flex; align-items: center; justify-content: center;
+      flex-direction: column; gap: 10px; text-align: center; padding: 32px;
+    }
+    .calendly-embed-live {
+      width: 100%; min-height: 500px; border-radius: 8px;
+      overflow: hidden; border: 1px solid var(--border);
+    }
+
+    /* ─── FOOTER ─── */
+    footer {
+      background: var(--text); padding: 56px 48px 32px;
+    }
+    .footer-top {
+      display: grid; grid-template-columns: 1.6fr 1fr 1fr 1fr;
+      gap: 56px; padding-bottom: 40px;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+    }
+    .footer-logo-pill {
+      display: inline-flex;
+      background: rgba(255,255,255,0.95);
+      border-radius: 7px; padding: 8px 14px;
+      margin-bottom: 16px;
+    }
+    .footer-logo-pill img { height: 26px; display: block; }
+    .footer-desc { font-size: 13px; color: rgba(255,255,255,0.38); line-height: 1.7; margin-bottom: 0; }
+    .footer-col h5 {
+      font-family: 'Unbounded', sans-serif; font-size: 10px;
+      font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+      color: rgba(255,255,255,0.3); margin-bottom: 18px;
+    }
+    .footer-col a {
+      display: block; font-size: 13px; color: rgba(255,255,255,0.45);
+      text-decoration: none; margin-bottom: 11px; transition: color 0.2s;
+    }
+    .footer-col a:hover { color: var(--accent); }
+    .footer-bottom {
+      display: flex; align-items: center; justify-content: space-between;
+      padding-top: 28px; font-size: 12px; color: rgba(255,255,255,0.2);
+    }
+    .footer-bottom a { color: var(--accent); text-decoration: none; }
+
+    /* ─── DIVIDERS ─── */
+    .rule { height: 1px; background: var(--border); }
+
+    /* ─── CIRCUIT NODES ─── */
+    .node-dot {
+      width: 10px; height: 10px; flex-shrink: 0;
+      border: 2px solid var(--accent); border-radius: 50%;
+      background: var(--bg); position: relative; z-index: 2;
+    }
+    .node-dot::after {
+      content: ''; position: absolute; inset: 2px;
+      background: var(--accent); border-radius: 50%;
+      animation: nodepulse 2.4s ease-in-out infinite;
+    }
+    @keyframes nodepulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.3;transform:scale(0.5)} }
+    .node-line-h {
+      flex: 1; height: 1px;
+      background: linear-gradient(90deg, rgba(249,91,61,0.15), rgba(249,91,61,0.5), rgba(249,91,61,0.15));
+    }
+    .node-line-v {
+      width: 1px; flex: 1;
+      background: linear-gradient(to bottom, rgba(249,91,61,0.5), rgba(249,91,61,0.15));
+      min-height: 32px;
+    }
+    .node-connector-h {
+      display: flex; align-items: center; gap: 0;
+      padding: 0 4px;
+    }
+
+    /* ─── GAP NODE LAYOUT ─── */
+    .gap-node-intro { max-width: 700px; margin: 0 auto 56px; text-align: center; }
+    .gap-node-row {
+      display: grid;
+      grid-template-columns: 1fr 52px 1fr 52px 1fr;
+      align-items: center; gap: 0;
+      margin-bottom: 0;
+    }
+    .gap-node-card {
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: 10px; padding: 28px 24px;
+      position: relative;
+      transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s;
+    }
+    .gap-node-card:hover {
+      border-color: var(--border-acc);
+      box-shadow: 0 6px 28px rgba(249,91,61,0.08);
+      transform: translateY(-3px);
+    }
+    /* corner node dot on each card */
+    .gap-node-card::before {
+      content: ''; position: absolute;
+      width: 8px; height: 8px; border-radius: 50%;
+      border: 2px solid var(--accent); background: var(--bg);
+      top: -5px; left: 50%; transform: translateX(-50%);
+    }
+    .gap-node-card::after {
+      content: ''; position: absolute;
+      width: 8px; height: 8px; border-radius: 50%;
+      border: 2px solid var(--accent); background: var(--bg);
+      bottom: -5px; left: 50%; transform: translateX(-50%);
+    }
+    .gap-card-icon {
+      font-size: 24px; margin-bottom: 14px; display: block;
+    }
+    .gap-card-title {
+      font-family: 'Unbounded', sans-serif; font-size: 14px;
+      font-weight: 700; color: var(--text); margin-bottom: 10px;
+      letter-spacing: -0.02em; line-height: 1.3;
+    }
+    .gap-card-body {
+      font-size: 13px; color: var(--text-sec); line-height: 1.65;
+    }
+    /* vertical connector from center card down */
+    .gap-node-vertical-wrap {
+      display: flex; justify-content: center;
+      margin-top: -1px;
+    }
+    .gap-node-vertical {
+      display: flex; flex-direction: column; align-items: center;
+      height: 60px; gap: 0;
+    }
+    .gap-conclusion {
+      border: 1.5px solid var(--accent);
+      border-radius: 10px; padding: 28px 32px;
+      background: rgba(249,91,61,0.03);
+      text-align: center; position: relative;
+    }
+    .gap-conclusion::before {
+      content: ''; position: absolute;
+      width: 8px; height: 8px; border-radius: 50%;
+      border: 2px solid var(--accent); background: var(--bg);
+      top: -5px; left: 50%; transform: translateX(-50%);
+    }
+    .gap-conclusion-title {
+      font-family: 'Unbounded', sans-serif; font-size: 18px;
+      font-weight: 900; color: var(--text); margin-bottom: 8px;
+      letter-spacing: -0.025em;
+    }
+    .gap-conclusion-title em { color: var(--accent); font-style: normal; }
+    .gap-conclusion-sub {
+      font-size: 14px; color: var(--text-sec); line-height: 1.65;
+      max-width: 560px; margin: 0 auto 20px;
+    }
+
+    /* ─── SERVICES NODE LAYOUT ─── */
+    .svc-node-grid {
+      margin-top: 56px;
+      position: relative;
+    }
+    .svc-node-row {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+    }
+    .svc-node-rail {
+      display: flex; align-items: center;
+      padding: 0; height: 44px; position: relative;
+    }
+    .svc-rail-line {
+      flex: 1; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(249,91,61,0.3), rgba(249,91,61,0.5), rgba(249,91,61,0.3), transparent);
+    }
+    .svc-rail-dot {
+      width: 8px; height: 8px; flex-shrink: 0;
+      border: 2px solid var(--accent); border-radius: 50%;
+      background: var(--bg-surface); position: relative; z-index: 2;
+      margin: 0 8px;
+    }
+    .svc-rail-dot::after {
+      content: ''; position: absolute; inset: 2px;
+      background: var(--accent); border-radius: 50%;
+      animation: nodepulse 2s ease-in-out infinite;
+    }
+    .svc-rail-dot:nth-child(2) { animation-delay: 0.4s; }
+    .svc-rail-dot:nth-child(4) { animation-delay: 0.8s; }
+    .svc-card-new {
+      background: var(--bg); padding: 32px;
+      position: relative; overflow: hidden;
+      transition: background 0.25s;
+      border: 1px solid var(--border);
+    }
+    .svc-card-new:hover { background: var(--bg-surface); }
+    .svc-card-new::before {
+      content: ''; position: absolute;
+      top: 0; left: 0; right: 0; height: 2px;
+      background: var(--accent);
+      transform: scaleX(0); transform-origin: left;
+      transition: transform 0.3s;
+    }
+    .svc-card-new:hover::before { transform: scaleX(1); }
+    /* corner node on service card */
+    .svc-node-corner {
+      position: absolute; top: 12px; right: 12px;
+      width: 8px; height: 8px; border-radius: 50%;
+      border: 2px solid rgba(249,91,61,0.35); background: var(--bg);
+    }
+    .svc-card-new:hover .svc-node-corner {
+      border-color: var(--accent);
+      background: rgba(249,91,61,0.15);
+    }
+    .svc-type {
+      font-family: 'IBM Plex Mono', monospace; font-size: 10px;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--accent); padding: 4px 10px;
+      border: 1px solid var(--border-acc); border-radius: 3px;
+      display: inline-block; margin-bottom: 16px;
+      background: rgba(249,91,61,0.04);
+    }
+    .svc-card-title {
+      font-family: 'Unbounded', sans-serif; font-size: 15px;
+      font-weight: 700; color: var(--text); margin-bottom: 10px;
+      line-height: 1.3; letter-spacing: -0.02em;
+    }
+    .svc-card-desc { font-size: 13px; color: var(--text-sec); line-height: 1.7; }
+
+    /* ─── ANIMATIONS ─── */
+    .reveal {
+      opacity: 0; transform: translateY(24px);
+      transition: opacity 0.65s cubic-bezier(0.22,1,0.36,1), transform 0.65s cubic-bezier(0.22,1,0.36,1);
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .d1{transition-delay:0.1s}.d2{transition-delay:0.2s}.d3{transition-delay:0.3s}.d4{transition-delay:0.4s}
+
+    /* ─── RESPONSIVE ─── */
+    @media(max-width:1024px){
+      .stats-grid{grid-template-columns:repeat(2,1fr)}
+      .why-grid,.contact-header,.contact-body,.impl-grid,.about-grid{grid-template-columns:1fr;gap:40px}
+      .impl-card.wide{grid-column:1}
+      .footer-top{grid-template-columns:1fr 1fr;gap:36px}
+      .svc-node-row{grid-template-columns:1fr 1fr}
+      .gap-node-row{grid-template-columns:1fr;gap:16px}
+      .node-connector-h{display:none}
+      .gap-node-vertical-wrap{display:none}
+    }
+    @media(max-width:768px){
+      section{padding:72px 24px}
+      .nav{padding:16px 24px}.nav.scrolled{padding:12px 24px}
+      .hero{padding:110px 24px 72px}
+      .nav-links{display:none}
+      .stats-grid{grid-template-columns:1fr 1fr}
+      .svc-node-row{grid-template-columns:1fr}
+      .footer-top{grid-template-columns:1fr;gap:28px}
+      .footer-bottom{flex-direction:column;gap:8px;text-align:center}
+      .svc-cta{flex-direction:column;align-items:flex-start}
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ═══ NAV ═══ -->
+  <nav class="nav" id="navbar">
+    <a href="#" class="nav-logo">
+      <img src="MainLogoTransparent.png" alt="HyperImplement" />
+    </a>
+    <div class="nav-links">
+      <a href="#services">Services</a>
+      <a href="#implemented">Real Work</a>
+      <a href="#about">About</a>
+      <a href="#contact" class="nav-cta">Book an Implementation Call</a>
+    </div>
+  </nav>
+
+  <!-- ═══ HERO ═══ -->
+  <section class="hero" id="home">
+    <div class="hero-bg-shape"></div>
+    <div class="hero-bg-shape-2"></div>
+    <div class="hero-inner">
+      <div class="hero-eyebrow reveal">
+        <span class="hero-eyebrow-dot"></span>
+        AI Implementation Agency &mdash; Since December 2025
+      </div>
+      <h1 class="reveal d1">
+        You've Heard the Hype.<br/>
+        You Know You Need It.<br/>
+        <em>Now Let's Actually Implement It.</em>
+      </h1>
+      <p class="hero-sub reveal d2">
+        AI is the biggest shift in a generation. Most people and businesses know they need to adapt — they just don't know how to actually make it work. That's the only thing we do: implement AI into real workflows, real businesses, and real daily lives.
+      </p>
+      <div class="hero-cta-group reveal d3">
+        <a href="#contact" class="btn-primary">
+          Book a Free Implementation Call
+          <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+        <span class="hero-note">Free · 30 minutes · Actionable output guaranteed</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ STATS ═══ -->
+  <div class="stats-section">
+    <div class="stats-grid">
+      <div class="stat-item reveal">
+        <span class="stat-category">Systems Built</span>
+        <div class="stat-value"><span>50+</span></div>
+        <div class="stat-label">AI systems and workflows built and deployed</div>
+      </div>
+      <div class="stat-item reveal d1">
+        <span class="stat-category">AI Employees</span>
+        <div class="stat-value"><span>10</span></div>
+        <div class="stat-label">AI agents actively working for businesses right now</div>
+      </div>
+      <div class="stat-item reveal d2">
+        <span class="stat-category">Deploy Speed</span>
+        <div class="stat-value"><span>24hr</span></div>
+        <div class="stat-label">Average time from strategy call to first live system</div>
+      </div>
+      <div class="stat-item reveal d3">
+        <span class="stat-category">Implementation Rate</span>
+        <div class="stat-value"><span>100%</span></div>
+        <div class="stat-label">Every engagement ends with something live and working</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ TICKER ═══ -->
+  <div class="ticker-wrap">
+    <div class="ticker-inner">
+      <span class="ticker-item">ChatGPT <span class="tdot"></span></span>
+      <span class="ticker-item">Claude AI <span class="tdot"></span></span>
+      <span class="ticker-item">Google Gemini <span class="tdot"></span></span>
+      <span class="ticker-item">Perplexity AI <span class="tdot"></span></span>
+      <span class="ticker-item">n8n Workflows <span class="tdot"></span></span>
+      <span class="ticker-item">Zapier Automations <span class="tdot"></span></span>
+      <span class="ticker-item">Make.com Pipelines <span class="tdot"></span></span>
+      <span class="ticker-item">Social Media Scheduling <span class="tdot"></span></span>
+      <span class="ticker-item">AI Content Creation <span class="tdot"></span></span>
+      <span class="ticker-item">ElevenLabs Voice AI <span class="tdot"></span></span>
+      <span class="ticker-item">Midjourney <span class="tdot"></span></span>
+      <span class="ticker-item">Sora Video AI <span class="tdot"></span></span>
+      <span class="ticker-item">AI Lead Qualification <span class="tdot"></span></span>
+      <span class="ticker-item">Email Automation <span class="tdot"></span></span>
+      <span class="ticker-item">AI Agents &amp; Employees <span class="tdot"></span></span>
+      <span class="ticker-item">Auto-Posting Workflows <span class="tdot"></span></span>
+      <!-- duplicate for seamless loop -->
+      <span class="ticker-item">ChatGPT <span class="tdot"></span></span>
+      <span class="ticker-item">Claude AI <span class="tdot"></span></span>
+      <span class="ticker-item">Google Gemini <span class="tdot"></span></span>
+      <span class="ticker-item">Perplexity AI <span class="tdot"></span></span>
+      <span class="ticker-item">n8n Workflows <span class="tdot"></span></span>
+      <span class="ticker-item">Zapier Automations <span class="tdot"></span></span>
+      <span class="ticker-item">Make.com Pipelines <span class="tdot"></span></span>
+      <span class="ticker-item">Social Media Scheduling <span class="tdot"></span></span>
+      <span class="ticker-item">AI Content Creation <span class="tdot"></span></span>
+      <span class="ticker-item">ElevenLabs Voice AI <span class="tdot"></span></span>
+      <span class="ticker-item">Midjourney <span class="tdot"></span></span>
+      <span class="ticker-item">Sora Video AI <span class="tdot"></span></span>
+      <span class="ticker-item">AI Lead Qualification <span class="tdot"></span></span>
+      <span class="ticker-item">Email Automation <span class="tdot"></span></span>
+      <span class="ticker-item">AI Agents &amp; Employees <span class="tdot"></span></span>
+      <span class="ticker-item">Auto-Posting Workflows <span class="tdot"></span></span>
+    </div>
+  </div>
+
+  <!-- ═══ THE GAP ═══ -->
+  <section class="gap-section" id="problem">
+    <div class="inner">
+
+      <!-- Intro -->
+      <div class="gap-node-intro reveal">
+        <div class="label" style="text-align:center;">The Implementation Gap</div>
+        <div class="gap-headline" style="text-align:center;">
+          Everyone's heard about AI.<br/>
+          Almost <em>nobody</em> has actually implemented it.
+        </div>
+      </div>
+
+      <!-- Node row: 3 connected cards -->
+      <div class="gap-node-row reveal">
+
+        <!-- Card 1 -->
+        <div class="gap-node-card">
+          <span class="gap-card-icon">📢</span>
+          <div class="gap-card-title">Buried in the Noise</div>
+          <p class="gap-card-body">New tools, announcements, and "game-changing" features drop every week. People spend hours consuming AI content and zero time actually putting it to work.</p>
+        </div>
+
+        <!-- Horizontal connector -->
+        <div class="node-connector-h">
+          <div class="node-line-h"></div>
+          <div class="node-dot"></div>
+          <div class="node-line-h"></div>
+        </div>
+
+        <!-- Card 2 (center) -->
+        <div class="gap-node-card" id="gap-center-card">
+          <span class="gap-card-icon">🕳️</span>
+          <div class="gap-card-title">Awareness Without Action</div>
+          <p class="gap-card-body">Knowing about ChatGPT, Claude, or Gemini is not the same as having them run real tasks for you. The gap between knowing and doing is where time, money, and opportunity disappear.</p>
+        </div>
+
+        <!-- Horizontal connector -->
+        <div class="node-connector-h">
+          <div class="node-line-h"></div>
+          <div class="node-dot"></div>
+          <div class="node-line-h"></div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="gap-node-card">
+          <span class="gap-card-icon">🔄</span>
+          <div class="gap-card-title">Back to the Old Workflow</div>
+          <p class="gap-card-body">The demo ends. The tab closes. And it's back to doing things the same way. AI ends up being something people talk about — never something that works for them.</p>
+        </div>
+
+      </div>
+
+      <!-- Vertical connector from center card down -->
+      <div class="gap-node-vertical-wrap reveal">
+        <div class="gap-node-vertical">
+          <div class="node-line-v"></div>
+          <div class="node-dot"></div>
+          <div class="node-line-v"></div>
+        </div>
+      </div>
+
+      <!-- Conclusion card -->
+      <div class="gap-conclusion reveal">
+        <div class="gap-conclusion-title">Skip the hype. <em>Have an actual plan.</em></div>
+        <p class="gap-conclusion-sub">We sit down with you, map where AI creates real leverage, and build the system — until it's live and running for you. That's the only thing we do.</p>
+        <a href="#contact" class="btn-primary" style="font-size:12px;">
+          Book a Free Implementation Call
+          <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="rule"></div>
+
+  <!-- ═══ SERVICES ═══ -->
+  <section class="services-section" id="services">
+    <div class="inner">
+      <div class="reveal">
+        <div class="label">What We Do</div>
+        <h2 class="section-title">We Build the AI<br/>That Runs Your Day.</h2>
+        <p class="section-sub">Every implementation is different. These are the areas where we build — pick what fits your situation, or let us figure it out together.</p>
+      </div>
+
+      <div class="svc-node-grid">
+
+        <!-- Row 1 -->
+        <div class="svc-node-row">
+          <div class="svc-card-new reveal">
+            <div class="svc-node-corner"></div>
+            <div class="svc-type">Strategy</div>
+            <div class="svc-card-title">AI Strategy &amp; Tool Selection</div>
+            <p class="svc-card-desc">We map your day, workflow, and business to find exactly where AI creates leverage. You walk away knowing what to build and in what order — no guesswork.</p>
+          </div>
+          <div class="svc-card-new reveal d1">
+            <div class="svc-node-corner"></div>
+            <div class="svc-type">Setup &amp; Training</div>
+            <div class="svc-card-title">Claude Code &amp; OpenClaw Installs</div>
+            <p class="svc-card-desc">Agentic AI coding environments for individuals and business owners — no tech background needed. Your own AI developer, configured and ready to build for you.</p>
+          </div>
+          <div class="svc-card-new reveal d2">
+            <div class="svc-node-corner"></div>
+            <div class="svc-type">Automation</div>
+            <div class="svc-card-title">AI Employees &amp; Agents</div>
+            <p class="svc-card-desc">AI agents that run real business tasks — lead qualification, email replies, appointment booking — fully autonomous, around the clock.</p>
+          </div>
+        </div>
+
+        <!-- Circuit rail between rows -->
+        <div class="svc-node-rail reveal">
+          <div class="svc-rail-line"></div>
+          <div class="svc-rail-dot"></div>
+          <div class="svc-rail-line"></div>
+          <div class="svc-rail-dot"></div>
+          <div class="svc-rail-line"></div>
+          <div class="svc-rail-dot"></div>
+          <div class="svc-rail-line"></div>
+          <div class="svc-rail-dot"></div>
+          <div class="svc-rail-line"></div>
+          <div class="svc-rail-dot"></div>
+          <div class="svc-rail-line"></div>
+        </div>
+
+        <!-- Row 2 -->
+        <div class="svc-node-row">
+          <div class="svc-card-new reveal">
+            <div class="svc-node-corner"></div>
+            <div class="svc-type">Creative</div>
+            <div class="svc-card-title">AI Video Advertisements</div>
+            <p class="svc-card-desc">Cinematic, scroll-stopping AI-generated video ads for your brand. Faster, cheaper, and more scalable than traditional production — no compromises on quality.</p>
+          </div>
+          <div class="svc-card-new reveal d1">
+            <div class="svc-node-corner"></div>
+            <div class="svc-type">Development</div>
+            <div class="svc-card-title">AI-Powered Website Design</div>
+            <p class="svc-card-desc">Conversion-focused websites built with AI-powered development. Modern, fully functional, shipped in days — from landing page to complete business site.</p>
+          </div>
+          <div class="svc-card-new reveal d2">
+            <div class="svc-node-corner"></div>
+            <div class="svc-type">Automation</div>
+            <div class="svc-card-title">Workflow Automation</div>
+            <p class="svc-card-desc">Replace repetitive tasks with intelligent pipelines using Make, n8n, and AI. Stop doing manually what a system can handle automatically, every day.</p>
+          </div>
+        </div>
+
+        <!-- CTA bar -->
+        <div class="svc-cta reveal" style="margin-top:2px;">
+          <p><strong>Not sure where to start?</strong> These aren't steps — they're options. Book a free call and we'll figure out the right entry point for you.</p>
+          <a href="#contact" class="btn-dark">
+            Book a Free Implementation Call
+            <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <div class="rule"></div>
+
+  <!-- ═══ ACTUALLY IMPLEMENTED ═══ -->
+  <section class="impl-section" id="implemented">
+    <div class="inner">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:end;margin-bottom:56px;" class="reveal">
+        <div>
+          <div class="label">Actually Implemented</div>
+          <h2 class="section-title">What This Looks Like<br/>In the Real World.</h2>
+        </div>
+        <p style="font-size:16px;color:var(--text-sec);line-height:1.75;font-weight:300;">
+          Not demos. Not mockups. Real systems we've built and deployed across different industries and use cases. This is what's possible.
+        </p>
+      </div>
+      <div class="impl-grid">
+
+        <div class="impl-card reveal">
+          <div class="impl-num">01</div>
+          <div class="impl-meta">
+            <span class="impl-type">AI Agent / Employee</span>
+            <span class="impl-industry">Automotive Repair</span>
+          </div>
+          <div class="impl-title">Inbound Lead Qualification Agent</div>
+          <p class="impl-desc">An AI agent that reads every inbound email, qualifies leads based on service type and urgency, drafts personalized replies, and flags hot leads for the owner — fully autonomous, around the clock.</p>
+          <div class="impl-result">Never misses a lead. Responds within minutes, 24/7.</div>
+        </div>
+
+        <div class="impl-card reveal d1">
+          <div class="impl-num">02</div>
+          <div class="impl-meta">
+            <span class="impl-type">AI Marketing &amp; Ads</span>
+            <span class="impl-industry">E-Commerce</span>
+          </div>
+          <div class="impl-title">AI Ad Creative Pipeline for Golf Cart Company</div>
+          <p class="impl-desc">A complete AI creative workflow — product photography, lifestyle visuals, and video ads generated at scale, replacing a traditional production budget for a golf cart e-commerce brand.</p>
+          <div class="impl-result">Full ad creative library produced in days, not weeks.</div>
+        </div>
+
+        <div class="impl-card reveal d2">
+          <div class="impl-num">03</div>
+          <div class="impl-meta">
+            <span class="impl-type">AI Content Workflow</span>
+            <span class="impl-industry">Home &amp; Patio Retail</span>
+          </div>
+          <div class="impl-title">AI Marketing &amp; Content Engine for Outdoor Furniture Brand</div>
+          <p class="impl-desc">Automated pipeline for product imagery, ad copy, and social content creation — cutting content production time by over 80% for a patio and outdoor furniture company.</p>
+          <div class="impl-result">Ongoing content at a fraction of the original time and cost.</div>
+        </div>
+
+        <div class="impl-card reveal d3">
+          <div class="impl-num">04</div>
+          <div class="impl-meta">
+            <span class="impl-type">AI Website + Video</span>
+            <span class="impl-industry">Food &amp; Restaurant</span>
+          </div>
+          <div class="impl-title">Full Digital Presence &amp; Video Workflow for Steakhouse</div>
+          <p class="impl-desc">AI-designed website, AI-edited video content, and a repeatable production workflow — so the business can produce premium content without an agency retainer, indefinitely.</p>
+          <div class="impl-result">A full content engine the business owns and runs itself.</div>
+        </div>
+
+      </div>
+      <div style="text-align:center;margin-top:48px;" class="reveal">
+        <p style="font-size:14px;color:var(--text-muted);margin-bottom:18px;font-family:'IBM Plex Mono',monospace;letter-spacing:0.05em;">What could we build for you?</p>
+        <a href="#contact" class="btn-primary">
+          Book a Free Implementation Call
+          <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ ABOUT / FOUNDER ═══ -->
+  <section class="about-section" id="about">
+    <div class="inner">
+      <div class="reveal" style="margin-bottom:48px;">
+        <div class="label">The Person Behind It</div>
+        <h2 class="section-title">Why This Exists.</h2>
+      </div>
+      <div class="about-grid">
+        <div class="reveal">
+          <div class="about-photo">
+            <div class="about-photo-icon">👤</div>
+            <div class="about-photo-label">Profile photo</div>
+          </div>
+        </div>
+        <div class="reveal d1">
+          <div class="about-name">Anthony Collins</div>
+          <div class="about-role">Founder, HyperImplement</div>
+          <div class="about-prev">Salesforce</div>
+          <p class="about-bio">
+            I built HyperImplement because I kept seeing the same thing: people and businesses that knew AI was important, wanted to use it, and had no idea how to actually get there. After working at Salesforce and studying the intersection of business and technology, I decided to stop advising from the sidelines and start building — for real, with people, until something was live and working.
+            <br/><br/>
+            Every client I work with leaves with something deployed. Not a strategy doc. Not a roadmap. An actual system that runs for them.
+          </p>
+          <div class="about-edu">
+            <div class="about-edu-icon">🎓</div>
+            <div class="about-edu-text">
+              <strong>Business Analytics &amp; Information Systems</strong><br/>
+              With an emphasis in AI Implementation — studying how organizations can actually adopt, deploy, and scale AI tools in real-world environments.
+            </div>
+          </div>
+          <div class="about-socials">
+            <div class="about-socials-label">Find me at @anthonyimplements</div>
+            <div class="social-row">
+              <div class="social-chip">
+                <span class="social-platform">YouTube</span>
+                @anthonyimplements
+              </div>
+              <div class="social-chip">
+                <span class="social-platform">TikTok</span>
+                @anthonyimplements
+              </div>
+              <div class="social-chip">
+                <span class="social-platform">Instagram</span>
+                @anthonyimplements
+              </div>
+              <div class="social-chip">
+                <span class="social-platform">X / Twitter</span>
+                @anthonyimplements
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="rule"></div>
+
+  <!-- ═══ WHY ═══ -->
+  <section class="why-section" id="why">
+    <div class="inner">
+      <div class="reveal">
+        <div class="label">Why HyperImplement</div>
+        <h2 class="section-title">We Build.<br/>We Ship.<br/>We Implement.</h2>
+      </div>
+      <div class="why-grid">
+        <div class="reveal d1">
+          <p class="why-statement">
+            People and businesses spend months hearing about AI — watching demos, reading articles — and still have <strong>nothing working for them.</strong>
+            <br/><br/>
+            We skip straight to the part where <strong>AI is actually running your life and business</strong> — not just living in a browser tab.
+          </p>
+          <div style="margin-top:32px;">
+            <a href="#contact" class="btn-primary">
+              Start Implementing
+              <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+        <div class="reveal d2">
+          <div class="diff-item">
+            <div class="diff-num">01</div>
+            <div class="diff-content">
+              <h4>We implement — not just advise</h4>
+              <p>No 90-day roadmaps. No strategy decks you file away. We sit down and build. You see something working before we're done.</p>
+            </div>
+          </div>
+          <div class="diff-item">
+            <div class="diff-num">02</div>
+            <div class="diff-content">
+              <h4>For people, not just companies</h4>
+              <p>Solo professional, small business, or individual wanting AI in their daily routine — we build for real life, not just enterprise rollouts.</p>
+            </div>
+          </div>
+          <div class="diff-item">
+            <div class="diff-num">03</div>
+            <div class="diff-content">
+              <h4>We use every tool we build with</h4>
+              <p>Claude Code, Make, n8n, Higgsfield, OpenClaw — we run these ourselves. You're getting genuine expertise, not resold knowledge.</p>
+            </div>
+          </div>
+          <div class="diff-item">
+            <div class="diff-num">04</div>
+            <div class="diff-content">
+              <h4>You own everything</h4>
+              <p>No lock-in. No retainer dependency. You leave with systems you own, understand, and can run — or hand to a team.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══ CONTACT + BOOK ═══ -->
+  <section class="contact-section" id="contact">
+    <div class="inner">
+      <div class="contact-header reveal">
+        <div>
+          <div class="label">Let's Build Something</div>
+          <h2 class="section-title">Ready to Stop<br/>Hearing About AI<br/>and Start Using It?</h2>
+        </div>
+        <div>
+          <p style="font-size:16px;color:var(--text-sec);line-height:1.75;font-weight:300;">
+            Fill out the form and we'll reach out within 24 hours — or jump straight to picking a time on the calendar. Either way, you'll walk away with a clear implementation plan.
+          </p>
+        </div>
+      </div>
+      <div class="contact-body">
+
+        <!-- FORM -->
+        <div class="contact-form-wrap reveal">
+          <div class="contact-pane-label">Write First</div>
+          <div class="contact-pane-title">Send a Message</div>
+          <p class="contact-pane-sub">Tell us about your situation. We'll come prepared with ideas specific to you.</p>
+          <form id="lead-form" onsubmit="handleSubmit(event)">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">First Name</label>
+                <input type="text" class="form-input" placeholder="Anthony" required />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Last Name</label>
+                <input type="text" class="form-input" placeholder="Collins" required />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Email</label>
+                <input type="email" class="form-input" placeholder="you@yourbusiness.com" required />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Phone <span style="color:var(--text-muted);font-size:10px;text-transform:none;letter-spacing:0;">(optional — faster follow-up)</span></label>
+                <input type="tel" class="form-input" placeholder="+1 (555) 000-0000" />
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Business / Organization</label>
+              <input type="text" class="form-input" placeholder="Your company or 'Personal'" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">What do you need implemented?</label>
+              <select class="form-select">
+                <option value="">Select a service...</option>
+                <option>AI Strategy &amp; Tool Selection</option>
+                <option>Claude Code / OpenClaw Install</option>
+                <option>AI Employee or Agent</option>
+                <option>AI Video Advertisements</option>
+                <option>AI Website Design</option>
+                <option>Workflow Automation</option>
+                <option>Personal AI Assistant Setup</option>
+                <option>Not sure — I need guidance</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">What's eating your time right now?</label>
+              <textarea class="form-textarea" placeholder="Describe what you'd automate or hand off to AI if you could..."></textarea>
+            </div>
+            <button type="submit" class="btn-primary" style="width:100%;justify-content:center;font-size:13px;">
+              Send Message
+              <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </button>
+            <p class="form-note">No spam. We'll only reach out about your inquiry. Response within 24 hours.</p>
+          </form>
+          <div id="form-success" style="display:none;text-align:center;padding:48px 24px;">
+            <div style="width:56px;height:56px;background:rgba(249,91,61,0.1);border:2px solid var(--border-acc);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:22px;">✓</div>
+            <div style="font-family:'Unbounded',sans-serif;font-size:20px;font-weight:700;margin-bottom:8px;">Message Received.</div>
+            <p style="font-size:14px;color:var(--text-sec);">We'll be in touch within 24 hours. You can also pick a time directly on the calendar.</p>
+          </div>
+        </div>
+
+        <!-- BOOK -->
+        <div class="contact-book-wrap reveal d1">
+          <div class="contact-pane-label">Jump Straight In</div>
+          <div class="contact-pane-title">Book an Implementation Call</div>
+          <p class="contact-pane-sub">30 minutes. Free. Come with a problem, leave with a plan.</p>
+          <div class="book-perks">
+            <div class="book-perk">
+              <div class="book-perk-bar"></div>
+              <div class="book-perk-content">
+                <h5>We respond within 24 hours</h5>
+                <p>A real answer from Anthony — not an automated sequence or assistant.</p>
+              </div>
+            </div>
+            <div class="book-perk">
+              <div class="book-perk-bar"></div>
+              <div class="book-perk-content">
+                <h5>Come with a problem, leave with a plan</h5>
+                <p>30 minutes. We do the thinking upfront. You walk away knowing exactly what to build and how.</p>
+              </div>
+            </div>
+          </div>
+          <div class="calendly-wrap" id="calendly-container">
+            <div style="width:44px;height:44px;background:var(--bg);border:1px solid var(--border);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:8px;">📅</div>
+            <div style="font-family:'Unbounded',sans-serif;font-size:14px;font-weight:700;color:var(--text);margin-bottom:6px;">Calendly Booking</div>
+            <p style="font-size:12px;color:var(--text-muted);max-width:240px;line-height:1.6;">Add your Calendly URL in the script at the bottom of this file to activate live scheduling.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ FOOTER ═══ -->
+  <footer>
+    <div style="max-width:1240px;margin:0 auto;">
+      <div class="footer-top">
+        <div>
+          <div class="footer-logo-pill">
+            <img src="MainLogoTransparent.png" alt="HyperImplement" />
+          </div>
+          <p class="footer-desc">AI implementation agency. We help people and businesses stop hearing about AI and start using it — every single day.</p>
+        </div>
+        <div class="footer-col">
+          <h5>Services</h5>
+          <a href="#services">AI Strategy</a>
+          <a href="#services">Claude Code Installs</a>
+          <a href="#services">AI Employees &amp; Agents</a>
+          <a href="#services">AI Video Ads</a>
+          <a href="#services">Workflow Automation</a>
+        </div>
+        <div class="footer-col">
+          <h5>Company</h5>
+          <a href="#about">About</a>
+          <a href="#implemented">Real Work</a>
+          <a href="#contact">Contact</a>
+        </div>
+        <div class="footer-col">
+          <h5>Connect</h5>
+          <a href="#">@anthonyimplements</a>
+          <a href="#contact">Book a Free Implementation Call</a>
+          <a href="mailto:anthonyscollins21@gmail.com">Email Anthony</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2026 HyperImplement. All rights reserved.</p>
+        <p>Built with AI by <a href="#">HyperImplement</a></p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // NAV
+    const nav = document.getElementById('navbar');
+    window.addEventListener('scroll', () => nav.classList.toggle('scrolled', scrollY > 40));
+
+    // REVEAL
+    const els = document.querySelectorAll('.reveal');
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => { if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target);} });
+    }, {threshold:0.1});
+    els.forEach(el => obs.observe(el));
+    // Hero fires immediately
+    document.querySelectorAll('.hero .reveal').forEach((el,i) => setTimeout(()=>el.classList.add('visible'), 80+i*140));
+
+    // FORM
+    function handleSubmit(e) {
+      e.preventDefault();
+      document.getElementById('lead-form').style.display = 'none';
+      document.getElementById('form-success').style.display = 'block';
+    }
+
+    // CALENDLY
+    // Replace with your link, e.g. 'https://calendly.com/anthonyimplements/30min'
+    const CALENDLY_URL = 'YOUR_CALENDLY_URL';
+    if (CALENDLY_URL !== 'YOUR_CALENDLY_URL') {
+      const c = document.getElementById('calendly-container');
+      c.innerHTML = '';
+      c.className = 'calendly-embed-live';
+      const link = document.createElement('link');
+      link.rel='stylesheet'; link.href='https://assets.calendly.com/assets/external/widget.css';
+      document.head.appendChild(link);
+      const s = document.createElement('script');
+      s.src='https://assets.calendly.com/assets/external/widget.js';
+      s.onload=()=>Calendly.initInlineWidget({url:CALENDLY_URL,parentElement:c});
+      document.body.appendChild(s);
+    }
+
+    // SMOOTH SCROLL
+    document.querySelectorAll('a[href^="#"]').forEach(a=>{
+      a.addEventListener('click',e=>{
+        const t=document.querySelector(a.getAttribute('href'));
+        if(t){e.preventDefault();t.scrollIntoView({behavior:'smooth',block:'start'});}
+      });
+    });
+  </script>
+</body>
+</html>
