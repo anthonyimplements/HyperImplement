@@ -1012,25 +1012,26 @@ function renderYouTube({channel,topVideos,recentVideos,analytics,geography,traff
   document.getElementById('yt-subs').textContent=fmt(parseInt(s.subscriberCount||0));
   document.getElementById('yt-views').textContent=fmt(parseInt(s.viewCount||0));
   document.getElementById('yt-vcount').textContent=fmt(parseInt(s.videoCount||0));
-  if (analytics?.rows) {
+  if (analytics?.rows?.length) {
+    // YT Analytics rows are flat arrays: [date, views, estMinWatched, avgViewDur, subsGained, subsLost]
     const rows=analytics.rows;
-    const headers=analytics.columnHeaders||[];
-    const totalMin=rows.reduce((a,r)=>a+parseFloat(r.values?.[1]||0),0);
-    const totalGained=rows.reduce((a,r)=>a+parseFloat(r.values?.[3]||0),0);
-    const avgDur=rows.length?rows.reduce((a,r)=>a+parseFloat(r.values?.[2]||0),0)/rows.length:0;
+    const totalMin=rows.reduce((a,r)=>a+parseFloat(r[2]||0),0);
+    const totalGained=rows.reduce((a,r)=>a+parseFloat(r[4]||0),0);
+    const avgDur=rows.length?rows.reduce((a,r)=>a+parseFloat(r[3]||0),0)/rows.length:0;
     document.getElementById('yt-watchtime').textContent=fmt(Math.round(totalMin/60));
     document.getElementById('yt-avgdur').textContent=Math.round(avgDur)+'s';
     document.getElementById('yt-gained').textContent=`+${Math.round(totalGained)} gained / mo`;
+    const labels=rows.map(r=>{const d=String(r[0]||'');return d.length>=10?`${d.slice(5,7)}/${d.slice(8,10)}`:d;});
     const ctx1=document.getElementById('chart-yt-views').getContext('2d');
     if(charts.ytV)charts.ytV.destroy();
-    const labels=rows.map(r=>{const d=Array.isArray(r.dimensions)?r.dimensions[0]:r.dimensions||'';return d.length>=10?`${d.slice(5,7)}/${d.slice(8,10)}`:d;});
-    charts.ytV=new Chart(ctx1,{type:'line',data:{labels,datasets:[{label:'Views',data:rows.map(r=>parseFloat(r.values?.[0]||0)),borderColor:CC.red,backgroundColor:'rgba(230,57,70,.08)',borderWidth:2,pointRadius:0,pointHoverRadius:4,fill:true,tension:.4}]},options:{responsive:true,maintainAspectRatio:true,plugins:{legend:{display:false},tooltip:{backgroundColor:'rgba(7,7,15,.97)',borderColor:'rgba(230,57,70,.3)',borderWidth:1,padding:10}},scales:{x:{grid:{color:'rgba(255,255,255,.03)'},ticks:{maxTicksLimit:8,color:'#3A3A55'}},y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#3A3A55'},beginAtZero:true}}}});
+    charts.ytV=new Chart(ctx1,{type:'line',data:{labels,datasets:[{label:'Daily Views',data:rows.map(r=>parseFloat(r[1]||0)),borderColor:CC.red,backgroundColor:'rgba(230,57,70,.08)',borderWidth:2,pointRadius:2,pointHoverRadius:5,fill:true,tension:.4}]},options:{responsive:true,maintainAspectRatio:true,plugins:{legend:{display:false},tooltip:{backgroundColor:'rgba(7,7,15,.97)',borderColor:'rgba(230,57,70,.3)',borderWidth:1,padding:10,callbacks:{title:t=>'Views on '+t[0].label,label:t=>`${t.raw} views`}}},scales:{x:{grid:{color:'rgba(255,255,255,.03)'},ticks:{maxTicksLimit:8,color:'#3A3A55'}},y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#3A3A55'},beginAtZero:true}}}});
     const ctx2=document.getElementById('chart-yt-subs').getContext('2d');
     if(charts.ytS)charts.ytS.destroy();
-    charts.ytS=new Chart(ctx2,{type:'bar',data:{labels,datasets:[{label:'Gained',data:rows.map(r=>parseFloat(r.values?.[3]||0)),backgroundColor:'rgba(16,217,140,.7)',borderRadius:2,borderSkipped:false},{label:'Lost',data:rows.map(r=>-parseFloat(r.values?.[4]||0)),backgroundColor:'rgba(255,107,107,.6)',borderRadius:2,borderSkipped:false}]},options:{responsive:true,maintainAspectRatio:true,plugins:{legend:{display:true,labels:{boxWidth:8,padding:10,color:'#7A7A92',font:{size:9}}},tooltip:{backgroundColor:'rgba(7,7,15,.97)',borderColor:'rgba(230,57,70,.3)',borderWidth:1,padding:10}},scales:{x:{grid:{display:false},ticks:{maxTicksLimit:8,color:'#3A3A55'}},y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#3A3A55'}}}}});
+    charts.ytS=new Chart(ctx2,{type:'bar',data:{labels,datasets:[{label:'Gained',data:rows.map(r=>parseFloat(r[4]||0)),backgroundColor:'rgba(16,217,140,.7)',borderRadius:2,borderSkipped:false},{label:'Lost',data:rows.map(r=>-parseFloat(r[5]||0)),backgroundColor:'rgba(255,107,107,.6)',borderRadius:2,borderSkipped:false}]},options:{responsive:true,maintainAspectRatio:true,plugins:{legend:{display:true,labels:{boxWidth:8,padding:10,color:'#7A7A92',font:{size:9}}},tooltip:{backgroundColor:'rgba(7,7,15,.97)',borderColor:'rgba(230,57,70,.3)',borderWidth:1,padding:10}},scales:{x:{grid:{display:false},ticks:{maxTicksLimit:8,color:'#3A3A55'}},y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#3A3A55'}}}}});
   } else {
     document.getElementById('yt-watchtime').textContent='—';
     document.getElementById('yt-avgdur').textContent='—';
+    document.getElementById('yt-gained').textContent='Enable YouTube Analytics API →';
   }
   document.getElementById('yt-top-body').innerHTML=(topVideos||[]).map((v,i)=>{const st=v.statistics||{},thumb=v.snippet?.thumbnails?.default?.url||'',title=v.snippet?.title||'Untitled';return`<tr><td><span class="rank">${i+1}</span></td><td class="yt-cell">${thumb?`<img class="yt-thumb" src="${thumb}" alt=""/>`:''}<span class="yt-ttl" title="${title}">${title}</span></td><td><strong style="color:var(--red)">${fmt(parseInt(st.viewCount||0))}</strong></td><td style="color:var(--text-m)">${fmt(parseInt(st.likeCount||0))}</td><td style="color:var(--text-m)">${fmt(parseInt(st.commentCount||0))}</td></tr>`;}).join('')||`<tr><td colspan="5" class="empty">No videos found</td></tr>`;
   document.getElementById('yt-recent-body').innerHTML=(recentVideos||[]).map((v,i)=>{const st=v.statistics||{},thumb=v.snippet?.thumbnails?.default?.url||'',title=v.snippet?.title||'Untitled',date=v.snippet?.publishedAt?new Date(v.snippet.publishedAt).toLocaleDateString('en-US',{month:'short',day:'numeric'}):'—';return`<tr><td><span class="rank">${i+1}</span></td><td class="yt-cell">${thumb?`<img class="yt-thumb" src="${thumb}" alt=""/>`:''}<span class="yt-ttl" title="${title}">${title}</span></td><td><strong style="color:var(--cyan)">${fmt(parseInt(st.viewCount||0))}</strong></td><td style="color:var(--text-m);font-family:'IBM Plex Mono',monospace;font-size:9px;">${date}</td></tr>`;}).join('')||`<tr><td colspan="4" class="empty">No recent videos</td></tr>`;
@@ -1042,10 +1043,11 @@ function renderYouTube({channel,topVideos,recentVideos,analytics,geography,traff
 function renderYouTubeGeo(geography) {
   const rows = geography?.rows || [];
   if (!rows.length) { document.getElementById('yt-geo-body').innerHTML=`<tr><td colspan="4" class="empty">No geography data yet</td></tr>`; return; }
-  const totalViews = rows.reduce((a,r)=>a+parseFloat(r.values?.[0]||0),0)||1;
+  // rows are flat arrays: [countryCode, views, estimatedMinutesWatched]
+  const totalViews = rows.reduce((a,r)=>a+parseFloat(r[1]||0),0)||1;
   const flags={'US':'🇺🇸','GB':'🇬🇧','CA':'🇨🇦','AU':'🇦🇺','IN':'🇮🇳','DE':'🇩🇪','FR':'🇫🇷','BR':'🇧🇷','MX':'🇲🇽','NG':'🇳🇬','ZA':'🇿🇦','PH':'🇵🇭','JP':'🇯🇵','NL':'🇳🇱','KE':'🇰🇪'};
   document.getElementById('yt-geo-body').innerHTML = rows.map((r,i)=>{
-    const cc=(Array.isArray(r.dimensions)?r.dimensions[0]:r.dimensions)||'??',views=parseFloat(r.values?.[0]||0),mins=parseFloat(r.values?.[1]||0),hrs=(mins/60).toFixed(1),pct=Math.round(views/totalViews*100);
+    const cc=r[0]||'??',views=parseFloat(r[1]||0),mins=parseFloat(r[2]||0),hrs=(mins/60).toFixed(1),pct=Math.round(views/totalViews*100);
     return `<tr><td><span class="flag">${flags[cc]||'🌍'}</span>${cc}</td><td><strong style="color:var(--red)">${fmt(views)}</strong></td><td style="color:var(--text-m)">${hrs}h</td><td style="color:var(--text-m)">${pct}%</td></tr>`;
   }).join('');
 }
@@ -1054,8 +1056,9 @@ function renderYouTubeTraffic(trafficSources) {
   const rows = trafficSources?.rows || [];
   if (!rows.length) { document.getElementById('yt-traffic-legend').innerHTML=`<span style="font-size:10px;color:var(--text-m);font-family:'IBM Plex Mono',monospace;">No traffic source data yet</span>`; return; }
   const labels = {'YT_SEARCH':'YouTube Search','SUGGESTED_VIDEO':'Suggested Videos','EXT_URL':'External / Social','BROWSE':'Browse Features','YT_OTHER_PAGE':'Other YouTube','NO_LINK_OTHER':'Direct / Unknown','NOTIFICATION':'Notifications','PLAYLIST':'Playlists'};
-  const srcLabels = rows.map(r=>{const k=Array.isArray(r.dimensions)?r.dimensions[0]:r.dimensions||'';return labels[k]||k||'Other';});
-  const srcData = rows.map(r=>parseFloat(r.values?.[0]||0));
+  // rows are flat arrays: [sourceType, views]
+  const srcLabels = rows.map(r=>{const k=r[0]||'';return labels[k]||k||'Other';});
+  const srcData = rows.map(r=>parseFloat(r[1]||0));
   const total = srcData.reduce((a,b)=>a+b,0)||1;
   const colors = [CC.red,CC.cyan,CC.purple,CC.green,CC.amber,CC.pink,'#6366F1','#EC4899'];
   const ctx = document.getElementById('chart-yt-traffic').getContext('2d');
