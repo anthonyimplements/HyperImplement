@@ -1019,9 +1019,11 @@ function renderYouTube({channel,topVideos,recentVideos,analytics,geography,traff
   document.getElementById('yt-subs').textContent=fmt(parseInt(s.subscriberCount||0));
   document.getElementById('yt-views').textContent=fmt(parseInt(s.viewCount||0));
   document.getElementById('yt-vcount').textContent=fmt(parseInt(s.videoCount||0));
+  console.log('[YT Analytics] analytics object:', JSON.stringify(analytics));
   if (analytics?.rows?.length) {
     // YT Analytics rows are flat arrays: [date, views, estMinWatched, avgViewDur, subsGained, subsLost]
     const rows=analytics.rows;
+    console.log('[YT Analytics] first row sample:', JSON.stringify(rows[0]));
     const totalMin=rows.reduce((a,r)=>a+parseFloat(r[2]||0),0);
     const totalGained=rows.reduce((a,r)=>a+parseFloat(r[4]||0),0);
     const avgDur=rows.length?rows.reduce((a,r)=>a+parseFloat(r[3]||0),0)/rows.length:0;
