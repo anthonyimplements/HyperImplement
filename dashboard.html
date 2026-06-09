@@ -682,10 +682,13 @@ async function fetchYouTubeClient() {
       fetch(`${base}&metrics=views,estimatedMinutesWatched&dimensions=country&sort=-views&maxResults=15`,{headers:h}),
       fetch(`${base}&metrics=views&dimensions=insightTrafficSourceType&sort=-views`,{headers:h}),
     ]);
-    if (ar.ok) analytics=await ar.json();
-    if (gr.ok) geography=await gr.json();
-    if (tr.ok) trafficSources=await tr.json();
-  } catch(e){}
+    if (ar.ok) { analytics=await ar.json(); }
+    else { const e=await ar.text(); console.error('[YT Analytics daily] status:',ar.status,e); }
+    if (gr.ok) { geography=await gr.json(); }
+    else { const e=await gr.text(); console.error('[YT Analytics geo] status:',gr.status,e); }
+    if (tr.ok) { trafficSources=await tr.json(); }
+    else { const e=await tr.text(); console.error('[YT Analytics traffic] status:',tr.status,e); }
+  } catch(e){ console.error('[YT Analytics exception]',e); }
   return {channel,topVideos,recentVideos,analytics,geography,trafficSources};
 }
 
@@ -695,13 +698,17 @@ async function fetchYouTubeClient() {
 async function fetchSearchConsoleClient() {
   const h = {Authorization:`Bearer ${accessToken}`};
   const sr=await fetch('https://www.googleapis.com/webmasters/v3/sites',{headers:h});
-  if (!sr.ok) return null;
+  if (!sr.ok) { console.error('[Search Console sites] status:',sr.status,await sr.text()); return null; }
   const sd=await sr.json();
+  console.log('[Search Console sites response]', JSON.stringify(sd));
   const siteUrl=sd.siteEntry?.[0]?.siteUrl;
-  if (!siteUrl) return {siteUrl:null,queries:[],pages:[]};
+  if (!siteUrl) { console.warn('[Search Console] no siteUrl found in response'); return {siteUrl:null,queries:[],pages:[]}; }
+  console.log('[Search Console] using siteUrl:', siteUrl);
   const end=new Date().toISOString().slice(0,10),start=new Date(Date.now()-28*86400000).toISOString().slice(0,10);
   const post=(dims)=>fetch(`https://www.googleapis.com/webmasters/v3/sites/${encodeURIComponent(siteUrl)}/searchAnalytics/query`,{method:'POST',headers:{...h,'Content-Type':'application/json'},body:JSON.stringify({startDate:start,endDate:end,dimensions:dims,rowLimit:20})});
   const [qr,pr]=await Promise.all([post(['query']),post(['page'])]);
+  if (!qr.ok) console.error('[Search Console queries] status:',qr.status,await qr.clone().text());
+  if (!pr.ok) console.error('[Search Console pages] status:',pr.status,await pr.clone().text());
   return {siteUrl,queries:qr.ok?(await qr.json()).rows||[]:[], pages:pr.ok?(await pr.json()).rows||[]:[]};
 }
 
