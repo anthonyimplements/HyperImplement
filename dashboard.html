@@ -117,10 +117,10 @@
     .main{position:relative;z-index:1;padding:82px 28px 100px;max-width:1600px;margin:0 auto;}
 
     /* ── SECTION LABEL ── */
-    .sl{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--red);margin-bottom:14px;margin-top:36px;display:flex;align-items:center;gap:10px;}
-    .sl-bracket{color:rgba(230,57,70,.5);font-size:12px;}
-    .sl-chip{height:14px;opacity:.7;}
-    .sl::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent);}
+    .sl{font-family:'Unbounded',sans-serif;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--red);margin-bottom:16px;margin-top:44px;display:flex;align-items:center;gap:10px;font-weight:700;}
+    .sl-bracket{color:rgba(230,57,70,.4);font-size:14px;}
+    .sl-chip{height:16px;opacity:.8;}
+    .sl::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(230,57,70,.3),transparent);}
 
     /* ── CARDS ── */
     .card{background:var(--card);border:1px solid var(--border-d);border-radius:4px;position:relative;overflow:hidden;transition:border-color .25s,box-shadow .25s;animation:fadeUp .5s ease both;}
@@ -249,7 +249,6 @@
     [data-tip]:hover::before{opacity:1;}
 
     /* ── SECTION DIVIDER LABEL ── */
-    .sl{margin-top:44px;}
     .sl:first-of-type{margin-top:8px;}
 
     /* ── IMPROVED READABILITY ── */
@@ -424,7 +423,7 @@
   <div id="yt-notice" class="notice" style="display:none;">⚠ YouTube access needs re-authorization. <a onclick="reAuth()">Re-auth here</a> — 10 seconds.</div>
   <div class="g5" id="yt-kpis">
     <div class="card kpi-card" style="--kpi-c:var(--red);animation-delay:0ms" data-tip="Your current YouTube subscriber count. Also shows subscribers gained in the last 30 days via YouTube Analytics API."><div class="top-bar"></div><div class="kpi-label">Subscribers</div><div class="kpi-value" id="yt-subs">—</div><div class="kpi-sub" id="yt-gained">— gained / mo</div></div>
-    <div class="card kpi-card" style="--kpi-c:var(--cyan);animation-delay:60ms" data-tip="All-time total views across your entire channel. Pulled from the YouTube Data API channel statistics."><div class="top-bar"></div><div class="kpi-label">Total Views</div><div class="kpi-value" id="yt-views">—</div><div class="kpi-sub">lifetime</div></div>
+    <div class="card kpi-card" style="--kpi-c:var(--cyan);animation-delay:60ms" data-tip="All-time total views across your entire channel. Pulled from the YouTube Data API channel statistics."><div class="top-bar"></div><div class="kpi-label">Total Views</div><div class="kpi-value" id="yt-views">—</div><div class="kpi-sub">all-time lifetime</div></div>
     <div class="card kpi-card" style="--kpi-c:var(--purple);animation-delay:120ms" data-tip="Total number of videos published on your channel (from your uploads playlist)."><div class="top-bar"></div><div class="kpi-label">Videos</div><div class="kpi-value" id="yt-vcount">—</div><div class="kpi-sub">published</div></div>
     <div class="card kpi-card" style="--kpi-c:var(--green);animation-delay:180ms" data-tip="Total minutes watched across all your videos in the last 30 days, converted to hours. Key metric YouTube uses for algorithm ranking."><div class="top-bar"></div><div class="kpi-label">Watch Time</div><div class="kpi-value" id="yt-watchtime">—</div><div class="kpi-sub">hours · last 30d</div></div>
     <div class="card kpi-card" style="--kpi-c:var(--amber);animation-delay:240ms" data-tip="Average seconds a viewer watches before leaving. Higher = stronger content retention. YouTube values this heavily for recommendations."><div class="top-bar"></div><div class="kpi-label">Avg View Duration</div><div class="kpi-value" id="yt-avgdur">—</div><div class="kpi-sub">seconds avg</div></div>
@@ -451,9 +450,27 @@
     </div>
   </div>
 
+  <!-- TRENDING IN YOUR NICHE -->
+  <div class="sl"><span class="sl-bracket">[</span><img class="sl-chip" src="ChipLogo.png" alt=""/><span>TRENDING IN YOUR NICHE</span><span class="sl-bracket">]</span></div>
+  <div class="card card-inner" style="animation-delay:80ms;">
+    <div class="card-hdr">
+      <div><div class="card-title">Videos Your Audience Also Watches</div><div class="card-sub">Top AI & business automation videos on YouTube right now</div></div>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <select id="niche-topic" class="range-sel" onchange="loadNicheVideos()" style="font-size:10px;">
+          <option value="AI business automation">AI Business Automation</option>
+          <option value="Claude AI tutorial">Claude AI Tutorial</option>
+          <option value="AI implementation business">AI Implementation</option>
+          <option value="Make.com automation">Make.com Automation</option>
+          <option value="AI agency">AI Agency</option>
+        </select>
+      </div>
+    </div>
+    <table class="dt"><thead><tr><th>#</th><th>Video</th><th>Views</th><th>Likes</th><th>Duration</th></tr></thead><tbody id="niche-body"><tr><td colspan="5" class="empty">Loading trending videos…</td></tr></tbody></table>
+  </div>
+
   <!-- SEARCH CONSOLE -->
   <div class="sl"><span class="sl-bracket">[</span><img class="sl-chip" src="ChipLogo.png" alt=""/><span>SEARCH CONSOLE</span><span class="sl-bracket">]</span></div>
-  <div id="sc-notice" class="notice" style="display:none;">⚠ Search Console needs re-authorization. <a onclick="reAuth()">Re-auth here</a>.</div>
+  <div id="sc-notice" class="notice" style="display:none;">⚠ Search Console needs re-authorization. Enable the Search Console API at console.cloud.google.com → APIs & Services → Library → "Google Search Console API" → Enable. Then <a onclick="reAuth()">re-auth here</a>.</div>
   <div class="g2h">
     <div class="card card-inner" style="animation-delay:80ms"><div class="card-hdr"><div><div class="card-title">Top Search Queries</div><div class="card-sub">Last 28 days · Google</div></div><div class="card-badge" id="sc-site">—</div></div><table class="dt"><thead><tr><th>#</th><th>Query</th><th>Clicks</th><th>Impr.</th><th>CTR</th><th>Pos.</th></tr></thead><tbody id="sc-queries"></tbody></table></div>
     <div class="card card-inner" style="animation-delay:140ms"><div class="card-hdr"><div><div class="card-title">Top Pages in Search</div><div class="card-sub">By organic clicks</div></div></div><table class="dt"><thead><tr><th>#</th><th>Page</th><th>Clicks</th><th>CTR</th><th>Pos.</th></tr></thead><tbody id="sc-pages"></tbody></table></div>
@@ -768,7 +785,7 @@ async function loadAllData() {
       const d=parseAllData(raw);
       renderAll(d);
     } catch(e) { console.error(e); }
-    loadYouTubeData(); loadSearchConsoleData();
+    loadYouTubeData(); loadSearchConsoleData(); loadNicheVideos();
     btn.classList.remove('spinning');
     if (refreshTimer) clearTimeout(refreshTimer);
     refreshTimer=setTimeout(loadAllData,5*60*1000);
@@ -785,7 +802,7 @@ async function loadAllData() {
       document.getElementById('no-data-banner').innerHTML='<strong>Demo Mode</strong> — Enter your credentials in Settings to see real data.';
     } else {
       d=await fetchAllMetrics(range);
-      loadYouTubeData(); loadSearchConsoleData();
+      loadYouTubeData(); loadSearchConsoleData(); loadNicheVideos();
     }
     renderAll(d);
     document.getElementById('last-updated').textContent='Updated '+new Date().toLocaleTimeString();
@@ -1006,7 +1023,7 @@ function renderYouTube({channel,topVideos,recentVideos,analytics,geography,traff
     document.getElementById('yt-gained').textContent=`+${Math.round(totalGained)} gained / mo`;
     const ctx1=document.getElementById('chart-yt-views').getContext('2d');
     if(charts.ytV)charts.ytV.destroy();
-    const labels=rows.map(r=>{const d=r.dimensions?.[0]||'';return`${d.slice(5,7)}/${d.slice(8,10)}`;});
+    const labels=rows.map(r=>{const d=Array.isArray(r.dimensions)?r.dimensions[0]:r.dimensions||'';return d.length>=10?`${d.slice(5,7)}/${d.slice(8,10)}`:d;});
     charts.ytV=new Chart(ctx1,{type:'line',data:{labels,datasets:[{label:'Views',data:rows.map(r=>parseFloat(r.values?.[0]||0)),borderColor:CC.red,backgroundColor:'rgba(230,57,70,.08)',borderWidth:2,pointRadius:0,pointHoverRadius:4,fill:true,tension:.4}]},options:{responsive:true,maintainAspectRatio:true,plugins:{legend:{display:false},tooltip:{backgroundColor:'rgba(7,7,15,.97)',borderColor:'rgba(230,57,70,.3)',borderWidth:1,padding:10}},scales:{x:{grid:{color:'rgba(255,255,255,.03)'},ticks:{maxTicksLimit:8,color:'#3A3A55'}},y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#3A3A55'},beginAtZero:true}}}});
     const ctx2=document.getElementById('chart-yt-subs').getContext('2d');
     if(charts.ytS)charts.ytS.destroy();
@@ -1028,7 +1045,7 @@ function renderYouTubeGeo(geography) {
   const totalViews = rows.reduce((a,r)=>a+parseFloat(r.values?.[0]||0),0)||1;
   const flags={'US':'🇺🇸','GB':'🇬🇧','CA':'🇨🇦','AU':'🇦🇺','IN':'🇮🇳','DE':'🇩🇪','FR':'🇫🇷','BR':'🇧🇷','MX':'🇲🇽','NG':'🇳🇬','ZA':'🇿🇦','PH':'🇵🇭','JP':'🇯🇵','NL':'🇳🇱','KE':'🇰🇪'};
   document.getElementById('yt-geo-body').innerHTML = rows.map((r,i)=>{
-    const cc=r.dimensions?.[0]||'??',views=parseFloat(r.values?.[0]||0),mins=parseFloat(r.values?.[1]||0),hrs=(mins/60).toFixed(1),pct=Math.round(views/totalViews*100);
+    const cc=(Array.isArray(r.dimensions)?r.dimensions[0]:r.dimensions)||'??',views=parseFloat(r.values?.[0]||0),mins=parseFloat(r.values?.[1]||0),hrs=(mins/60).toFixed(1),pct=Math.round(views/totalViews*100);
     return `<tr><td><span class="flag">${flags[cc]||'🌍'}</span>${cc}</td><td><strong style="color:var(--red)">${fmt(views)}</strong></td><td style="color:var(--text-m)">${hrs}h</td><td style="color:var(--text-m)">${pct}%</td></tr>`;
   }).join('');
 }
@@ -1037,7 +1054,7 @@ function renderYouTubeTraffic(trafficSources) {
   const rows = trafficSources?.rows || [];
   if (!rows.length) { document.getElementById('yt-traffic-legend').innerHTML=`<span style="font-size:10px;color:var(--text-m);font-family:'IBM Plex Mono',monospace;">No traffic source data yet</span>`; return; }
   const labels = {'YT_SEARCH':'YouTube Search','SUGGESTED_VIDEO':'Suggested Videos','EXT_URL':'External / Social','BROWSE':'Browse Features','YT_OTHER_PAGE':'Other YouTube','NO_LINK_OTHER':'Direct / Unknown','NOTIFICATION':'Notifications','PLAYLIST':'Playlists'};
-  const srcLabels = rows.map(r=>labels[r.dimensions?.[0]]||r.dimensions?.[0]||'Other');
+  const srcLabels = rows.map(r=>{const k=Array.isArray(r.dimensions)?r.dimensions[0]:r.dimensions||'';return labels[k]||k||'Other';});
   const srcData = rows.map(r=>parseFloat(r.values?.[0]||0));
   const total = srcData.reduce((a,b)=>a+b,0)||1;
   const colors = [CC.red,CC.cyan,CC.purple,CC.green,CC.amber,CC.pink,'#6366F1','#EC4899'];
@@ -1045,6 +1062,39 @@ function renderYouTubeTraffic(trafficSources) {
   if (charts.ytTraffic) charts.ytTraffic.destroy();
   charts.ytTraffic = new Chart(ctx,{type:'doughnut',data:{labels:srcLabels,datasets:[{data:srcData,backgroundColor:colors.slice(0,rows.length),borderColor:'rgba(2,2,8,.8)',borderWidth:3}]},options:{responsive:true,maintainAspectRatio:true,cutout:'72%',plugins:{legend:{display:false},tooltip:{backgroundColor:'rgba(7,7,15,.97)',borderColor:'rgba(230,57,70,.3)',borderWidth:1,padding:10}}}});
   document.getElementById('yt-traffic-legend').innerHTML = srcLabels.map((l,i)=>`<span style="display:inline-flex;align-items:center;gap:5px;font-size:9px;font-family:'IBM Plex Mono',monospace;color:var(--text-s);"><span style="width:7px;height:7px;border-radius:50%;background:${colors[i]};display:inline-block;flex-shrink:0;"></span>${l} <strong style="color:var(--text)">${Math.round(srcData[i]/total*100)}%</strong></span>`).join('');
+}
+
+// ══════════════════════════════════════════════
+//  TRENDING IN YOUR NICHE
+// ══════════════════════════════════════════════
+async function loadNicheVideos() {
+  const topic = document.getElementById('niche-topic')?.value || 'AI business automation';
+  const tbody = document.getElementById('niche-body');
+  tbody.innerHTML = `<tr><td colspan="5" class="empty">Loading…</td></tr>`;
+  try {
+    let items = [];
+    if (IS_LOCAL && API_BASE) {
+      const r = await fetch(`${API_BASE}/api/youtube-research?q=${encodeURIComponent(topic)}`);
+      if (r.ok) items = (await r.json()).items || [];
+    } else if (accessToken) {
+      const h = {Authorization:`Bearer ${accessToken}`};
+      const sr = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(topic)}&order=viewCount&type=video&maxResults=10&relevanceLanguage=en`,{headers:h});
+      if (sr.ok) {
+        const sd = await sr.json();
+        const ids = (sd.items||[]).map(i=>i.id?.videoId).filter(Boolean);
+        if (ids.length) {
+          const vr = await fetch(`https://www.googleapis.com/youtube/v3/videos?part=statistics,snippet,contentDetails&id=${ids.join(',')}`,{headers:h});
+          if (vr.ok) items = (await vr.json()).items || [];
+        }
+      }
+    }
+    if (!items.length) { tbody.innerHTML=`<tr><td colspan="5" class="empty">No results — YouTube Data API may not be enabled yet</td></tr>`; return; }
+    function parseDur(d){if(!d)return'—';const m=d.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);if(!m)return'—';const h=parseInt(m[1]||0),mn=parseInt(m[2]||0),s=parseInt(m[3]||0);return h?`${h}:${String(mn).padStart(2,'0')}:${String(s).padStart(2,'0')}`:`${mn}:${String(s).padStart(2,'0')}`;}
+    tbody.innerHTML = items.map((v,i)=>{
+      const st=v.statistics||{},thumb=v.snippet?.thumbnails?.default?.url||'',title=v.snippet?.title||'Untitled',ch=v.snippet?.channelTitle||'';
+      return `<tr><td><span class="rank">${i+1}</span></td><td class="yt-cell">${thumb?`<img class="yt-thumb" src="${thumb}" alt=""/>`:''}<div><span class="yt-ttl" title="${title}">${title.length>48?title.slice(0,48)+'…':title}</span><div style="font-size:9px;color:var(--text-m);font-family:'IBM Plex Mono',monospace;margin-top:2px;">${ch}</div></div></td><td><strong style="color:var(--red)">${fmt(parseInt(st.viewCount||0))}</strong></td><td style="color:var(--text-m)">${fmt(parseInt(st.likeCount||0))}</td><td style="color:var(--text-m);font-family:'IBM Plex Mono',monospace;font-size:9px;">${parseDur(v.contentDetails?.duration)}</td></tr>`;
+    }).join('');
+  } catch(e) { tbody.innerHTML=`<tr><td colspan="5" class="empty">Error: ${e.message}</td></tr>`; }
 }
 
 // ══════════════════════════════════════════════
