@@ -675,7 +675,7 @@ async function fetchYouTubeClient() {
   }
   let analytics=null, geography=null, trafficSources=null;
   try {
-    const end=new Date().toISOString().slice(0,10),start=new Date(Date.now()-30*86400000).toISOString().slice(0,10);
+    const end=new Date().toISOString().slice(0,10),start=new Date(Date.now()-90*86400000).toISOString().slice(0,10);
     const base=`https://youtubeanalytics.googleapis.com/v2/reports?ids=channel%3D%3D${channel.id}&startDate=${start}&endDate=${end}`;
     const [ar,gr,tr]=await Promise.all([
       fetch(`${base}&metrics=views,estimatedMinutesWatched,averageViewDuration,subscribersGained,subscribersLost&dimensions=day&sort=day`,{headers:h}),
@@ -701,7 +701,9 @@ async function fetchSearchConsoleClient() {
   if (!sr.ok) { console.error('[Search Console sites] status:',sr.status,await sr.text()); return null; }
   const sd=await sr.json();
   console.log('[Search Console sites response]', JSON.stringify(sd));
-  const siteUrl=sd.siteEntry?.[0]?.siteUrl;
+  // Pick the verified (siteOwner) property, not sc-domain which may be unverified
+  const owned=sd.siteEntry?.find(e=>e.permissionLevel==='siteOwner')||sd.siteEntry?.[0];
+  const siteUrl=owned?.siteUrl;
   if (!siteUrl) { console.warn('[Search Console] no siteUrl found in response'); return {siteUrl:null,queries:[],pages:[]}; }
   console.log('[Search Console] using siteUrl:', siteUrl);
   const end=new Date().toISOString().slice(0,10),start=new Date(Date.now()-28*86400000).toISOString().slice(0,10);
