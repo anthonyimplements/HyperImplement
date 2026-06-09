@@ -584,7 +584,7 @@ function initAuth() {
     else showAuthWall();
   }, 200);
 }
-function signIn() { tokenClient ? tokenClient.requestAccessToken({ prompt:'' }) : initAuth(); }
+function signIn() { tokenClient ? tokenClient.requestAccessToken({ prompt:'consent' }) : initAuth(); }
 function reAuth() {
   if (IS_LOCAL) { fetch(`${API_BASE}/api/auth-url`).then(r=>r.json()).then(({url})=>window.open(url,'_blank','width=500,height=600')); }
   else { sessionStorage.removeItem('hi_token'); signIn(); }
