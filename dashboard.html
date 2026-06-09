@@ -3,684 +3,522 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>HyperImplement — Analytics</title>
+  <title>HyperImplement — Command Center</title>
   <link rel="icon" type="image/png" href="ChipLogo.png" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700;900&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700;900&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <style>
     :root {
-      --bg:        #07070D;
-      --surface:   #0D0D18;
-      --card:      rgba(255,255,255,0.03);
-      --border:    rgba(249,91,61,0.18);
-      --border-dim:rgba(255,255,255,0.07);
-      --accent:    #F95B3D;
-      --cyan:      #00C8FF;
-      --purple:    #8B5CF6;
-      --green:     #10D98C;
-      --text:      #EEEEF0;
-      --text-sec:  #8A8A9A;
-      --text-muted:#4A4A5A;
-      --glow:      rgba(249,91,61,0.15);
+      --red:      #E63946;
+      --red-b:    #B91C1C;
+      --red-dim:  rgba(230,57,70,0.12);
+      --red-glow: rgba(230,57,70,0.2);
+      --cyan:     #00C8FF;
+      --purple:   #8B5CF6;
+      --green:    #10D98C;
+      --amber:    #F5A623;
+      --bg:       #020208;
+      --surface:  #07070F;
+      --card:     rgba(7,7,18,0.9);
+      --border:   rgba(230,57,70,0.14);
+      --border-d: rgba(255,255,255,0.06);
+      --text:     #EEEEF2;
+      --text-s:   #7A7A92;
+      --text-m:   #3A3A55;
     }
     *{box-sizing:border-box;margin:0;padding:0;}
-    html,body{height:100%;background:var(--bg);color:var(--text);font-family:'IBM Plex Sans',sans-serif;-webkit-font-smoothing:antialiased;}
-    body{overflow-x:hidden;}
+    html,body{height:100%;background:var(--bg);color:var(--text);font-family:'IBM Plex Sans',sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
 
-    /* ── BG GRID ── */
-    body::before{
-      content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
-      background-image:
-        linear-gradient(rgba(249,91,61,0.03) 1px,transparent 1px),
-        linear-gradient(90deg,rgba(249,91,61,0.03) 1px,transparent 1px);
-      background-size:48px 48px;
-    }
-    /* radial glow top-right */
-    body::after{
-      content:'';position:fixed;top:-200px;right:-200px;width:700px;height:700px;
-      background:radial-gradient(circle,rgba(249,91,61,0.07) 0%,transparent 65%);
-      pointer-events:none;z-index:0;
-    }
+    /* ── GRID BG ── */
+    body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+      background-image:linear-gradient(rgba(230,57,70,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(230,57,70,0.025) 1px,transparent 1px);
+      background-size:40px 40px;}
+    body::after{content:'';position:fixed;top:-300px;right:-300px;width:800px;height:800px;pointer-events:none;z-index:0;
+      background:radial-gradient(circle,rgba(230,57,70,0.06) 0%,transparent 65%);}
+
+    /* ── SCANLINE ── */
+    .scanline{position:fixed;left:0;right:0;height:2px;pointer-events:none;z-index:9999;
+      background:linear-gradient(90deg,transparent,rgba(230,57,70,0.35),transparent);
+      animation:scanSweep 8s linear infinite;}
+    @keyframes scanSweep{0%{top:-2px;opacity:1}90%{opacity:.6}100%{top:100vh;opacity:0}}
+
+    /* ── ANIMATIONS ── */
+    @keyframes glowPulse{0%,100%{box-shadow:0 0 0 0 rgba(230,57,70,0)}50%{box-shadow:0 0 24px 2px rgba(230,57,70,0.18)}}
+    @keyframes livePulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(16,217,140,.4)}50%{opacity:.7;box-shadow:0 0 0 5px rgba(16,217,140,0)}}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    @keyframes borderTrace{0%,100%{opacity:.4}50%{opacity:1}}
 
     /* ── SETUP OVERLAY ── */
-    #setup-overlay{
-      position:fixed;inset:0;z-index:999;
-      background:rgba(7,7,13,0.97);
-      -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
-      display:flex;align-items:center;justify-content:center;
-    }
-    .setup-card{
-      width:480px;max-width:90vw;
-      background:var(--surface);
-      border:1px solid var(--border);
-      border-radius:16px;padding:40px;
-      box-shadow:0 0 60px rgba(249,91,61,0.12),0 24px 64px rgba(0,0,0,0.5);
-    }
+    #setup-overlay{position:fixed;inset:0;z-index:999;background:rgba(2,2,8,.97);backdrop-filter:blur(16px);display:flex;align-items:center;justify-content:center;}
+    .setup-card{width:500px;max-width:92vw;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:44px;
+      box-shadow:0 0 80px rgba(230,57,70,.12),0 24px 64px rgba(0,0,0,.6);position:relative;}
+    .setup-card::before{content:'';position:absolute;top:0;left:0;width:14px;height:14px;border-top:2px solid var(--red);border-left:2px solid var(--red);}
+    .setup-card::after{content:'';position:absolute;bottom:0;right:0;width:14px;height:14px;border-bottom:2px solid var(--red);border-right:2px solid var(--red);}
     .setup-logo{display:flex;align-items:center;gap:12px;margin-bottom:28px;}
-    .setup-logo img{height:32px;}
-    .setup-logo span{font-family:'Unbounded',sans-serif;font-size:14px;font-weight:700;letter-spacing:-0.02em;}
-    .setup-title{font-family:'Unbounded',sans-serif;font-size:20px;font-weight:700;margin-bottom:8px;letter-spacing:-0.02em;}
-    .setup-sub{font-size:13px;color:var(--text-sec);line-height:1.6;margin-bottom:28px;}
-    .setup-step{
-      display:flex;gap:14px;align-items:flex-start;
-      background:rgba(255,255,255,0.03);border:1px solid var(--border-dim);
-      border-radius:10px;padding:14px 16px;margin-bottom:12px;
-    }
-    .setup-step-num{
-      width:22px;height:22px;border-radius:50%;
-      background:var(--accent);color:white;
-      font-family:'Unbounded',sans-serif;font-size:10px;font-weight:700;
-      display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;
-    }
-    .setup-step-text{font-size:12px;color:var(--text-sec);line-height:1.6;}
-    .setup-step-text strong{color:var(--text);display:block;margin-bottom:2px;font-size:13px;}
-    .setup-step-text a{color:var(--accent);text-decoration:none;}
-    .setup-inputs{margin-top:20px;display:flex;flex-direction:column;gap:12px;}
-    .setup-input-group label{display:block;font-size:11px;font-family:'IBM Plex Mono',monospace;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-sec);margin-bottom:6px;}
-    .setup-input-group input{
-      width:100%;background:rgba(255,255,255,0.04);border:1px solid var(--border-dim);
-      border-radius:8px;padding:10px 14px;color:var(--text);font-size:13px;font-family:'IBM Plex Mono',monospace;
-      outline:none;transition:border-color 0.2s;
-    }
-    .setup-input-group input:focus{border-color:var(--accent);}
-    .setup-input-group input::placeholder{color:var(--text-muted);}
-    .setup-btn{
-      margin-top:20px;width:100%;padding:13px;
-      background:var(--accent);color:white;border:none;border-radius:8px;
-      font-family:'Unbounded',sans-serif;font-size:12px;font-weight:700;letter-spacing:0.04em;
-      cursor:pointer;transition:background 0.2s,transform 0.15s;
-    }
-    .setup-btn:hover{background:#D94828;transform:translateY(-1px);}
-    .setup-error{font-size:12px;color:#FF6B6B;margin-top:8px;display:none;}
-
-    /* ── HEADER ── */
-    .header{
-      position:fixed;top:0;left:0;right:0;z-index:100;
-      height:60px;
-      background:rgba(7,7,13,0.9);
-      -webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);
-      border-bottom:1px solid var(--border-dim);
-      display:flex;align-items:center;justify-content:space-between;
-      padding:0 32px;
-    }
-    .header-left{display:flex;align-items:center;gap:20px;}
-    .header-logo{display:flex;align-items:center;gap:10px;}
-    .header-logo img{height:26px;}
-    .header-logo span{font-family:'Unbounded',sans-serif;font-size:12px;font-weight:700;letter-spacing:-0.01em;color:var(--text);}
-    .header-sep{width:1px;height:20px;background:var(--border-dim);}
-    .header-title{font-size:12px;color:var(--text-sec);font-family:'IBM Plex Mono',monospace;letter-spacing:0.06em;text-transform:uppercase;}
-    .live-badge{
-      display:flex;align-items:center;gap:7px;
-      background:rgba(16,217,140,0.08);border:1px solid rgba(16,217,140,0.2);
-      border-radius:20px;padding:4px 12px;
-      font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:0.08em;
-      color:var(--green);
-    }
-    .live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:livePulse 2s infinite;}
-    @keyframes livePulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(16,217,140,0.4);}50%{opacity:0.7;box-shadow:0 0 0 5px rgba(16,217,140,0);}}
-    .header-right{display:flex;align-items:center;gap:12px;}
-    .range-select{
-      background:rgba(255,255,255,0.04);border:1px solid var(--border-dim);
-      border-radius:8px;padding:6px 12px;color:var(--text);
-      font-size:12px;font-family:'IBM Plex Mono',monospace;
-      cursor:pointer;outline:none;
-      transition:border-color 0.2s;
-    }
-    .range-select:focus{border-color:var(--accent);}
-    .range-select option{background:var(--surface);}
-    .refresh-btn{
-      width:34px;height:34px;border-radius:8px;
-      background:rgba(255,255,255,0.04);border:1px solid var(--border-dim);
-      color:var(--text-sec);cursor:pointer;font-size:14px;
-      display:flex;align-items:center;justify-content:center;
-      transition:background 0.2s,color 0.2s;
-    }
-    .refresh-btn:hover{background:rgba(249,91,61,0.1);color:var(--accent);border-color:var(--border);}
-    .refresh-btn.spinning{animation:spin 1s linear infinite;}
-    @keyframes spin{to{transform:rotate(360deg);}}
-    .settings-btn{
-      display:flex;align-items:center;gap:6px;
-      background:rgba(255,255,255,0.04);border:1px solid var(--border-dim);
-      border-radius:8px;padding:6px 12px;color:var(--text-sec);
-      font-size:11px;font-family:'IBM Plex Mono',monospace;cursor:pointer;
-      transition:background 0.2s,color 0.2s;
-    }
-    .settings-btn:hover{background:rgba(249,91,61,0.08);color:var(--accent);}
-
-    /* ── MAIN ── */
-    .main{position:relative;z-index:1;padding:80px 32px 48px;max-width:1480px;margin:0 auto;}
-
-    /* ── SECTION LABEL ── */
-    .section-label{
-      font-family:'IBM Plex Mono',monospace;font-size:10px;
-      letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);
-      margin-bottom:14px;margin-top:32px;
-      display:flex;align-items:center;gap:8px;
-    }
-    .section-label::after{content:'';flex:1;height:1px;background:var(--border-dim);}
-
-    /* ── KPI GRID ── */
-    .kpi-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:14px;margin-bottom:4px;}
-    .kpi-card{
-      background:var(--card);border:1px solid var(--border-dim);
-      border-radius:12px;padding:20px 18px;
-      position:relative;overflow:hidden;
-      transition:border-color 0.25s,box-shadow 0.25s;
-    }
-    .kpi-card:hover{border-color:var(--border);box-shadow:0 0 24px var(--glow);}
-    .kpi-card::before{
-      content:'';position:absolute;top:0;left:0;right:0;height:2px;
-      background:linear-gradient(90deg,transparent,var(--kpi-color,var(--accent)),transparent);
-      opacity:0.6;
-    }
-    .kpi-label{font-size:10px;font-family:'IBM Plex Mono',monospace;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-sec);margin-bottom:10px;}
-    .kpi-value{font-family:'Unbounded',sans-serif;font-size:26px;font-weight:700;letter-spacing:-0.03em;color:var(--text);margin-bottom:6px;line-height:1;}
-    .kpi-delta{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-family:'IBM Plex Mono',monospace;padding:2px 7px;border-radius:4px;}
-    .kpi-delta.up{background:rgba(16,217,140,0.1);color:var(--green);}
-    .kpi-delta.down{background:rgba(255,80,80,0.1);color:#FF6B6B;}
-    .kpi-delta.neutral{background:rgba(255,255,255,0.05);color:var(--text-muted);}
-    .kpi-sub{font-size:10px;color:var(--text-muted);margin-top:4px;font-family:'IBM Plex Mono',monospace;}
-
-    /* Realtime card special */
-    .kpi-realtime .kpi-value{color:var(--green);}
-
-    /* ── CHART GRID ── */
-    .chart-grid-2{display:grid;grid-template-columns:1.8fr 1fr;gap:14px;margin-bottom:14px;}
-    .chart-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px;}
-    .chart-grid-half{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
-
-    .chart-card{
-      background:var(--card);border:1px solid var(--border-dim);
-      border-radius:12px;padding:22px 24px;
-      transition:border-color 0.25s;
-    }
-    .chart-card:hover{border-color:var(--border);}
-    .chart-card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;}
-    .chart-card-title{font-family:'Unbounded',sans-serif;font-size:12px;font-weight:700;letter-spacing:-0.01em;color:var(--text);}
-    .chart-card-sub{font-size:11px;color:var(--text-muted);font-family:'IBM Plex Mono',monospace;margin-top:2px;}
-    .chart-card-badge{
-      font-size:9px;font-family:'IBM Plex Mono',monospace;letter-spacing:0.08em;text-transform:uppercase;
-      padding:3px 8px;border-radius:4px;background:rgba(249,91,61,0.1);color:var(--accent);border:1px solid rgba(249,91,61,0.2);
-    }
-    .chart-wrap{position:relative;}
-    .chart-wrap canvas{max-height:220px;}
-
-    /* ── TABLE ── */
-    .data-table{width:100%;border-collapse:collapse;}
-    .data-table th{
-      font-size:9px;font-family:'IBM Plex Mono',monospace;letter-spacing:0.1em;text-transform:uppercase;
-      color:var(--text-muted);padding:0 0 10px;text-align:left;border-bottom:1px solid var(--border-dim);
-    }
-    .data-table th:last-child,.data-table td:last-child{text-align:right;}
-    .data-table td{
-      padding:10px 0;font-size:13px;color:var(--text-sec);
-      border-bottom:1px solid rgba(255,255,255,0.03);
-      vertical-align:middle;
-    }
-    .data-table tr:last-child td{border-bottom:none;}
-    .data-table tr:hover td{color:var(--text);}
-    .table-bar-wrap{display:flex;align-items:center;gap:10px;}
-    .table-bar{height:4px;border-radius:2px;background:var(--accent);opacity:0.7;min-width:4px;transition:width 0.6s ease;}
-    .table-rank{
-      font-size:10px;font-family:'IBM Plex Mono',monospace;color:var(--text-muted);
-      width:20px;display:inline-block;
-    }
-    .table-source-dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:8px;flex-shrink:0;}
-    .country-flag{font-size:16px;margin-right:8px;}
-
-    /* ── HEATMAP ── */
-    .heatmap-grid{display:grid;grid-template-columns:auto repeat(24,1fr);gap:3px;align-items:center;}
-    .heatmap-label{font-size:9px;font-family:'IBM Plex Mono',monospace;color:var(--text-muted);text-align:right;padding-right:8px;white-space:nowrap;}
-    .heatmap-cell{
-      aspect-ratio:1;border-radius:3px;background:rgba(249,91,61,var(--intensity,0.04));
-      transition:background 0.3s;cursor:default;
-    }
-    .heatmap-cell:hover{outline:1px solid rgba(249,91,61,0.4);}
-    .heatmap-hours{display:contents;}
-    .heatmap-hour-label{font-size:8px;font-family:'IBM Plex Mono',monospace;color:var(--text-muted);text-align:center;}
-
-    /* ── FUNNEL ── */
-    .funnel-step{
-      display:flex;align-items:center;gap:14px;
-      padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.04);
-    }
-    .funnel-step:last-child{border-bottom:none;}
-    .funnel-num{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text-muted);width:16px;}
-    .funnel-bar-wrap{flex:1;height:28px;background:rgba(255,255,255,0.03);border-radius:4px;overflow:hidden;position:relative;}
-    .funnel-bar{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--accent),rgba(249,91,61,0.4));transition:width 0.8s cubic-bezier(0.16,1,0.3,1);}
-    .funnel-label{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:11px;color:var(--text);font-weight:500;white-space:nowrap;}
-    .funnel-pct{font-family:'Unbounded',sans-serif;font-size:12px;font-weight:700;color:var(--text);min-width:44px;text-align:right;}
-    .funnel-count{font-size:10px;color:var(--text-muted);font-family:'IBM Plex Mono',monospace;min-width:56px;text-align:right;}
-
-    /* ── DEVICE ICONS ── */
-    .device-row{display:flex;flex-direction:column;gap:10px;margin-top:4px;}
-    .device-item{display:flex;align-items:center;gap:10px;}
-    .device-icon{font-size:16px;width:24px;text-align:center;}
-    .device-name{font-size:12px;color:var(--text-sec);flex:1;}
-    .device-pct-bar{flex:2;height:4px;border-radius:2px;background:rgba(255,255,255,0.06);overflow:hidden;}
-    .device-pct-fill{height:100%;border-radius:2px;background:var(--accent);transition:width 0.6s ease;}
-    .device-pct-num{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text);min-width:36px;text-align:right;}
-
-    /* ── SKELETON LOADER ── */
-    .skeleton{
-      background:linear-gradient(90deg,rgba(255,255,255,0.04) 25%,rgba(255,255,255,0.07) 50%,rgba(255,255,255,0.04) 75%);
-      background-size:200% 100%;
-      animation:shimmer 1.4s infinite;
-      border-radius:4px;
-    }
-    @keyframes shimmer{0%{background-position:200% 0;}100%{background-position:-200% 0;}}
-
-    /* ── EMPTY STATE ── */
-    .empty-state{text-align:center;padding:32px 16px;color:var(--text-muted);font-size:12px;font-family:'IBM Plex Mono',monospace;}
-    .empty-state span{display:block;font-size:24px;margin-bottom:8px;opacity:0.4;}
-
-    /* ── FOOTER ── */
-    .footer{
-      position:relative;z-index:1;text-align:center;
-      padding:16px 32px 32px;
-      font-size:10px;color:var(--text-muted);font-family:'IBM Plex Mono',monospace;letter-spacing:0.05em;
-    }
-
-    /* ── RESPONSIVE ── */
-    @media(max-width:1200px){
-      .kpi-grid{grid-template-columns:repeat(3,1fr);}
-      .chart-grid-2{grid-template-columns:1fr;}
-      .chart-grid-3{grid-template-columns:1fr 1fr;}
-    }
-    @media(max-width:768px){
-      .main{padding:72px 16px 40px;}
-      .header{padding:0 16px;}
-      .kpi-grid{grid-template-columns:repeat(2,1fr);}
-      .chart-grid-3,.chart-grid-half{grid-template-columns:1fr;}
-      .header-title,.live-badge{display:none;}
-    }
-
-    /* ── COUNT-UP ANIMATION ── */
-    .count-up{transition:all 0.3s;}
-
-    /* ── AUTH SECTION ── */
-    .auth-section{margin-bottom:24px;display:none;}
-    #g_id_onload,.g_id_signin{display:inline-block;}
-
-    /* ── NO DATA ── */
-    #no-data-banner{
-      display:none;
-      background:rgba(249,91,61,0.06);border:1px solid rgba(249,91,61,0.2);
-      border-radius:10px;padding:14px 18px;margin-bottom:20px;
-      font-size:13px;color:var(--text-sec);
-    }
-    #no-data-banner strong{color:var(--accent);}
+    .setup-logo img{height:34px;}
+    .setup-logo span{font-family:'Unbounded',sans-serif;font-size:13px;font-weight:700;letter-spacing:-.02em;}
+    .setup-title{font-family:'Unbounded',sans-serif;font-size:20px;font-weight:700;margin-bottom:8px;letter-spacing:-.02em;}
+    .setup-sub{font-size:12px;color:var(--text-s);line-height:1.65;margin-bottom:24px;}
+    .setup-step{display:flex;gap:14px;align-items:flex-start;background:rgba(255,255,255,.03);border:1px solid var(--border-d);border-radius:6px;padding:12px 14px;margin-bottom:10px;}
+    .setup-step-num{width:22px;height:22px;border-radius:50%;background:var(--red);color:#fff;font-family:'Unbounded',sans-serif;font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+    .setup-step-text{font-size:11px;color:var(--text-s);line-height:1.6;}
+    .setup-step-text strong{color:var(--text);display:block;margin-bottom:2px;font-size:12px;}
+    .setup-step-text a{color:var(--red);text-decoration:none;}
+    .setup-inputs{margin-top:20px;display:flex;flex-direction:column;gap:10px;}
+    .setup-input-group label{display:block;font-size:10px;font-family:'IBM Plex Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--text-s);margin-bottom:5px;}
+    .setup-input-group input{width:100%;background:rgba(255,255,255,.04);border:1px solid var(--border-d);border-radius:6px;padding:10px 14px;color:var(--text);font-size:12px;font-family:'IBM Plex Mono',monospace;outline:none;transition:border-color .2s;}
+    .setup-input-group input:focus{border-color:var(--red);}
+    .setup-input-group input::placeholder{color:var(--text-m);}
+    .setup-btn{margin-top:18px;width:100%;padding:13px;background:var(--red);color:#fff;border:none;border-radius:6px;font-family:'Unbounded',sans-serif;font-size:11px;font-weight:700;letter-spacing:.06em;cursor:pointer;transition:background .2s,transform .15s;}
+    .setup-btn:hover{background:var(--red-b);transform:translateY(-1px);}
+    .setup-error{font-size:11px;color:#FF6B6B;margin-top:6px;display:none;}
 
     /* ── AUTH WALL ── */
-    #auth-wall{
-      display:none;position:fixed;inset:0;z-index:200;
-      background:var(--bg);
-      align-items:center;justify-content:center;flex-direction:column;gap:24px;
-    }
+    #auth-wall{display:none;position:fixed;inset:0;z-index:200;background:var(--bg);align-items:center;justify-content:center;flex-direction:column;gap:24px;}
     #auth-wall.show{display:flex;}
-    .auth-wall-card{
-      background:var(--surface);border:1px solid var(--border);
-      border-radius:16px;padding:40px 48px;text-align:center;
-      box-shadow:0 0 60px rgba(249,91,61,0.1);
-      max-width:420px;width:90%;
+    .auth-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:44px 52px;text-align:center;box-shadow:0 0 80px rgba(230,57,70,.1);max-width:440px;width:90%;position:relative;}
+    .auth-card::before{content:'';position:absolute;top:0;left:0;width:14px;height:14px;border-top:2px solid var(--red);border-left:2px solid var(--red);}
+    .auth-card::after{content:'';position:absolute;bottom:0;right:0;width:14px;height:14px;border-bottom:2px solid var(--red);border-right:2px solid var(--red);}
+    .auth-card img{height:52px;margin-bottom:20px;}
+    .auth-card h2{font-family:'Unbounded',sans-serif;font-size:18px;font-weight:700;margin-bottom:8px;letter-spacing:-.02em;}
+    .auth-card p{font-size:12px;color:var(--text-s);line-height:1.65;margin-bottom:28px;}
+    .auth-btn{display:inline-flex;align-items:center;gap:10px;background:var(--red);color:#fff;border:none;border-radius:8px;padding:14px 28px;font-family:'Unbounded',sans-serif;font-size:11px;font-weight:700;letter-spacing:.06em;cursor:pointer;transition:background .2s,transform .15s;}
+    .auth-btn:hover{background:var(--red-b);transform:translateY(-1px);}
+    .auth-note{font-size:10px;color:var(--text-m);font-family:'IBM Plex Mono',monospace;margin-top:12px;}
+
+    /* ── HEADER ── */
+    .header{position:fixed;top:0;left:0;right:0;z-index:100;height:62px;background:rgba(2,2,8,.92);backdrop-filter:blur(24px);border-bottom:1px solid var(--border-d);display:flex;align-items:center;justify-content:space-between;padding:0 28px;}
+    .header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(230,57,70,.3),transparent);}
+    .h-left{display:flex;align-items:center;gap:16px;}
+    .h-logo{display:flex;align-items:center;gap:10px;}
+    .h-logo img.logo-icon{height:26px;}
+    .h-logo span{font-family:'Unbounded',sans-serif;font-size:11px;font-weight:700;letter-spacing:-.01em;color:var(--text);}
+    .h-sep{width:1px;height:18px;background:var(--border-d);}
+    .h-title{font-size:10px;color:var(--text-s);font-family:'IBM Plex Mono',monospace;letter-spacing:.1em;text-transform:uppercase;}
+    .h-center{display:flex;align-items:center;gap:10px;}
+    .live-badge{display:flex;align-items:center;gap:6px;background:rgba(16,217,140,.08);border:1px solid rgba(16,217,140,.2);border-radius:20px;padding:4px 12px;font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.1em;color:var(--green);}
+    .live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:livePulse 2s infinite;}
+    .h-right{display:flex;align-items:center;gap:10px;}
+    .rt-count{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--green);display:none;}
+    .range-sel{background:rgba(255,255,255,.04);border:1px solid var(--border-d);border-radius:6px;padding:6px 10px;color:var(--text);font-size:11px;font-family:'IBM Plex Mono',monospace;cursor:pointer;outline:none;transition:border-color .2s;}
+    .range-sel:focus{border-color:var(--red);}
+    .range-sel option{background:var(--surface);}
+    .icon-btn{width:32px;height:32px;border-radius:6px;background:rgba(255,255,255,.04);border:1px solid var(--border-d);color:var(--text-s);cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;transition:background .2s,color .2s,border-color .2s;}
+    .icon-btn:hover{background:var(--red-dim);color:var(--red);border-color:var(--border);}
+    .icon-btn.spinning{animation:spin 1s linear infinite;}
+    .settings-btn{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.04);border:1px solid var(--border-d);border-radius:6px;padding:6px 12px;color:var(--text-s);font-size:10px;font-family:'IBM Plex Mono',monospace;cursor:pointer;transition:background .2s,color .2s;}
+    .settings-btn:hover{background:var(--red-dim);color:var(--red);}
+
+    /* ── MAIN ── */
+    .main{position:relative;z-index:1;padding:82px 28px 100px;max-width:1600px;margin:0 auto;}
+
+    /* ── SECTION LABEL ── */
+    .sl{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--red);margin-bottom:14px;margin-top:36px;display:flex;align-items:center;gap:10px;}
+    .sl-bracket{color:rgba(230,57,70,.5);font-size:12px;}
+    .sl-chip{height:14px;opacity:.7;}
+    .sl::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent);}
+
+    /* ── CARDS ── */
+    .card{background:var(--card);border:1px solid var(--border-d);border-radius:4px;position:relative;overflow:hidden;transition:border-color .25s,box-shadow .25s;animation:fadeUp .5s ease both;}
+    .card::before{content:'';position:absolute;top:0;left:0;width:12px;height:12px;border-top:1px solid rgba(230,57,70,.6);border-left:1px solid rgba(230,57,70,.6);pointer-events:none;z-index:2;}
+    .card::after{content:'';position:absolute;bottom:0;right:0;width:12px;height:12px;border-bottom:1px solid rgba(230,57,70,.35);border-right:1px solid rgba(230,57,70,.35);pointer-events:none;z-index:2;}
+    .card:hover{border-color:var(--border);box-shadow:0 0 28px rgba(230,57,70,.1);}
+
+    /* ── KPI GRID ── */
+    .kpi-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:4px;}
+    .kpi-card{padding:18px 16px;}
+    .kpi-card .top-bar{position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--kpi-c,var(--red)),transparent);opacity:.7;}
+    .kpi-label{font-size:9px;font-family:'IBM Plex Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--text-s);margin-bottom:10px;}
+    .kpi-value{font-family:'Unbounded',sans-serif;font-size:26px;font-weight:700;letter-spacing:-.03em;color:var(--text);margin-bottom:6px;line-height:1;}
+    .kpi-delta{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-family:'IBM Plex Mono',monospace;padding:2px 6px;border-radius:3px;}
+    .kpi-delta.up{background:rgba(16,217,140,.1);color:var(--green);}
+    .kpi-delta.dn{background:rgba(255,80,80,.1);color:#FF6B6B;}
+    .kpi-delta.ne{background:rgba(255,255,255,.05);color:var(--text-m);}
+    .kpi-sub{font-size:9px;color:var(--text-m);margin-top:4px;font-family:'IBM Plex Mono',monospace;}
+    .kpi-rt .kpi-value{color:var(--green);}
+
+    /* ── CHART GRID ── */
+    .g2{display:grid;grid-template-columns:1.8fr 1fr;gap:12px;margin-bottom:12px;}
+    .g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px;}
+    .g2h{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+    .g5{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:12px;}
+    .g4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:12px;}
+    .card-inner{padding:20px 22px;}
+    .card-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+    .card-title{font-family:'Unbounded',sans-serif;font-size:11px;font-weight:700;letter-spacing:-.01em;color:var(--text);}
+    .card-sub{font-size:10px;color:var(--text-m);font-family:'IBM Plex Mono',monospace;margin-top:2px;}
+    .card-badge{font-size:9px;font-family:'IBM Plex Mono',monospace;letter-spacing:.08em;text-transform:uppercase;padding:3px 8px;border-radius:3px;background:var(--red-dim);color:var(--red);border:1px solid rgba(230,57,70,.2);}
+    .chart-wrap canvas{max-height:210px;}
+
+    /* ── TABLES ── */
+    .dt{width:100%;border-collapse:collapse;}
+    .dt th{font-size:9px;font-family:'IBM Plex Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--text-m);padding:0 0 8px;text-align:left;border-bottom:1px solid var(--border-d);}
+    .dt th:last-child,.dt td:last-child{text-align:right;}
+    .dt td{padding:9px 0;font-size:12px;color:var(--text-s);border-bottom:1px solid rgba(255,255,255,.025);vertical-align:middle;}
+    .dt tr:last-child td{border-bottom:none;}
+    .dt tr:hover td{color:var(--text);}
+    .rank{font-size:9px;font-family:'IBM Plex Mono',monospace;color:var(--text-m);width:18px;display:inline-block;}
+    .flag{font-size:14px;margin-right:6px;}
+
+    /* ── DEVICES ── */
+    .dev-row{display:flex;flex-direction:column;gap:10px;margin-top:4px;}
+    .dev-item{display:flex;align-items:center;gap:10px;}
+    .dev-name{font-size:11px;color:var(--text-s);flex:1;}
+    .dev-bar-wrap{flex:2;height:3px;border-radius:2px;background:rgba(255,255,255,.06);overflow:hidden;}
+    .dev-bar-fill{height:100%;border-radius:2px;background:var(--red);transition:width .6s ease;}
+    .dev-pct{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text);min-width:32px;text-align:right;}
+
+    /* ── FUNNEL ── */
+    .funnel-step{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.03);}
+    .funnel-step:last-child{border-bottom:none;}
+    .funnel-num{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--text-m);width:14px;}
+    .funnel-bar-w{flex:1;height:26px;background:rgba(255,255,255,.03);border-radius:3px;overflow:hidden;position:relative;}
+    .funnel-bar{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--red),rgba(230,57,70,.4));transition:width .8s cubic-bezier(.16,1,.3,1);}
+    .funnel-lbl{position:absolute;left:8px;top:50%;transform:translateY(-50%);font-size:10px;color:var(--text);white-space:nowrap;}
+    .funnel-pct{font-family:'Unbounded',sans-serif;font-size:11px;font-weight:700;color:var(--text);min-width:52px;text-align:right;}
+    .funnel-cnt{font-size:9px;color:var(--text-m);font-family:'IBM Plex Mono',monospace;min-width:50px;text-align:right;}
+
+    /* ── EMPTY / SKELETON ── */
+    .empty{text-align:center;padding:28px 16px;color:var(--text-m);font-size:11px;font-family:'IBM Plex Mono',monospace;}
+    .skel{background:linear-gradient(90deg,rgba(255,255,255,.04) 25%,rgba(255,255,255,.07) 50%,rgba(255,255,255,.04) 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;border-radius:3px;}
+
+    /* ── NOTICE ── */
+    .notice{display:flex;align-items:center;gap:10px;background:rgba(245,166,35,.07);border:1px solid rgba(245,166,35,.2);border-radius:6px;padding:10px 14px;margin-bottom:12px;font-size:11px;color:rgba(245,166,35,.9);font-family:'IBM Plex Mono',monospace;}
+    .notice a{color:var(--red);cursor:pointer;text-decoration:underline;}
+    #no-data-banner{display:none;background:var(--red-dim);border:1px solid rgba(230,57,70,.2);border-radius:6px;padding:12px 16px;margin-bottom:16px;font-size:12px;color:var(--text-s);}
+    #no-data-banner strong{color:var(--red);}
+    #api-status-bar{display:none;padding:9px 14px;border-radius:6px;border:1px solid;font-size:11px;font-family:'IBM Plex Mono',monospace;margin-bottom:14px;}
+
+    /* ── SC POSITION ── */
+    .sc-pos{font-family:'Unbounded',sans-serif;font-size:10px;font-weight:700;width:28px;height:22px;border-radius:4px;display:inline-flex;align-items:center;justify-content:center;}
+    .sc-top{background:rgba(16,217,140,.12);color:var(--green);}
+    .sc-mid{background:rgba(245,166,35,.1);color:var(--amber);}
+    .sc-low{background:rgba(255,255,255,.05);color:var(--text-m);}
+
+    /* ── YT THUMB ── */
+    .yt-thumb{width:52px;height:34px;object-fit:cover;border-radius:3px;flex-shrink:0;background:rgba(255,255,255,.06);}
+    .yt-cell{display:flex;align-items:center;gap:8px;}
+    .yt-ttl{font-size:10px;font-family:'IBM Plex Mono',monospace;color:var(--text-s);max-width:190px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+
+    /* ── REVENUE ── */
+    .rev-row{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;}
+    .rev-in{flex:1;min-width:110px;background:rgba(255,255,255,.04);border:1px solid var(--border-d);border-radius:6px;padding:8px 12px;color:var(--text);font-size:11px;font-family:'IBM Plex Mono',monospace;outline:none;transition:border-color .2s;}
+    .rev-in:focus{border-color:var(--red);}
+    .rev-in::placeholder{color:var(--text-m);}
+    .rev-sel{background:rgba(255,255,255,.04);border:1px solid var(--border-d);border-radius:6px;padding:8px 12px;color:var(--text);font-size:11px;font-family:'IBM Plex Mono',monospace;outline:none;cursor:pointer;}
+    .rev-sel option{background:var(--surface);}
+    .rev-add{padding:8px 16px;background:var(--red);color:#fff;border:none;border-radius:6px;font-family:'Unbounded',sans-serif;font-size:9px;font-weight:700;cursor:pointer;white-space:nowrap;transition:background .2s;}
+    .rev-add:hover{background:var(--red-b);}
+    .lead-status{font-size:8px;font-family:'IBM Plex Mono',monospace;letter-spacing:.06em;text-transform:uppercase;padding:2px 6px;border-radius:3px;}
+    .ls-lead{background:rgba(0,200,255,.1);color:var(--cyan);}
+    .ls-proposal{background:rgba(245,166,35,.1);color:var(--amber);}
+    .ls-won{background:rgba(16,217,140,.1);color:var(--green);}
+    .ls-lost{background:rgba(255,80,80,.1);color:#FF6B6B;}
+    .del-btn{width:20px;height:20px;border-radius:3px;border:1px solid var(--border-d);background:transparent;color:var(--text-m);cursor:pointer;font-size:10px;display:inline-flex;align-items:center;justify-content:center;transition:background .2s,color .2s;}
+    .del-btn:hover{background:rgba(255,80,80,.1);color:#FF6B6B;}
+
+    /* ── CONVERSION RATE BIG ── */
+    .cr-big{font-family:'Unbounded',sans-serif;font-size:44px;font-weight:900;color:var(--red);letter-spacing:-.04em;line-height:1;}
+
+    /* ── FOOTER ── */
+    .footer{position:relative;z-index:1;text-align:center;padding:20px 28px 40px;font-size:10px;color:var(--text-m);font-family:'IBM Plex Mono',monospace;letter-spacing:.05em;overflow:hidden;}
+
+    /* ── TOOLTIPS ── */
+    [data-tip]{position:relative;cursor:default;}
+    [data-tip]::after{
+      content:attr(data-tip);
+      position:absolute;bottom:calc(100% + 10px);left:50%;transform:translateX(-50%);
+      background:rgba(12,12,28,0.97);border:1px solid rgba(230,57,70,.3);
+      color:#C8C8D8;font-size:10px;font-family:'IBM Plex Sans',sans-serif;font-weight:400;
+      line-height:1.55;letter-spacing:0;text-transform:none;
+      padding:9px 13px;border-radius:5px;
+      width:220px;white-space:normal;text-align:left;
+      box-shadow:0 8px 24px rgba(0,0,0,.5);
+      pointer-events:none;opacity:0;transition:opacity .18s;z-index:9999;
     }
-    .auth-wall-logo{height:48px;margin-bottom:20px;}
-    .auth-wall-title{font-family:'Unbounded',sans-serif;font-size:18px;font-weight:700;margin-bottom:8px;letter-spacing:-0.02em;}
-    .auth-wall-sub{font-size:13px;color:var(--text-sec);line-height:1.6;margin-bottom:28px;}
-    .auth-wall-btn{
-      display:inline-flex;align-items:center;gap:10px;
-      background:var(--accent);color:white;border:none;
-      border-radius:10px;padding:14px 28px;
-      font-family:'Unbounded',sans-serif;font-size:12px;font-weight:700;letter-spacing:0.04em;
-      cursor:pointer;transition:background 0.2s,transform 0.15s;
+    [data-tip]:hover::after{opacity:1;}
+    [data-tip]::before{
+      content:'';position:absolute;bottom:calc(100% + 4px);left:50%;transform:translateX(-50%);
+      border:5px solid transparent;border-top-color:rgba(230,57,70,.3);
+      pointer-events:none;opacity:0;transition:opacity .18s;z-index:9999;
     }
-    .auth-wall-btn:hover{background:#D94828;transform:translateY(-1px);}
-    .auth-wall-note{font-size:10px;color:var(--text-muted);font-family:'IBM Plex Mono',monospace;margin-top:14px;}
+    [data-tip]:hover::before{opacity:1;}
+
+    /* ── SECTION DIVIDER LABEL ── */
+    .sl{margin-top:44px;}
+    .sl:first-of-type{margin-top:8px;}
+
+    /* ── IMPROVED READABILITY ── */
+    :root {
+      --text: #F0F0F5;
+      --text-s: #9090AA;
+      --kpi-value-size: 28px;
+    }
+    .kpi-value{font-size:var(--kpi-value-size);}
+    .card{background:rgba(10,10,22,0.92);}
+
+    /* ── RESPONSIVE ── */
+    @media(max-width:1200px){.kpi-grid{grid-template-columns:repeat(3,1fr);}.g2,.g3{grid-template-columns:1fr;}.g5{grid-template-columns:repeat(3,1fr);}}
+    @media(max-width:768px){.main{padding:72px 14px 80px;}.header{padding:0 14px;}.kpi-grid{grid-template-columns:repeat(2,1fr);}.g2h,.g3,.g4,.g5{grid-template-columns:1fr;}.h-center,.h-title{display:none;}}
   </style>
 </head>
 <body>
 
-<!-- ═══ SETUP OVERLAY ═══ -->
+<div class="scanline"></div>
+
+<!-- SETUP OVERLAY -->
 <div id="setup-overlay">
   <div class="setup-card">
-    <div class="setup-logo">
-      <img src="ChipLogo.png" alt="HyperImplement" />
-      <span>HyperImplement</span>
-    </div>
+    <div class="setup-logo"><img src="ChipLogo.png" alt=""/><span>HyperImplement</span></div>
     <div class="setup-title">Connect Analytics</div>
-    <div class="setup-sub">Two quick steps to unlock your full dashboard. You only do this once.</div>
-
-    <div class="setup-step">
-      <div class="setup-step-num">1</div>
-      <div class="setup-step-text">
-        <strong>Enable GA4 Data API</strong>
-        Go to <a href="https://console.cloud.google.com/apis/library/analyticsdata.googleapis.com" target="_blank">Google Cloud Console</a> → Enable "Google Analytics Data API v1". Then create an OAuth2 Web Client ID under Credentials. Add <code style="font-size:11px;color:var(--accent);">http://localhost:3000</code> as an Authorized JavaScript Origin.
-      </div>
-    </div>
-
-    <div class="setup-step">
-      <div class="setup-step-num">2</div>
-      <div class="setup-step-text">
-        <strong>Find your GA4 Property ID</strong>
-        In Google Analytics → Admin → Property Settings → Property ID (looks like <code style="font-size:11px;color:var(--accent);">123456789</code>, NOT the G-xxx ID).
-      </div>
-    </div>
-
+    <div class="setup-sub">One-time setup. Enter your credentials below to unlock your Command Center.</div>
+    <div class="setup-step"><div class="setup-step-num">1</div><div class="setup-step-text"><strong>Enable GA4 Data API</strong>Go to <a href="https://console.cloud.google.com/apis/library/analyticsdata.googleapis.com" target="_blank">Google Cloud Console</a> → Enable "Google Analytics Data API v1". Create an OAuth2 Web Client ID. Add <code style="color:var(--red);font-size:10px;">https://hyperimplement.com</code> and <code style="color:var(--red);font-size:10px;">http://localhost:3000</code> as Authorized JS Origins.</div></div>
+    <div class="setup-step"><div class="setup-step-num">2</div><div class="setup-step-text"><strong>Find your GA4 Property ID</strong>Google Analytics → Admin → Property Settings → Property ID (numeric, not G-xxx).</div></div>
     <div class="setup-inputs">
-      <div class="setup-input-group">
-        <label>OAuth2 Client ID</label>
-        <input type="text" id="input-client-id" placeholder="xxxxxxxxxx-xxxx.apps.googleusercontent.com" />
-      </div>
-      <div class="setup-input-group">
-        <label>GA4 Property ID (numeric)</label>
-        <input type="text" id="input-property-id" placeholder="123456789" />
-      </div>
-      <button class="setup-btn" onclick="saveSetup()">Launch Dashboard →</button>
+      <div class="setup-input-group"><label>OAuth2 Client ID</label><input type="text" id="input-client-id" placeholder="xxxxxxxxxx.apps.googleusercontent.com"/></div>
+      <div class="setup-input-group"><label>GA4 Property ID</label><input type="text" id="input-property-id" placeholder="540752503"/></div>
+      <button class="setup-btn" onclick="saveSetup()">Launch Command Center →</button>
       <div class="setup-error" id="setup-error">Please fill in both fields.</div>
-      <div style="text-align:center;margin-top:12px;">
-        <a href="#" onclick="loadDemo();return false;" style="font-size:11px;color:var(--text-muted);font-family:'IBM Plex Mono',monospace;letter-spacing:0.05em;">or load demo data →</a>
-      </div>
+      <div style="text-align:center;margin-top:10px;"><a href="#" onclick="loadDemo();return false;" style="font-size:10px;color:var(--text-m);font-family:'IBM Plex Mono',monospace;">or load demo data →</a></div>
     </div>
   </div>
 </div>
 
-<!-- ═══ AUTH WALL ═══ -->
+<!-- AUTH WALL -->
 <div id="auth-wall">
-  <div class="auth-wall-card">
-    <img src="ChipLogo.png" class="auth-wall-logo" alt="" />
-    <div class="auth-wall-title">Session Expired</div>
-    <div class="auth-wall-sub">Google OAuth tokens expire after 1 hour. Click below to sign back in — takes 2 seconds.</div>
-    <button class="auth-wall-btn" onclick="signIn()">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12.545 10.239v3.821h5.445c-.712 2.315-2.647 3.972-5.445 3.972a6.033 6.033 0 110-12.064c1.498 0 2.866.549 3.921 1.453l2.814-2.814A9.969 9.969 0 0012.545 2C7.021 2 2.543 6.477 2.543 12s4.478 10 10.002 10c8.396 0 10.249-7.85 9.426-11.748l-9.426-.013z"/></svg>
+  <div class="auth-card">
+    <img src="ChipLogo.png" alt=""/>
+    <h2>Session Expired</h2>
+    <p>Your Google OAuth token expired. Click below to sign back in — takes 2 seconds.</p>
+    <button class="auth-btn" onclick="signIn()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12.545 10.239v3.821h5.445c-.712 2.315-2.647 3.972-5.445 3.972a6.033 6.033 0 110-12.064c1.498 0 2.866.549 3.921 1.453l2.814-2.814A9.969 9.969 0 0012.545 2C7.021 2 2.543 6.477 2.543 12s4.478 10 10.002 10c8.396 0 10.249-7.85 9.426-11.748l-9.426-.013z"/></svg>
       Sign in with Google
     </button>
-    <div class="auth-wall-note">Read-only access to your GA4 data. Nobody else sees this page.</div>
+    <div class="auth-note">Read-only. Nobody else sees this page.</div>
   </div>
 </div>
 
-<!-- ═══ HEADER ═══ -->
+<!-- HEADER -->
 <header class="header">
-  <div class="header-left">
-    <div class="header-logo">
-      <img src="ChipLogo.png" alt="" />
-      <span>HyperImplement</span>
-    </div>
-    <div class="header-sep"></div>
-    <div class="header-title">Analytics Dashboard</div>
-    <div class="live-badge"><span class="live-dot"></span> LIVE</div>
+  <div class="h-left">
+    <div class="h-logo"><img class="logo-icon" src="ChipLogo.png" alt=""/><span>HYPERIMPLEMENT</span></div>
+    <div class="h-sep"></div>
+    <div class="h-title">Command Center</div>
   </div>
-  <div class="header-right">
-    <div id="realtime-header" style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--green);display:none;">
-      <span id="rt-count">—</span> active now
-    </div>
-    <select class="range-select" id="date-range" onchange="loadAllData()">
+  <div class="h-center">
+    <div class="live-badge"><span class="live-dot"></span>LIVE</div>
+  </div>
+  <div class="h-right">
+    <div class="rt-count" id="rt-count-hdr">— active</div>
+    <select class="range-sel" id="date-range" onchange="loadAllData()">
       <option value="7daysAgo">Last 7 days</option>
       <option value="30daysAgo" selected>Last 30 days</option>
       <option value="90daysAgo">Last 90 days</option>
       <option value="365daysAgo">Last 12 months</option>
     </select>
-    <button class="refresh-btn" id="refresh-btn" onclick="loadAllData()" title="Refresh">↻</button>
+    <button class="icon-btn" id="refresh-btn" onclick="loadAllData()" title="Refresh">↻</button>
     <button class="settings-btn" onclick="resetSetup()">⚙ Settings</button>
   </div>
 </header>
 
-<!-- ═══ MAIN ═══ -->
+<!-- MAIN -->
 <main class="main" id="dashboard" style="display:none;">
 
-  <div id="api-status-bar" style="display:none;padding:10px 16px;border-radius:8px;border:1px solid;font-size:12px;font-family:'IBM Plex Mono',monospace;margin-bottom:16px;"></div>
-  <div id="no-data-banner">
-    <strong>No data yet</strong> — GA4 just got connected. Data typically appears within 24–48 hours. The dashboard will populate automatically.
-  </div>
+  <div id="api-status-bar"></div>
+  <div id="no-data-banner"><strong>No data yet</strong> — GA4 just connected. Data appears within 24–48 hours.</div>
 
-  <!-- KPI ROW -->
-  <div class="section-label">Core Metrics</div>
+  <!-- CORE METRICS -->
+  <div class="sl"><span class="sl-bracket">[</span><img class="sl-chip" src="ChipLogo.png" alt=""/><span>CORE METRICS</span><span class="sl-bracket">]</span></div>
   <div class="kpi-grid">
-    <div class="kpi-card" style="--kpi-color:var(--accent);">
-      <div class="kpi-label">Total Sessions</div>
-      <div class="kpi-value" id="kpi-sessions">—</div>
-      <span class="kpi-delta neutral" id="kpi-sessions-d">—</span>
+    <div class="card kpi-card" style="--kpi-c:var(--red);animation-delay:0ms" data-tip="Total site visits in the period. One user can generate multiple sessions — a session resets after 30 min of inactivity."><div class="top-bar"></div><div class="kpi-label">Total Sessions</div><div class="kpi-value" id="kpi-sessions">—</div><span class="kpi-delta ne" id="kpi-sessions-d">—</span></div>
+    <div class="card kpi-card" style="--kpi-c:var(--cyan);animation-delay:60ms" data-tip="Unique visitors (by device/browser). GA4 uses 'User' as a device-based ID. Cross-device users may be counted twice."><div class="top-bar"></div><div class="kpi-label">Total Users</div><div class="kpi-value" id="kpi-users">—</div><span class="kpi-delta ne" id="kpi-users-d">—</span></div>
+    <div class="card kpi-card" style="--kpi-c:var(--purple);animation-delay:120ms" data-tip="First-time visitors who have never been to your site before (in this browser/device). High new-user % = good top-of-funnel growth."><div class="top-bar"></div><div class="kpi-label">New Users</div><div class="kpi-value" id="kpi-new">—</div><span class="kpi-delta ne" id="kpi-new-d">—</span></div>
+    <div class="card kpi-card" style="--kpi-c:var(--green);animation-delay:180ms" data-tip="Total times any page was loaded or reloaded. One visit can generate many pageviews if the user browses multiple pages."><div class="top-bar"></div><div class="kpi-label">Page Views</div><div class="kpi-value" id="kpi-views">—</div><span class="kpi-delta ne" id="kpi-views-d">—</span></div>
+    <div class="card kpi-card" style="--kpi-c:var(--amber);animation-delay:240ms" data-tip="Average time a visitor spends on your site per session. Longer = more interest. Calculated as total engagement time ÷ sessions."><div class="top-bar"></div><div class="kpi-label">Avg Session</div><div class="kpi-value" id="kpi-duration">—</div><div class="kpi-sub">min:sec</div></div>
+    <div class="card kpi-card" style="--kpi-c:var(--cyan);animation-delay:300ms" data-tip="% of sessions where the user was 'engaged': stayed 10+ seconds, converted, or viewed 2+ pages. Higher is better — it means visitors are actually reading."><div class="top-bar"></div><div class="kpi-label">Engagement Rate</div><div class="kpi-value" id="kpi-engagement">—</div><div class="kpi-sub">engaged sessions</div></div>
+    <div class="card kpi-card" style="--kpi-c:var(--purple);animation-delay:360ms" data-tip="Raw count of engaged sessions (10s+, 2+ pages, or had a conversion). This is the numerator of your engagement rate."><div class="top-bar"></div><div class="kpi-label">Engaged Sessions</div><div class="kpi-value" id="kpi-engaged-sessions">—</div><div class="kpi-sub">10s+ or 2+ pages</div></div>
+    <div class="card kpi-card kpi-rt" style="--kpi-c:var(--green);animation-delay:420ms" data-tip="People on your site right now, updated every 30 seconds. Uses GA4 Realtime API — reflects the last 30 minutes of activity."><div class="top-bar"></div><div class="kpi-label">Active Right Now</div><div class="kpi-value" id="kpi-realtime">—</div><div class="kpi-sub">live visitors</div></div>
+  </div>
+
+  <!-- CONVERSIONS (moved up — most business-critical) -->
+  <div class="sl"><span class="sl-bracket">[</span><img class="sl-chip" src="ChipLogo.png" alt=""/><span>CONVERSIONS</span><span class="sl-bracket">]</span></div>
+  <div id="conversions-notice" class="notice" style="display:none;">⚠ No conversion events detected. Tag events like <code>click_book_call</code>, <code>form_submit</code>, or <code>purchase</code> in GA4.</div>
+  <div class="g2h">
+    <div class="card card-inner" style="animation-delay:80ms">
+      <div class="card-hdr"><div><div class="card-title">Conversion Events</div><div class="card-sub">Key actions from GA4</div></div><div class="card-badge" id="total-conv-badge">—</div></div>
+      <table class="dt"><thead><tr><th>#</th><th>Event</th><th>Count</th><th>Rate</th></tr></thead><tbody id="conversions-body"></tbody></table>
     </div>
-    <div class="kpi-card" style="--kpi-color:var(--cyan);">
-      <div class="kpi-label">Total Users</div>
-      <div class="kpi-value" id="kpi-users">—</div>
-      <span class="kpi-delta neutral" id="kpi-users-d">—</span>
-    </div>
-    <div class="kpi-card" style="--kpi-color:var(--purple);">
-      <div class="kpi-label">New Users</div>
-      <div class="kpi-value" id="kpi-new">—</div>
-      <span class="kpi-delta neutral" id="kpi-new-d">—</span>
-    </div>
-    <div class="kpi-card" style="--kpi-color:var(--green);">
-      <div class="kpi-label">Page Views</div>
-      <div class="kpi-value" id="kpi-views">—</div>
-      <span class="kpi-delta neutral" id="kpi-views-d">—</span>
-    </div>
-    <div class="kpi-card" style="--kpi-color:var(--accent);">
-      <div class="kpi-label">Avg. Session</div>
-      <div class="kpi-value" id="kpi-duration">—</div>
-      <div class="kpi-sub">minutes:seconds</div>
-    </div>
-    <div class="kpi-card" style="--kpi-color:var(--cyan);">
-      <div class="kpi-label">Engagement Rate</div>
-      <div class="kpi-value" id="kpi-engagement">—</div>
-      <div class="kpi-sub">engaged sessions</div>
-    </div>
-    <div class="kpi-card" style="--kpi-color:var(--purple);">
-      <div class="kpi-label">Engaged Sessions</div>
-      <div class="kpi-value" id="kpi-engaged-sessions">—</div>
-      <div class="kpi-sub">10s+ or 2+ pages</div>
-    </div>
-    <div class="kpi-card kpi-realtime" style="--kpi-color:var(--green);">
-      <div class="kpi-label">Active Right Now</div>
-      <div class="kpi-value" id="kpi-realtime">—</div>
-      <div class="kpi-sub">live visitors</div>
+    <div class="card card-inner" style="animation-delay:140ms" data-tip="Total conversion events ÷ total sessions. Shows what % of visits result in a meaningful action. Benchmark: 1–3% is typical for service businesses.">
+      <div class="card-hdr"><div class="card-title">Conversion Rate</div><div class="card-sub">Conversions ÷ sessions</div></div>
+      <div style="display:flex;align-items:center;justify-content:center;height:150px;flex-direction:column;gap:8px;">
+        <div class="cr-big" id="cr-display">—</div>
+        <div style="font-size:10px;color:var(--text-m);font-family:'IBM Plex Mono',monospace;">overall rate</div>
+        <div style="display:flex;gap:10px;margin-top:6px;" id="cr-sub"></div>
+      </div>
     </div>
   </div>
 
-  <!-- SESSIONS + SOURCES -->
-  <div class="section-label">Traffic Overview</div>
-  <div class="chart-grid-2">
-    <div class="chart-card">
-      <div class="chart-card-header">
-        <div>
-          <div class="chart-card-title">Sessions Over Time</div>
-          <div class="chart-card-sub">Daily sessions & users</div>
-        </div>
-        <div class="chart-card-badge" id="sessions-range-label">30 days</div>
-      </div>
+  <!-- TRAFFIC -->
+  <div class="sl"><span class="sl-bracket">[</span><img class="sl-chip" src="ChipLogo.png" alt=""/><span>TRAFFIC OVERVIEW</span><span class="sl-bracket">]</span></div>
+  <div class="g2">
+    <div class="card card-inner" style="animation-delay:80ms">
+      <div class="card-hdr"><div><div class="card-title">Sessions Over Time</div><div class="card-sub">Daily sessions & users</div></div><div class="card-badge" id="sessions-range-label">30 days</div></div>
       <div class="chart-wrap"><canvas id="chart-sessions"></canvas></div>
     </div>
-    <div class="chart-card">
-      <div class="chart-card-header">
-        <div>
-          <div class="chart-card-title">Traffic Sources</div>
-          <div class="chart-card-sub">How people find you</div>
-        </div>
-      </div>
-      <div class="chart-wrap" style="max-height:200px;display:flex;align-items:center;justify-content:center;">
-        <canvas id="chart-sources" style="max-height:200px;max-width:200px;"></canvas>
-      </div>
-      <div id="sources-legend" style="margin-top:14px;display:flex;flex-wrap:wrap;gap:8px;"></div>
+    <div class="card card-inner" style="animation-delay:140ms">
+      <div class="card-hdr"><div><div class="card-title">Traffic Sources</div><div class="card-sub">How visitors find you</div></div></div>
+      <div style="display:flex;align-items:center;justify-content:center;max-height:190px;"><canvas id="chart-sources" style="max-height:190px;max-width:190px;"></canvas></div>
+      <div id="sources-legend" style="margin-top:12px;display:flex;flex-wrap:wrap;gap:7px;"></div>
     </div>
   </div>
 
-  <!-- DEVICE + COUNTRIES + BROWSERS -->
-  <div class="section-label">Audience</div>
-  <div class="chart-grid-3">
-    <div class="chart-card">
-      <div class="chart-card-header">
-        <div class="chart-card-title">Device Breakdown</div>
-      </div>
-      <div class="device-row" id="device-rows">
-        <div class="empty-state"><span>📱</span>Loading…</div>
-      </div>
+  <!-- AUDIENCE -->
+  <div class="sl"><span class="sl-bracket">[</span><img class="sl-chip" src="ChipLogo.png" alt=""/><span>AUDIENCE</span><span class="sl-bracket">]</span></div>
+  <div class="g3">
+    <div class="card card-inner" style="animation-delay:60ms"><div class="card-hdr"><div class="card-title">Device Breakdown</div></div><div class="dev-row" id="device-rows"><div class="empty">Loading…</div></div></div>
+    <div class="card card-inner" style="animation-delay:120ms"><div class="card-hdr"><div class="card-title">Top Countries</div></div><table class="dt"><thead><tr><th>Country</th><th>Sessions</th><th>%</th></tr></thead><tbody id="countries-body"></tbody></table></div>
+    <div class="card card-inner" style="animation-delay:180ms"><div class="card-hdr"><div class="card-title">Browsers & OS</div></div><table class="dt"><thead><tr><th>Browser</th><th>Sessions</th><th>%</th></tr></thead><tbody id="browsers-body"></tbody></table></div>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="sl"><span class="sl-bracket">[</span><img class="sl-chip" src="ChipLogo.png" alt=""/><span>CONTENT & BEHAVIOUR</span><span class="sl-bracket">]</span></div>
+  <div class="g2h">
+    <div class="card card-inner" style="animation-delay:80ms"><div class="card-hdr"><div><div class="card-title">Top Pages</div><div class="card-sub">By pageviews</div></div></div><table class="dt"><thead><tr><th>#</th><th>Page</th><th>Views</th><th>Avg Time</th></tr></thead><tbody id="pages-body"></tbody></table></div>
+    <div class="card card-inner" style="animation-delay:140ms"><div class="card-hdr"><div><div class="card-title">Top Events</div><div class="card-sub">User interactions tracked</div></div></div><table class="dt"><thead><tr><th>#</th><th>Event</th><th>Count</th></tr></thead><tbody id="events-body"></tbody></table></div>
+  </div>
+
+  <!-- ACQUISITION -->
+  <div class="sl"><span class="sl-bracket">[</span><img class="sl-chip" src="ChipLogo.png" alt=""/><span>ACQUISITION</span><span class="sl-bracket">]</span></div>
+  <div class="g2h">
+    <div class="card card-inner" style="animation-delay:80ms"><div class="card-hdr"><div><div class="card-title">Landing Pages</div><div class="card-sub">First page visited</div></div></div><div id="landing-funnel"></div></div>
+    <div class="card card-inner" style="animation-delay:140ms"><div class="card-hdr"><div><div class="card-title">Acquisition Channels</div><div class="card-sub">Sessions by channel over time</div></div></div><div class="chart-wrap"><canvas id="chart-channels"></canvas></div></div>
+  </div>
+
+  <!-- ENGAGEMENT -->
+  <div class="sl"><span class="sl-bracket">[</span><img class="sl-chip" src="ChipLogo.png" alt=""/><span>ENGAGEMENT</span><span class="sl-bracket">]</span></div>
+  <div class="g3">
+    <div class="card card-inner" style="animation-delay:60ms" data-tip="% of sessions where the visitor viewed only one page and left. In GA4, a 'bounce' means the session had no engagement event. Lower is better — under 50% is solid.">
+      <div class="card-hdr"><div><div class="card-title">Bounce Rate</div><div class="card-sub">% single-page sessions</div></div></div>
+      <div style="display:flex;align-items:center;justify-content:center;max-height:150px;"><canvas id="chart-bounce" style="max-height:150px;max-width:150px;"></canvas></div>
+      <div style="text-align:center;margin-top:8px;"><div style="font-family:'Unbounded',sans-serif;font-size:28px;font-weight:700;" id="bounce-num">—</div><div style="font-size:9px;color:var(--text-m);font-family:'IBM Plex Mono',monospace;margin-top:3px;">bounce rate</div></div>
     </div>
-    <div class="chart-card">
-      <div class="chart-card-header">
-        <div class="chart-card-title">Top Countries</div>
-      </div>
-      <table class="data-table" id="countries-table">
-        <thead><tr><th>Country</th><th>Sessions</th><th>%</th></tr></thead>
-        <tbody id="countries-body"></tbody>
-      </table>
+    <div class="card card-inner" style="animation-delay:120ms" data-tip="Average number of pages viewed per visit. Higher = visitors are exploring your content. Calculated as total pageviews ÷ sessions.">
+      <div class="card-hdr"><div><div class="card-title">Pages / Session</div><div class="card-sub">Depth of engagement</div></div></div>
+      <div style="display:flex;align-items:center;justify-content:center;height:150px;"><div style="text-align:center;"><div style="font-family:'Unbounded',sans-serif;font-size:54px;font-weight:900;color:var(--red);letter-spacing:-.04em;" id="pps">—</div><div style="font-size:10px;color:var(--text-m);font-family:'IBM Plex Mono',monospace;margin-top:4px;">pages per session</div></div></div>
     </div>
-    <div class="chart-card">
-      <div class="chart-card-header">
-        <div class="chart-card-title">Browsers & OS</div>
-      </div>
-      <table class="data-table" id="browsers-table">
-        <thead><tr><th>Browser</th><th>Sessions</th><th>%</th></tr></thead>
-        <tbody id="browsers-body"></tbody>
-      </table>
+    <div class="card card-inner" style="animation-delay:180ms" data-tip="Ratio of first-time visitors vs people who have visited before. High returning % = strong loyalty/brand recall. High new % = strong acquisition.">
+      <div class="card-hdr"><div><div class="card-title">New vs Returning</div><div class="card-sub">User loyalty signal</div></div></div>
+      <div style="display:flex;align-items:center;justify-content:center;max-height:150px;"><canvas id="chart-nr" style="max-height:150px;max-width:150px;"></canvas></div>
+      <div id="nr-legend" style="display:flex;gap:14px;justify-content:center;margin-top:8px;font-size:9px;font-family:'IBM Plex Mono',monospace;color:var(--text-s);"></div>
     </div>
   </div>
 
-  <!-- TOP PAGES + EVENTS -->
-  <div class="section-label">Content & Behaviour</div>
-  <div class="chart-grid-half">
-    <div class="chart-card">
-      <div class="chart-card-header">
-        <div class="chart-card-title">Top Pages</div>
-        <div class="chart-card-sub">By pageviews</div>
-      </div>
-      <table class="data-table">
-        <thead><tr><th>#</th><th>Page</th><th>Views</th><th>Avg Time</th></tr></thead>
-        <tbody id="pages-body"></tbody>
-      </table>
+  <!-- YOUTUBE -->
+  <div class="sl">
+    <span class="sl-bracket">[</span><img class="sl-chip" src="ChipLogo.png" alt=""/><span>YOUTUBE PERFORMANCE</span><span class="sl-bracket">]</span>
+  </div>
+  <div id="yt-notice" class="notice" style="display:none;">⚠ YouTube access needs re-authorization. <a onclick="reAuth()">Re-auth here</a> — 10 seconds.</div>
+  <div class="g5" id="yt-kpis">
+    <div class="card kpi-card" style="--kpi-c:var(--red);animation-delay:0ms" data-tip="Your current YouTube subscriber count. Also shows subscribers gained in the last 30 days via YouTube Analytics API."><div class="top-bar"></div><div class="kpi-label">Subscribers</div><div class="kpi-value" id="yt-subs">—</div><div class="kpi-sub" id="yt-gained">— gained / mo</div></div>
+    <div class="card kpi-card" style="--kpi-c:var(--cyan);animation-delay:60ms" data-tip="All-time total views across your entire channel. Pulled from the YouTube Data API channel statistics."><div class="top-bar"></div><div class="kpi-label">Total Views</div><div class="kpi-value" id="yt-views">—</div><div class="kpi-sub">lifetime</div></div>
+    <div class="card kpi-card" style="--kpi-c:var(--purple);animation-delay:120ms" data-tip="Total number of videos published on your channel (from your uploads playlist)."><div class="top-bar"></div><div class="kpi-label">Videos</div><div class="kpi-value" id="yt-vcount">—</div><div class="kpi-sub">published</div></div>
+    <div class="card kpi-card" style="--kpi-c:var(--green);animation-delay:180ms" data-tip="Total minutes watched across all your videos in the last 30 days, converted to hours. Key metric YouTube uses for algorithm ranking."><div class="top-bar"></div><div class="kpi-label">Watch Time</div><div class="kpi-value" id="yt-watchtime">—</div><div class="kpi-sub">hours · last 30d</div></div>
+    <div class="card kpi-card" style="--kpi-c:var(--amber);animation-delay:240ms" data-tip="Average seconds a viewer watches before leaving. Higher = stronger content retention. YouTube values this heavily for recommendations."><div class="top-bar"></div><div class="kpi-label">Avg View Duration</div><div class="kpi-value" id="yt-avgdur">—</div><div class="kpi-sub">seconds avg</div></div>
+  </div>
+  <div class="g2h" style="margin-bottom:12px;">
+    <div class="card card-inner" style="animation-delay:80ms"><div class="card-hdr"><div><div class="card-title">Views Over Time</div><div class="card-sub">Daily — last 30 days</div></div><div class="card-badge">30d</div></div><div class="chart-wrap"><canvas id="chart-yt-views"></canvas></div></div>
+    <div class="card card-inner" style="animation-delay:140ms"><div class="card-hdr"><div><div class="card-title">Subscriber Growth</div><div class="card-sub">Gained vs lost</div></div></div><div class="chart-wrap"><canvas id="chart-yt-subs"></canvas></div></div>
+  </div>
+  <div class="g2h">
+    <div class="card card-inner" style="animation-delay:80ms"><div class="card-hdr"><div><div class="card-title">Top Videos by Views</div><div class="card-sub">All-time performance</div></div></div><table class="dt"><thead><tr><th>#</th><th>Video</th><th>Views</th><th>Likes</th><th>Comments</th></tr></thead><tbody id="yt-top-body"></tbody></table></div>
+    <div class="card card-inner" style="animation-delay:140ms"><div class="card-hdr"><div><div class="card-title">Recent Uploads</div><div class="card-sub">Latest videos</div></div></div><table class="dt"><thead><tr><th>#</th><th>Video</th><th>Views</th><th>Date</th></tr></thead><tbody id="yt-recent-body"></tbody></table></div>
+  </div>
+
+  <!-- YOUTUBE AUDIENCE -->
+  <div class="g2h">
+    <div class="card card-inner" style="animation-delay:80ms">
+      <div class="card-hdr"><div><div class="card-title">Viewer Geography</div><div class="card-sub">Top countries · last 30 days</div></div></div>
+      <table class="dt"><thead><tr><th>Country</th><th>Views</th><th>Watch Time (hrs)</th><th>%</th></tr></thead><tbody id="yt-geo-body"></tbody></table>
     </div>
-    <div class="chart-card">
-      <div class="chart-card-header">
-        <div class="chart-card-title">Top Events</div>
-        <div class="chart-card-sub">User interactions tracked</div>
-      </div>
-      <table class="data-table">
-        <thead><tr><th>#</th><th>Event</th><th>Count</th></tr></thead>
-        <tbody id="events-body"></tbody>
-      </table>
+    <div class="card card-inner" style="animation-delay:140ms">
+      <div class="card-hdr"><div><div class="card-title">How Viewers Find You</div><div class="card-sub">Traffic sources · last 30 days</div></div></div>
+      <div style="display:flex;align-items:center;justify-content:center;max-height:180px;"><canvas id="chart-yt-traffic" style="max-height:180px;max-width:180px;"></canvas></div>
+      <div id="yt-traffic-legend" style="margin-top:12px;display:flex;flex-wrap:wrap;gap:7px;"></div>
     </div>
   </div>
 
-  <!-- LANDING PAGES + ACQUISITION TREND -->
-  <div class="section-label">Acquisition</div>
-  <div class="chart-grid-half">
-    <div class="chart-card">
-      <div class="chart-card-header">
-        <div class="chart-card-title">Landing Pages</div>
-        <div class="chart-card-sub">First page visitors land on</div>
-      </div>
-      <div id="landing-funnel"></div>
-    </div>
-    <div class="chart-card">
-      <div class="chart-card-header">
-        <div class="chart-card-title">Acquisition Channels</div>
-        <div class="chart-card-sub">Sessions by channel over time</div>
-      </div>
-      <div class="chart-wrap"><canvas id="chart-channels"></canvas></div>
-    </div>
+  <!-- SEARCH CONSOLE -->
+  <div class="sl"><span class="sl-bracket">[</span><img class="sl-chip" src="ChipLogo.png" alt=""/><span>SEARCH CONSOLE</span><span class="sl-bracket">]</span></div>
+  <div id="sc-notice" class="notice" style="display:none;">⚠ Search Console needs re-authorization. <a onclick="reAuth()">Re-auth here</a>.</div>
+  <div class="g2h">
+    <div class="card card-inner" style="animation-delay:80ms"><div class="card-hdr"><div><div class="card-title">Top Search Queries</div><div class="card-sub">Last 28 days · Google</div></div><div class="card-badge" id="sc-site">—</div></div><table class="dt"><thead><tr><th>#</th><th>Query</th><th>Clicks</th><th>Impr.</th><th>CTR</th><th>Pos.</th></tr></thead><tbody id="sc-queries"></tbody></table></div>
+    <div class="card card-inner" style="animation-delay:140ms"><div class="card-hdr"><div><div class="card-title">Top Pages in Search</div><div class="card-sub">By organic clicks</div></div></div><table class="dt"><thead><tr><th>#</th><th>Page</th><th>Clicks</th><th>CTR</th><th>Pos.</th></tr></thead><tbody id="sc-pages"></tbody></table></div>
   </div>
 
-  <!-- ENGAGEMENT METRICS -->
-  <div class="section-label">Engagement</div>
-  <div class="chart-grid-3">
-    <div class="chart-card">
-      <div class="chart-card-header">
-        <div class="chart-card-title">Bounce Rate</div>
-        <div class="chart-card-sub">% single-page sessions</div>
-      </div>
-      <div class="chart-wrap" style="max-height:160px;display:flex;align-items:center;justify-content:center;">
-        <canvas id="chart-bounce" style="max-height:160px;max-width:160px;"></canvas>
-      </div>
-      <div style="text-align:center;margin-top:10px;">
-        <div style="font-family:'Unbounded',sans-serif;font-size:28px;font-weight:700;" id="bounce-number">—</div>
-        <div style="font-size:10px;color:var(--text-muted);font-family:'IBM Plex Mono',monospace;margin-top:4px;">bounce rate</div>
-      </div>
+  <!-- REVENUE & PIPELINE -->
+  <div class="sl"><span class="sl-bracket">[</span><img class="sl-chip" src="ChipLogo.png" alt=""/><span>REVENUE & PIPELINE</span><span class="sl-bracket">]</span></div>
+  <div class="g4" style="margin-bottom:12px;">
+    <div class="card kpi-card" style="--kpi-c:var(--green);animation-delay:0ms" data-tip="Sum of all lead/proposal values that are still open (not won or lost). Represents potential revenue if all deals close."><div class="top-bar"></div><div class="kpi-label">Total Pipeline</div><div class="kpi-value" id="rev-pipeline">$0</div><div class="kpi-sub">open deals</div></div>
+    <div class="card kpi-card" style="--kpi-c:var(--red);animation-delay:60ms" data-tip="Total value of deals you've marked as Won. This is actual closed revenue tracked locally in your browser."><div class="top-bar"></div><div class="kpi-label">Won Revenue</div><div class="kpi-value" id="rev-won">$0</div><div class="kpi-sub">closed won</div></div>
+    <div class="card kpi-card" style="--kpi-c:var(--cyan);animation-delay:120ms" data-tip="Total number of leads/deals you've logged across all statuses (Lead, Proposal, Won, Lost)."><div class="top-bar"></div><div class="kpi-label">Total Leads</div><div class="kpi-value" id="rev-leads">0</div><div class="kpi-sub">all statuses</div></div>
+    <div class="card kpi-card" style="--kpi-c:var(--purple);animation-delay:180ms" data-tip="Won deals ÷ (Won + Lost). Excludes still-open leads. A 50%+ win rate is strong for consulting/services."><div class="top-bar"></div><div class="kpi-label">Win Rate</div><div class="kpi-value" id="rev-winrate">—</div><div class="kpi-sub">won ÷ closed</div></div>
+  </div>
+  <div class="card card-inner" style="margin-bottom:12px;animation-delay:100ms">
+    <div class="card-hdr"><div class="card-title">Add Lead / Deal</div></div>
+    <div class="rev-row">
+      <input class="rev-in" id="rev-name" placeholder="Client / company name" style="flex:2;"/>
+      <input class="rev-in" id="rev-value" placeholder="Value ($)" type="number" min="0" style="max-width:120px;"/>
+      <select class="rev-sel" id="rev-status"><option value="lead">Lead</option><option value="proposal">Proposal Sent</option><option value="won">Won</option><option value="lost">Lost</option></select>
+      <input class="rev-in" id="rev-service" placeholder="Service" style="flex:1.2;"/>
+      <button class="rev-add" onclick="addLead()">+ Add</button>
     </div>
-    <div class="chart-card">
-      <div class="chart-card-header">
-        <div class="chart-card-title">Pages / Session</div>
-        <div class="chart-card-sub">Depth of engagement</div>
-      </div>
-      <div style="display:flex;align-items:center;justify-content:center;height:140px;">
-        <div style="text-align:center;">
-          <div style="font-family:'Unbounded',sans-serif;font-size:52px;font-weight:900;color:var(--accent);letter-spacing:-0.04em;" id="pages-per-session">—</div>
-          <div style="font-size:11px;color:var(--text-muted);font-family:'IBM Plex Mono',monospace;margin-top:6px;">pages per session</div>
-        </div>
-      </div>
-    </div>
-    <div class="chart-card">
-      <div class="chart-card-header">
-        <div class="chart-card-title">New vs Returning</div>
-        <div class="chart-card-sub">User loyalty</div>
-      </div>
-      <div class="chart-wrap" style="max-height:160px;display:flex;align-items:center;justify-content:center;">
-        <canvas id="chart-new-returning" style="max-height:160px;max-width:160px;"></canvas>
-      </div>
-      <div id="new-returning-legend" style="display:flex;gap:16px;justify-content:center;margin-top:10px;font-size:10px;font-family:'IBM Plex Mono',monospace;color:var(--text-sec);"></div>
-    </div>
+    <table class="dt" id="leads-table" style="display:none;"><thead><tr><th>#</th><th>Client</th><th>Service</th><th>Value</th><th>Status</th><th>Date</th><th></th></tr></thead><tbody id="leads-body"></tbody></table>
+    <div id="leads-empty" style="text-align:center;padding:20px;font-size:10px;color:var(--text-m);font-family:'IBM Plex Mono',monospace;">No leads yet — add your first deal above.</div>
   </div>
 
-  <!-- REALTIME DETAIL -->
-  <div class="section-label">Real-Time</div>
-  <div class="chart-grid-half">
-    <div class="chart-card">
-      <div class="chart-card-header">
-        <div>
-          <div class="chart-card-title">Active Users by Country</div>
-          <div class="chart-card-sub">Refreshes every 30s</div>
-        </div>
-        <div class="live-badge"><span class="live-dot"></span> LIVE</div>
-      </div>
-      <table class="data-table">
-        <thead><tr><th>Country</th><th>Active Users</th></tr></thead>
-        <tbody id="realtime-countries"></tbody>
-      </table>
-    </div>
-    <div class="chart-card">
-      <div class="chart-card-header">
-        <div>
-          <div class="chart-card-title">Active Users by Page</div>
-          <div class="chart-card-sub">Right now</div>
-        </div>
-        <div class="live-badge"><span class="live-dot"></span> LIVE</div>
-      </div>
-      <table class="data-table">
-        <thead><tr><th>Page</th><th>Users</th></tr></thead>
-        <tbody id="realtime-pages"></tbody>
-      </table>
-    </div>
+  <!-- REAL-TIME -->
+  <div class="sl"><span class="sl-bracket">[</span><img class="sl-chip" src="ChipLogo.png" alt=""/><span>REAL-TIME</span><span class="sl-bracket">]</span></div>
+  <div class="g2h">
+    <div class="card card-inner" style="animation-delay:80ms"><div class="card-hdr"><div><div class="card-title">Active by Country</div><div class="card-sub">Refreshes every 30s</div></div><div class="live-badge"><span class="live-dot"></span>LIVE</div></div><table class="dt"><thead><tr><th>Country</th><th>Active Users</th></tr></thead><tbody id="rt-countries"></tbody></table></div>
+    <div class="card card-inner" style="animation-delay:140ms"><div class="card-hdr"><div><div class="card-title">Active by Page</div><div class="card-sub">Right now</div></div><div class="live-badge"><span class="live-dot"></span>LIVE</div></div><table class="dt"><thead><tr><th>Page</th><th>Users</th></tr></thead><tbody id="rt-pages"></tbody></table></div>
   </div>
 
 </main>
 
-<div class="footer" id="dash-footer" style="display:none;">
-  HyperImplement Analytics · Data from Google Analytics 4 · Auto-refreshes every 5 min · <span id="last-updated">—</span>
-</div>
+<footer class="footer" id="dash-footer" style="display:none;">
+  HyperImplement Command Center &nbsp;·&nbsp; GA4 + YouTube + Search Console &nbsp;·&nbsp; auto-refresh 5 min &nbsp;·&nbsp; <span id="last-updated">—</span>
+</footer>
 
 <script>
 // ══════════════════════════════════════════════
 //  CONFIG
 // ══════════════════════════════════════════════
-let CLIENT_ID = localStorage.getItem('hi_client_id') || '679982823954-fhlicpdh8ps1is67grpip2ndcffpdvt9.apps.googleusercontent.com';
+let CLIENT_ID   = localStorage.getItem('hi_client_id')   || '679982823954-fhlicpdh8ps1is67grpip2ndcffpdvt9.apps.googleusercontent.com';
 let PROPERTY_ID = localStorage.getItem('hi_property_id') || '540752503';
 let accessToken = null;
-let isDemoMode = false;
+let isDemoMode  = false;
 
-const MEASUREMENT_ID = 'G-DW4LEG1DV7';
+const IS_LOCAL = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+const API_BASE = IS_LOCAL ? 'http://localhost:3001' : null;
 
-const CHART_COLORS = {
-  accent:  '#F95B3D',
-  cyan:    '#00C8FF',
-  purple:  '#8B5CF6',
-  green:   '#10D98C',
-  yellow:  '#F5A623',
-  pink:    '#F472B6',
-  indigo:  '#6366F1',
+const ALL_SCOPES = [
+  'https://www.googleapis.com/auth/analytics.readonly',
+  'https://www.googleapis.com/auth/youtube.readonly',
+  'https://www.googleapis.com/auth/yt-analytics.readonly',
+  'https://www.googleapis.com/auth/webmasters.readonly',
+].join(' ');
+
+const CC = {
+  red:'#E63946', cyan:'#00C8FF', purple:'#8B5CF6',
+  green:'#10D98C', amber:'#F5A623', pink:'#F472B6',
 };
-const SOURCE_COLORS = [CHART_COLORS.accent, CHART_COLORS.cyan, CHART_COLORS.purple, CHART_COLORS.green, CHART_COLORS.yellow, CHART_COLORS.pink, CHART_COLORS.indigo];
+const SRC_COLORS = [CC.red, CC.cyan, CC.purple, CC.green, CC.amber, CC.pink, '#6366F1'];
 
-Chart.defaults.color = '#8A8A9A';
+Chart.defaults.color = '#7A7A92';
 Chart.defaults.font.family = "'IBM Plex Mono', monospace";
 Chart.defaults.font.size = 10;
 
@@ -691,43 +529,31 @@ function saveSetup() {
   const c = document.getElementById('input-client-id').value.trim();
   const p = document.getElementById('input-property-id').value.trim();
   if (!c || !p) { document.getElementById('setup-error').style.display='block'; return; }
-  localStorage.setItem('hi_client_id', c);
-  localStorage.setItem('hi_property_id', p);
+  localStorage.setItem('hi_client_id', c); localStorage.setItem('hi_property_id', p);
   CLIENT_ID = c; PROPERTY_ID = p;
   document.getElementById('setup-overlay').style.display='none';
-  initGoogleAuth();
+  initAuth();
 }
-
 function resetSetup() {
   document.getElementById('input-client-id').value = CLIENT_ID;
   document.getElementById('input-property-id').value = PROPERTY_ID;
   document.getElementById('setup-overlay').style.display='flex';
 }
-
 function loadDemo() {
   isDemoMode = true;
   document.getElementById('setup-overlay').style.display='none';
-  showDashboard();
-  loadAllData();
+  showDashboard(); loadAllData();
 }
-
-// Detect if running via local server or live site
-const IS_LOCAL = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
-const API_BASE = IS_LOCAL ? 'http://localhost:3001' : null;
 
 window.addEventListener('load', () => {
   if (IS_LOCAL) {
-    // Running via dashboard-server.mjs — use server-side auth, no OAuth popup
     document.getElementById('setup-overlay').style.display='none';
-    document.getElementById('auth-wall').classList.remove('show');
-    showDashboard();
-    loadAllData();
+    showDashboard(); loadAllData();
   } else {
-    // Running on hyperimplement.com — use OAuth popup flow
     document.getElementById('input-client-id').value = CLIENT_ID;
     document.getElementById('input-property-id').value = PROPERTY_ID;
     document.getElementById('setup-overlay').style.display='none';
-    initGoogleAuth();
+    initAuth();
   }
 });
 
@@ -735,575 +561,550 @@ window.addEventListener('load', () => {
 //  AUTH
 // ══════════════════════════════════════════════
 let tokenClient;
-
-function initGoogleAuth() {
+function initAuth() {
   if (isDemoMode) return;
   if (!CLIENT_ID) { loadDemo(); return; }
-
-  const waitForGSI = setInterval(() => {
-    if (window.google?.accounts?.oauth2) {
-      clearInterval(waitForGSI);
-
-      tokenClient = google.accounts.oauth2.initTokenClient({
-        client_id: CLIENT_ID,
-        scope: 'https://www.googleapis.com/auth/analytics.readonly',
-        callback: (response) => {
-          if (response.error) {
-            console.error('Auth error:', response);
-            showAuthWall();
-            return;
-          }
-          accessToken = response.access_token;
-          sessionStorage.setItem('hi_token', accessToken);
-          sessionStorage.setItem('hi_token_exp', Date.now() + 55*60*1000);
-          hideAuthWall();
-          showDashboard();
-          loadAllData();
-        },
-      });
-
-      // Use cached token if still valid — no popup needed
-      const cached = sessionStorage.getItem('hi_token');
-      const exp = parseInt(sessionStorage.getItem('hi_token_exp') || 0);
-      if (cached && Date.now() < exp) {
-        accessToken = cached;
-        showDashboard();
-        loadAllData();
-      } else {
-        // No valid token — show the sign-in wall, wait for user to click
-        showAuthWall();
-      }
-    }
+  const wait = setInterval(() => {
+    if (!window.google?.accounts?.oauth2) return;
+    clearInterval(wait);
+    tokenClient = google.accounts.oauth2.initTokenClient({
+      client_id: CLIENT_ID,
+      scope: ALL_SCOPES,
+      callback: (r) => {
+        if (r.error) { showAuthWall(); return; }
+        accessToken = r.access_token;
+        sessionStorage.setItem('hi_token', accessToken);
+        sessionStorage.setItem('hi_token_exp', Date.now() + 55*60*1000);
+        hideAuthWall(); showDashboard(); loadAllData();
+      },
+    });
+    const cached = sessionStorage.getItem('hi_token');
+    const exp = parseInt(sessionStorage.getItem('hi_token_exp') || 0);
+    if (cached && Date.now() < exp) { accessToken = cached; showDashboard(); loadAllData(); }
+    else showAuthWall();
   }, 200);
 }
-
-function signIn() {
-  if (!tokenClient) { initGoogleAuth(); return; }
-  // prompt:'' uses existing Google session if browser has one — no account picker
-  tokenClient.requestAccessToken({ prompt: '' });
+function signIn() { tokenClient ? tokenClient.requestAccessToken({ prompt:'' }) : initAuth(); }
+function reAuth() {
+  if (IS_LOCAL) { fetch(`${API_BASE}/api/auth-url`).then(r=>r.json()).then(({url})=>window.open(url,'_blank','width=500,height=600')); }
+  else { sessionStorage.removeItem('hi_token'); signIn(); }
 }
+function showAuthWall() { document.getElementById('auth-wall').classList.add('show'); }
+function hideAuthWall() { document.getElementById('auth-wall').classList.remove('show'); }
 
-function showAuthWall() {
-  document.getElementById('auth-wall').classList.add('show');
-}
-function hideAuthWall() {
-  document.getElementById('auth-wall').classList.remove('show');
-}
-
-// ══════════════════════════════════════════════
-//  SHOW DASHBOARD
-// ══════════════════════════════════════════════
 function showDashboard() {
   document.getElementById('dashboard').style.display='block';
   document.getElementById('dash-footer').style.display='block';
-  document.getElementById('realtime-header').style.display='flex';
+  document.getElementById('rt-count-hdr').style.display='flex';
+  renderLeads();
+}
+
+// ══════════════════════════════════════════════
+//  API STATUS
+// ══════════════════════════════════════════════
+let _apiErrors = [];
+function showApiStatus(ok, msg) {
+  const b = document.getElementById('api-status-bar');
+  if (!b) return;
+  b.textContent = msg;
+  b.style.background = ok ? 'rgba(16,217,140,.1)' : 'rgba(255,80,80,.1)';
+  b.style.color = ok ? CC.green : '#FF6B6B';
+  b.style.borderColor = ok ? 'rgba(16,217,140,.25)' : 'rgba(255,80,80,.25)';
+  b.style.display = 'block';
+  if (ok) setTimeout(() => { b.style.display='none'; }, 5000);
 }
 
 // ══════════════════════════════════════════════
 //  GA4 API
 // ══════════════════════════════════════════════
-let _apiErrors = [];
-
-function showApiStatus(ok, msg) {
-  let bar = document.getElementById('api-status-bar');
-  if (!bar) return;
-  bar.textContent = msg;
-  bar.style.background = ok ? 'rgba(16,217,140,0.12)' : 'rgba(255,80,80,0.12)';
-  bar.style.color = ok ? 'var(--green)' : '#FF6B6B';
-  bar.style.borderColor = ok ? 'rgba(16,217,140,0.25)' : 'rgba(255,80,80,0.25)';
-  bar.style.display = 'block';
-  if (ok) setTimeout(() => { bar.style.display='none'; }, 5000);
-}
-
 async function runReport(body) {
   if (isDemoMode) return null;
   try {
     const r = await fetch(`https://analyticsdata.googleapis.com/v1beta/properties/${PROPERTY_ID}:runReport`, {
-      method: 'POST',
-      headers: { 'Authorization': `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify(body)
+      method:'POST', headers:{'Authorization':`Bearer ${accessToken}`,'Content-Type':'application/json'}, body:JSON.stringify(body)
     });
-    if (!r.ok) {
-      const text = await r.text().catch(() => '(unreadable)');
-      console.error('GA4 runReport', r.status, text.slice(0, 300));
-      _apiErrors.push(`${r.status}: ${text.slice(0,120)}`);
-      if (r.status === 401 || r.status === 403) showApiStatus(false, `Auth error ${r.status} — click Sign In again`);
-      return null;
-    }
+    if (!r.ok) { const t=await r.text(); _apiErrors.push(`${r.status}: ${t.slice(0,120)}`); if (r.status===401||r.status===403) showApiStatus(false,`Auth error ${r.status}`); return null; }
     return r.json();
-  } catch(e) {
-    console.error('GA4 runReport network error:', e.message);
-    _apiErrors.push(`Network: ${e.message}`);
-    return null;
-  }
+  } catch(e) { _apiErrors.push(e.message); return null; }
 }
-
 async function runRealtimeReport(body) {
   if (isDemoMode) return null;
   try {
     const r = await fetch(`https://analyticsdata.googleapis.com/v1beta/properties/${PROPERTY_ID}:runRealtimeReport`, {
-      method: 'POST',
-      headers: { 'Authorization': `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify(body)
+      method:'POST', headers:{'Authorization':`Bearer ${accessToken}`,'Content-Type':'application/json'}, body:JSON.stringify(body)
     });
-    if (!r.ok) return null;
-    return r.json();
-  } catch(e) {
-    console.error('GA4 runRealtimeReport error:', e.message);
-    return null;
-  }
+    return r.ok ? r.json() : null;
+  } catch(e) { return null; }
 }
+function getRange() { return document.getElementById('date-range').value; }
 
-function getDateRange() {
-  return document.getElementById('date-range').value;
+// ══════════════════════════════════════════════
+//  YOUTUBE CLIENT (live site)
+// ══════════════════════════════════════════════
+async function fetchYouTubeClient() {
+  const h = { Authorization:`Bearer ${accessToken}` };
+  const cr = await fetch('https://www.googleapis.com/youtube/v3/channels?part=statistics,snippet,contentDetails&mine=true',{headers:h});
+  if (!cr.ok) return null;
+  const cd = await cr.json();
+  const channel = cd.items?.[0];
+  if (!channel) return {channel:null,topVideos:[],recentVideos:[],analytics:null};
+  const uploadsId = channel.contentDetails?.relatedPlaylists?.uploads;
+  let allIds=[];
+  if (uploadsId) { const pr=await fetch(`https://www.googleapis.com/youtube/v3/playlistItems?part=contentDetails&playlistId=${uploadsId}&maxResults=50`,{headers:h}); if (pr.ok) allIds=((await pr.json()).items||[]).map(i=>i.contentDetails.videoId); }
+  let topVideos=[],recentVideos=[];
+  if (allIds.length) {
+    const vr=await fetch(`https://www.googleapis.com/youtube/v3/videos?part=statistics,snippet,contentDetails&id=${allIds.slice(0,50).join(',')}`,{headers:h});
+    if (vr.ok) { const all=(await vr.json()).items||[]; topVideos=[...all].sort((a,b)=>parseInt(b.statistics?.viewCount||0)-parseInt(a.statistics?.viewCount||0)).slice(0,10); recentVideos=[...all].sort((a,b)=>new Date(b.snippet?.publishedAt)-new Date(a.snippet?.publishedAt)).slice(0,10); }
+  }
+  let analytics=null, geography=null, trafficSources=null;
+  try {
+    const end=new Date().toISOString().slice(0,10),start=new Date(Date.now()-30*86400000).toISOString().slice(0,10);
+    const base=`https://youtubeanalytics.googleapis.com/v2/reports?ids=channel%3D%3D${channel.id}&startDate=${start}&endDate=${end}`;
+    const [ar,gr,tr]=await Promise.all([
+      fetch(`${base}&metrics=views,estimatedMinutesWatched,averageViewDuration,subscribersGained,subscribersLost&dimensions=day&sort=day`,{headers:h}),
+      fetch(`${base}&metrics=views,estimatedMinutesWatched&dimensions=country&sort=-views&maxResults=15`,{headers:h}),
+      fetch(`${base}&metrics=views&dimensions=insightTrafficSourceType&sort=-views`,{headers:h}),
+    ]);
+    if (ar.ok) analytics=await ar.json();
+    if (gr.ok) geography=await gr.json();
+    if (tr.ok) trafficSources=await tr.json();
+  } catch(e){}
+  return {channel,topVideos,recentVideos,analytics,geography,trafficSources};
 }
 
 // ══════════════════════════════════════════════
-//  DEMO DATA GENERATOR
+//  SEARCH CONSOLE CLIENT (live site)
+// ══════════════════════════════════════════════
+async function fetchSearchConsoleClient() {
+  const h = {Authorization:`Bearer ${accessToken}`};
+  const sr=await fetch('https://www.googleapis.com/webmasters/v3/sites',{headers:h});
+  if (!sr.ok) return null;
+  const sd=await sr.json();
+  const siteUrl=sd.siteEntry?.[0]?.siteUrl;
+  if (!siteUrl) return {siteUrl:null,queries:[],pages:[]};
+  const end=new Date().toISOString().slice(0,10),start=new Date(Date.now()-28*86400000).toISOString().slice(0,10);
+  const post=(dims)=>fetch(`https://www.googleapis.com/webmasters/v3/sites/${encodeURIComponent(siteUrl)}/searchAnalytics/query`,{method:'POST',headers:{...h,'Content-Type':'application/json'},body:JSON.stringify({startDate:start,endDate:end,dimensions:dims,rowLimit:20})});
+  const [qr,pr]=await Promise.all([post(['query']),post(['page'])]);
+  return {siteUrl,queries:qr.ok?(await qr.json()).rows||[]:[], pages:pr.ok?(await pr.json()).rows||[]:[]};
+}
+
+// ══════════════════════════════════════════════
+//  YOUTUBE LOADER
+// ══════════════════════════════════════════════
+async function loadYouTubeData() {
+  try {
+    let data;
+    if (IS_LOCAL && API_BASE) {
+      const r=await fetch(`${API_BASE}/api/youtube`);
+      if (r.status===403){document.getElementById('yt-notice').style.display='flex';return;}
+      if (!r.ok) return;
+      data=await r.json();
+    } else if (accessToken) {
+      data=await fetchYouTubeClient();
+    } else return;
+    if (!data||data.error){document.getElementById('yt-notice').style.display='flex';return;}
+    renderYouTube(data);
+  } catch(e){ console.error('YT load:',e.message); }
+}
+
+// ══════════════════════════════════════════════
+//  SEARCH CONSOLE LOADER
+// ══════════════════════════════════════════════
+async function loadSearchConsoleData() {
+  try {
+    let data;
+    if (IS_LOCAL && API_BASE) {
+      const r=await fetch(`${API_BASE}/api/search-console`);
+      if (r.status===403){document.getElementById('sc-notice').style.display='flex';return;}
+      if (!r.ok) return;
+      data=await r.json();
+    } else if (accessToken) {
+      data=await fetchSearchConsoleClient();
+    } else return;
+    if (!data||data.error){document.getElementById('sc-notice').style.display='flex';return;}
+    renderSearchConsole(data);
+  } catch(e){ console.error('SC load:',e.message); }
+}
+
+// ══════════════════════════════════════════════
+//  DEMO DATA
 // ══════════════════════════════════════════════
 function genDemoData() {
-  const days = 30;
-  const dates = Array.from({length:days},(_,i)=>{
-    const d=new Date(); d.setDate(d.getDate()-days+i+1);
-    return d.toISOString().slice(0,10).replace(/-/g,'');
-  });
+  const days=30,dates=Array.from({length:days},(_,i)=>{const d=new Date();d.setDate(d.getDate()-days+i+1);return d.toISOString().slice(0,10).replace(/-/g,'');});
   return {
-    overview: { sessions:1842, users:1340, newUsers:1109, views:4217, duration:142, bounce:0.42, pagesPerSession:2.3 },
-    sessionsByDay: dates.map(d=>({date:d, sessions:Math.floor(40+Math.random()*80), users:Math.floor(30+Math.random()*60)})),
-    sources: [{ch:'Organic Search',s:641},{ch:'Direct',s:520},{ch:'Social',s:340},{ch:'Referral',s:198},{ch:'Email',s:87},{ch:'(Other)',s:56}],
-    devices: [{name:'Mobile',icon:'📱',s:920},{name:'Desktop',icon:'💻',s:798},{name:'Tablet',icon:'📟',s:124}],
-    countries: [{c:'United States',s:1180},{c:'United Kingdom',s:210},{c:'Canada',s:164},{c:'Australia',s:98},{c:'Germany',s:67},{c:'India',s:54},{c:'France',s:42},{c:'Netherlands',s:27}],
-    browsers: [{b:'Chrome',s:980},{b:'Safari',s:540},{b:'Firefox',s:180},{b:'Edge',s:92},{b:'Other',s:50}],
-    topPages: [
-      {p:'/',v:2210,t:87},{p:'/#services',v:870,t:64},{p:'/#about',v:620,t:48},
-      {p:'/#contact',v:510,t:112},{p:'/#implemented',v:380,t:55},{p:'/#why',v:240,t:41}
-    ],
-    events: [
-      {e:'page_view',c:4217},{e:'scroll',c:3102},{e:'session_start',c:1842},
-      {e:'click_book_call',c:287},{e:'form_submit',c:94},{e:'first_visit',c:1109},
-      {e:'click_nav',c:876},{e:'user_engagement',c:1540}
-    ],
-    landingPages: [{p:'/',s:1420},{p:'/#services',s:220},{p:'/#about',s:98},{p:'/#contact',s:104}],
-    channelsByDay: dates.map(d=>({
-      date:d,
-      organic:Math.floor(15+Math.random()*30),
-      direct:Math.floor(10+Math.random()*25),
-      social:Math.floor(5+Math.random()*20),
-      referral:Math.floor(2+Math.random()*10)
-    })),
-    newReturning: [{type:'new',u:1109},{type:'returning',u:231}],
-    realtime: { total:3, countries:[{c:'United States',u:2},{c:'Canada',u:1}], pages:[{p:'/',u:2},{p:'/#services',u:1}] }
+    overview:{sessions:1842,users:1340,newUsers:1109,views:4217,duration:142,bounce:.42,pagesPerSession:2.3,engagedSessions:1240,engagementRate:.67,eventCount:9800,dSessions:12,dUsers:8,dNewUsers:15,dViews:6},
+    sessionsByDay:dates.map(d=>({date:d,sessions:Math.floor(40+Math.random()*80),users:Math.floor(30+Math.random()*60),engaged:Math.floor(20+Math.random()*50)})),
+    sources:[{ch:'Organic Search',s:641,u:580},{ch:'Direct',s:520,u:480},{ch:'Social',s:340,u:310},{ch:'Referral',s:198,u:170},{ch:'Email',s:87,u:80},{ch:'(Other)',s:56,u:50}],
+    devices:[{name:'Mobile',icon:'📱',s:920},{name:'Desktop',icon:'💻',s:798},{name:'Tablet',icon:'📟',s:124}],
+    countries:[{c:'United States',s:1180,u:1050},{c:'United Kingdom',s:210,u:190},{c:'Canada',s:164,u:150},{c:'Australia',s:98,u:85},{c:'Germany',s:67,u:60},{c:'India',s:54,u:48}],
+    browsers:[{b:'Chrome',s:980},{b:'Safari',s:540},{b:'Firefox',s:180},{b:'Edge',s:92},{b:'Other',s:50}],
+    topPages:[{p:'/',v:2210,t:87,u:1200},{p:'/#services',v:870,t:64,u:600},{p:'/#about',v:620,t:48,u:400},{p:'/#contact',v:510,t:112,u:350},{p:'/#implemented',v:380,t:55,u:250}],
+    events:[{e:'page_view',c:4217},{e:'scroll',c:3102},{e:'click_book_call',c:287},{e:'form_submit',c:94},{e:'session_start',c:1842},{e:'first_visit',c:1109},{e:'click_nav',c:876},{e:'user_engagement',c:1540}],
+    landingPages:[{p:'/',s:1420,u:1200,b:.38},{p:'/#services',s:220,u:200,b:.45},{p:'/#about',s:98,u:90,b:.52},{p:'/#contact',s:104,u:95,b:.35}],
+    channelsByDay:dates.map(d=>({date:d,organic:Math.floor(15+Math.random()*30),direct:Math.floor(10+Math.random()*25),social:Math.floor(5+Math.random()*20),referral:Math.floor(2+Math.random()*10)})),
+    newReturning:[{type:'new',u:1109,s:1400,eng:.65},{type:'returning',u:231,s:442,eng:.72}],
+    realtime:{total:3,countries:[{c:'United States',u:2},{c:'Canada',u:1}],pages:[{p:'/',u:2},{p:'/#services',u:1}]},
   };
 }
 
 // ══════════════════════════════════════════════
 //  LOAD ALL DATA
 // ══════════════════════════════════════════════
-let charts = {};
-let refreshTimer = null;
+let charts={}, refreshTimer=null;
 
 async function loadAllData() {
-  const btn = document.getElementById('refresh-btn');
+  const btn=document.getElementById('refresh-btn');
   btn.classList.add('spinning');
-  const range = getDateRange();
+  const range=getRange();
+  const labels={'7daysAgo':'7 days','30daysAgo':'30 days','90daysAgo':'90 days','365daysAgo':'12 months'};
+  document.getElementById('sessions-range-label').textContent=labels[range]||'30 days';
 
-  // If running via local server — fetch from Node API
   if (IS_LOCAL && API_BASE) {
     try {
-      const res = await fetch(`${API_BASE}/api/data?range=${range}`);
-      if (res.status === 401) {
-        // Need to auth — open auth URL
-        const ar = await fetch(`${API_BASE}/api/auth-url`);
-        const { url } = await ar.json();
-        window.open(url, '_blank', 'width=500,height=600');
-        btn.classList.remove('spinning');
-        return;
-      }
-      if (!res.ok) throw new Error('Server error ' + res.status);
-      const raw = await res.json();
-      const d = parseAllData(raw);
-      renderKPIs(d); renderSessionsChart(d.sessionsByDay); renderSourcesChart(d.sources);
-      renderDevices(d.devices); renderCountries(d.countries); renderBrowsers(d.browsers);
-      renderTopPages(d.topPages); renderEvents(d.events); renderLandingPages(d.landingPages);
-      renderChannelsChart(d.channelsByDay); renderBounce(d.overview.bounce);
-      renderPagesPerSession(d.overview.pagesPerSession); renderNewReturning(d.newReturning);
-      renderRealtime(d.realtime);
-      document.getElementById('last-updated').textContent = 'Updated ' + new Date().toLocaleTimeString();
-    } catch(e) {
-      console.error(e);
-    }
+      const res=await fetch(`${API_BASE}/api/data?range=${range}`);
+      if (res.status===401) { const ar=await fetch(`${API_BASE}/api/auth-url`); const {url}=await ar.json(); window.open(url,'_blank','width=500,height=600'); btn.classList.remove('spinning'); return; }
+      if (!res.ok) throw new Error('Server error '+res.status);
+      const raw=await res.json();
+      const d=parseAllData(raw);
+      renderAll(d);
+    } catch(e) { console.error(e); }
+    loadYouTubeData(); loadSearchConsoleData();
     btn.classList.remove('spinning');
     if (refreshTimer) clearTimeout(refreshTimer);
-    refreshTimer = setTimeout(loadAllData, 5*60*1000);
+    refreshTimer=setTimeout(loadAllData,5*60*1000);
     return;
   }
 
-  // Re-auth if token expired (live site OAuth flow)
-  if (!isDemoMode && (!accessToken || Date.now() > parseInt(sessionStorage.getItem('hi_token_exp')||0))) {
-    showAuthWall(); btn.classList.remove('spinning'); return;
-  }
-
-  // Update range label
-  const labels = {'7daysAgo':'7 days','30daysAgo':'30 days','90daysAgo':'90 days','365daysAgo':'12 months'};
-  document.getElementById('sessions-range-label').textContent = labels[range] || '30 days';
+  if (!isDemoMode && (!accessToken || Date.now()>parseInt(sessionStorage.getItem('hi_token_exp')||0))) { showAuthWall(); btn.classList.remove('spinning'); return; }
 
   try {
     let d;
     if (isDemoMode) {
-      d = genDemoData();
+      d=genDemoData();
       document.getElementById('no-data-banner').style.display='block';
-      document.getElementById('no-data-banner').innerHTML='<strong>Demo Mode</strong> — Enter your OAuth Client ID and GA4 Property ID in Settings to see real data.';
+      document.getElementById('no-data-banner').innerHTML='<strong>Demo Mode</strong> — Enter your credentials in Settings to see real data.';
     } else {
-      d = await fetchAllMetrics(range);
+      d=await fetchAllMetrics(range);
+      loadYouTubeData(); loadSearchConsoleData();
     }
-
-    renderKPIs(d);
-    renderSessionsChart(d.sessionsByDay);
-    renderSourcesChart(d.sources);
-    renderDevices(d.devices);
-    renderCountries(d.countries);
-    renderBrowsers(d.browsers);
-    renderTopPages(d.topPages);
-    renderEvents(d.events);
-    renderLandingPages(d.landingPages);
-    renderChannelsChart(d.channelsByDay);
-    renderBounce(d.overview.bounce);
-    renderPagesPerSession(d.overview.pagesPerSession);
-    renderNewReturning(d.newReturning);
-    renderRealtime(d.realtime);
-
-    document.getElementById('last-updated').textContent = 'Updated ' + new Date().toLocaleTimeString();
-  } catch(e) {
-    console.error(e);
-  }
+    renderAll(d);
+    document.getElementById('last-updated').textContent='Updated '+new Date().toLocaleTimeString();
+  } catch(e){ console.error(e); }
 
   btn.classList.remove('spinning');
   if (refreshTimer) clearTimeout(refreshTimer);
-  refreshTimer = setTimeout(loadAllData, 5*60*1000);
+  refreshTimer=setTimeout(loadAllData,5*60*1000);
+}
+
+function renderAll(d) {
+  renderKPIs(d); renderSessionsChart(d.sessionsByDay); renderSourcesChart(d.sources);
+  renderDevices(d.devices); renderCountries(d.countries); renderBrowsers(d.browsers);
+  renderTopPages(d.topPages); renderEvents(d.events);
+  renderConversions(d.events, d.overview.sessions);
+  renderLandingPages(d.landingPages); renderChannelsChart(d.channelsByDay);
+  renderBounce(d.overview.bounce); renderPagesPerSession(d.overview.pagesPerSession);
+  renderNewReturning(d.newReturning); renderRealtime(d.realtime);
+  document.getElementById('last-updated').textContent='Updated '+new Date().toLocaleTimeString();
 }
 
 // ══════════════════════════════════════════════
 //  FETCH REAL DATA
 // ══════════════════════════════════════════════
 async function fetchAllMetrics(range) {
-  _apiErrors = [];
-  const dateRange = { startDate: range, endDate: 'today' };
-  const prevLen = range === '7daysAgo' ? 7 : range === '30daysAgo' ? 30 : range === '90daysAgo' ? 90 : 365;
-  const prevStart = `${prevLen * 2}daysAgo`;
-  const prevEnd   = `${prevLen + 1}daysAgo`;
-  const prevRange = { startDate: prevStart, endDate: prevEnd };
-
-  const [overview, overviewPrev, sessionsByDay, sources, devices, countries, browsers, topPages, events, landingPages, channelsByDay, newReturning, engagementByDay, rt] = await Promise.all([
-    // Overview — current period
-    runReport({ dateRanges:[dateRange], metrics:[
-      {name:'sessions'},{name:'totalUsers'},{name:'newUsers'},{name:'screenPageViews'},
-      {name:'averageSessionDuration'},{name:'bounceRate'},{name:'screenPageViewsPerSession'},
-      {name:'engagedSessions'},{name:'engagementRate'},{name:'eventCount'}
-    ]}),
-    // Overview — prev period for deltas
-    runReport({ dateRanges:[prevRange], metrics:[
-      {name:'sessions'},{name:'totalUsers'},{name:'newUsers'},{name:'screenPageViews'},
-      {name:'averageSessionDuration'},{name:'bounceRate'},{name:'screenPageViewsPerSession'},
-      {name:'engagedSessions'},{name:'engagementRate'},{name:'eventCount'}
-    ]}),
-    // Sessions by day
-    runReport({ dateRanges:[dateRange], dimensions:[{name:'date'}], metrics:[{name:'sessions'},{name:'totalUsers'},{name:'engagedSessions'}], orderBys:[{dimension:{dimensionName:'date'}}] }),
-    // Sources
-    runReport({ dateRanges:[dateRange], dimensions:[{name:'sessionDefaultChannelGrouping'}], metrics:[{name:'sessions'},{name:'totalUsers'}], orderBys:[{metric:{metricName:'sessions'},desc:true}] }),
-    // Devices
-    runReport({ dateRanges:[dateRange], dimensions:[{name:'deviceCategory'}], metrics:[{name:'sessions'}], orderBys:[{metric:{metricName:'sessions'},desc:true}] }),
-    // Countries
-    runReport({ dateRanges:[dateRange], dimensions:[{name:'country'}], metrics:[{name:'sessions'},{name:'totalUsers'}], orderBys:[{metric:{metricName:'sessions'},desc:true}], limit:10 }),
-    // Browsers
-    runReport({ dateRanges:[dateRange], dimensions:[{name:'browser'}], metrics:[{name:'sessions'}], orderBys:[{metric:{metricName:'sessions'},desc:true}], limit:8 }),
-    // Top pages
-    runReport({ dateRanges:[dateRange], dimensions:[{name:'pagePath'}], metrics:[{name:'screenPageViews'},{name:'userEngagementDuration'},{name:'totalUsers'}], orderBys:[{metric:{metricName:'screenPageViews'},desc:true}], limit:10 }),
-    // Events
-    runReport({ dateRanges:[dateRange], dimensions:[{name:'eventName'}], metrics:[{name:'eventCount'}], orderBys:[{metric:{metricName:'eventCount'},desc:true}], limit:12 }),
-    // Landing pages
-    runReport({ dateRanges:[dateRange], dimensions:[{name:'landingPage'}], metrics:[{name:'sessions'},{name:'totalUsers'},{name:'bounceRate'}], orderBys:[{metric:{metricName:'sessions'},desc:true}], limit:8 }),
-    // Channels by day
-    runReport({ dateRanges:[dateRange], dimensions:[{name:'date'},{name:'sessionDefaultChannelGrouping'}], metrics:[{name:'sessions'}], orderBys:[{dimension:{dimensionName:'date'}}] }),
-    // New vs returning
-    runReport({ dateRanges:[dateRange], dimensions:[{name:'newVsReturning'}], metrics:[{name:'totalUsers'},{name:'sessions'},{name:'engagementRate'}] }),
-    // Engagement by day
-    runReport({ dateRanges:[dateRange], dimensions:[{name:'date'}], metrics:[{name:'engagementRate'},{name:'averageSessionDuration'}], orderBys:[{dimension:{dimensionName:'date'}}] }),
-    // Realtime
-    runRealtimeReport({ dimensions:[{name:'country'},{name:'unifiedScreenName'}], metrics:[{name:'activeUsers'}] }),
+  _apiErrors=[];
+  const dr={startDate:range,endDate:'today'};
+  const prevLen=range==='7daysAgo'?7:range==='30daysAgo'?30:range==='90daysAgo'?90:365;
+  const pr={startDate:`${prevLen*2}daysAgo`,endDate:`${prevLen+1}daysAgo`};
+  const [ov,op,sd,src,dev,ctr,brw,tp,ev,lp,cbd,nr,rt]=await Promise.all([
+    runReport({dateRanges:[dr],metrics:[{name:'sessions'},{name:'totalUsers'},{name:'newUsers'},{name:'screenPageViews'},{name:'averageSessionDuration'},{name:'bounceRate'},{name:'screenPageViewsPerSession'},{name:'engagedSessions'},{name:'engagementRate'},{name:'eventCount'}]}),
+    runReport({dateRanges:[pr],metrics:[{name:'sessions'},{name:'totalUsers'},{name:'newUsers'},{name:'screenPageViews'}]}),
+    runReport({dateRanges:[dr],dimensions:[{name:'date'}],metrics:[{name:'sessions'},{name:'totalUsers'},{name:'engagedSessions'}],orderBys:[{dimension:{dimensionName:'date'}}]}),
+    runReport({dateRanges:[dr],dimensions:[{name:'sessionDefaultChannelGrouping'}],metrics:[{name:'sessions'},{name:'totalUsers'}],orderBys:[{metric:{metricName:'sessions'},desc:true}]}),
+    runReport({dateRanges:[dr],dimensions:[{name:'deviceCategory'}],metrics:[{name:'sessions'}],orderBys:[{metric:{metricName:'sessions'},desc:true}]}),
+    runReport({dateRanges:[dr],dimensions:[{name:'country'}],metrics:[{name:'sessions'},{name:'totalUsers'}],orderBys:[{metric:{metricName:'sessions'},desc:true}],limit:10}),
+    runReport({dateRanges:[dr],dimensions:[{name:'browser'}],metrics:[{name:'sessions'}],orderBys:[{metric:{metricName:'sessions'},desc:true}],limit:8}),
+    runReport({dateRanges:[dr],dimensions:[{name:'pagePath'}],metrics:[{name:'screenPageViews'},{name:'userEngagementDuration'},{name:'totalUsers'}],orderBys:[{metric:{metricName:'screenPageViews'},desc:true}],limit:10}),
+    runReport({dateRanges:[dr],dimensions:[{name:'eventName'}],metrics:[{name:'eventCount'}],orderBys:[{metric:{metricName:'eventCount'},desc:true}],limit:15}),
+    runReport({dateRanges:[dr],dimensions:[{name:'landingPage'}],metrics:[{name:'sessions'},{name:'totalUsers'},{name:'bounceRate'}],orderBys:[{metric:{metricName:'sessions'},desc:true}],limit:8}),
+    runReport({dateRanges:[dr],dimensions:[{name:'date'},{name:'sessionDefaultChannelGrouping'}],metrics:[{name:'sessions'}],orderBys:[{dimension:{dimensionName:'date'}}]}),
+    runReport({dateRanges:[dr],dimensions:[{name:'newVsReturning'}],metrics:[{name:'totalUsers'},{name:'sessions'},{name:'engagementRate'}]}),
+    runRealtimeReport({dimensions:[{name:'country'},{name:'unifiedScreenName'}],metrics:[{name:'activeUsers'}]}),
   ]);
-
-  const hasData = overview?.rows?.length > 0;
-  if (!hasData && _apiErrors.length > 0) {
-    showApiStatus(false, `API error: ${_apiErrors[0]}`);
-  } else if (hasData) {
-    showApiStatus(true, `✓ Data loaded at ${new Date().toLocaleTimeString()}`);
-  } else {
-    // No errors but no rows — genuinely empty data range
-    document.getElementById('no-data-banner').style.display = 'block';
-    document.getElementById('no-data-banner').innerHTML = '<strong>No data for this period</strong> — Try selecting a wider date range, or GA4 may still be warming up.';
-  }
-
-  return parseAllData({ overview, overviewPrev, sessionsByDay, sources, devices, countries, browsers, topPages, events, landingPages, channelsByDay, newReturning, engagementByDay, rt });
+  if (ov?.rows?.length) showApiStatus(true,`✓ Data loaded at ${new Date().toLocaleTimeString()}`);
+  else if (_apiErrors.length) showApiStatus(false,`API error: ${_apiErrors[0]}`);
+  else { document.getElementById('no-data-banner').style.display='block'; }
+  return parseAllData({overview:ov,overviewPrev:op,sessionsByDay:sd,sources:src,devices:dev,countries:ctr,browsers:brw,topPages:tp,events:ev,landingPages:lp,channelsByDay:cbd,newReturning:nr,rt});
 }
 
-function parseAllData({ overview, overviewPrev, sessionsByDay, sources, devices, countries, browsers, topPages, events, landingPages, channelsByDay, newReturning, engagementByDay, rt }) {
-  const row0 = overview?.rows?.[0]?.metricValues || [];
-  const prev0 = overviewPrev?.rows?.[0]?.metricValues || [];
-
-  function pct(cur, prv) {
-    const c = parseFloat(cur?.value||0), p = parseFloat(prv?.value||0);
-    if (!p) return null;
-    return Math.round((c - p) / p * 100);
-  }
-
-  const ov = {
-    sessions: parseInt(row0[0]?.value||0),
-    users: parseInt(row0[1]?.value||0),
-    newUsers: parseInt(row0[2]?.value||0),
-    views: parseInt(row0[3]?.value||0),
-    duration: parseFloat(row0[4]?.value||0),
-    bounce: parseFloat(row0[5]?.value||0),
-    pagesPerSession: parseFloat(row0[6]?.value||0),
-    engagedSessions: parseInt(row0[7]?.value||0),
-    engagementRate: parseFloat(row0[8]?.value||0),
-    eventCount: parseInt(row0[9]?.value||0),
-    // Period deltas
-    dSessions: pct(row0[0], prev0[0]),
-    dUsers:    pct(row0[1], prev0[1]),
-    dNewUsers: pct(row0[2], prev0[2]),
-    dViews:    pct(row0[3], prev0[3]),
-  };
-
-  const sd = (sessionsByDay?.rows||[]).map(r=>({
-    date:r.dimensionValues[0].value,
-    sessions:parseInt(r.metricValues[0].value),
-    users:parseInt(r.metricValues[1].value),
-    engaged:parseInt(r.metricValues[2]?.value||0)
-  }));
-  const src = (sources?.rows||[]).map(r=>({ ch:r.dimensionValues[0].value, s:parseInt(r.metricValues[0].value), u:parseInt(r.metricValues[1]?.value||0) }));
-  const dev = (devices?.rows||[]).map(r=>{ const n=r.dimensionValues[0].value; const icons={desktop:'💻',mobile:'📱',tablet:'📟'}; return {name:n.charAt(0).toUpperCase()+n.slice(1),icon:icons[n]||'💻',s:parseInt(r.metricValues[0].value)}; });
-  const ctry = (countries?.rows||[]).map(r=>({ c:r.dimensionValues[0].value, s:parseInt(r.metricValues[0].value), u:parseInt(r.metricValues[1]?.value||0) }));
-  const brw = (browsers?.rows||[]).map(r=>({ b:r.dimensionValues[0].value, s:parseInt(r.metricValues[0].value) }));
-  const tp = (topPages?.rows||[]).map(r=>({ p:r.dimensionValues[0].value, v:parseInt(r.metricValues[0].value), t:parseInt(parseFloat(r.metricValues[1].value)), u:parseInt(r.metricValues[2]?.value||0) }));
-  const ev = (events?.rows||[]).map(r=>({ e:r.dimensionValues[0].value, c:parseInt(r.metricValues[0].value) }));
-  const lp = (landingPages?.rows||[]).map(r=>({ p:r.dimensionValues[0].value, s:parseInt(r.metricValues[0].value), u:parseInt(r.metricValues[1]?.value||0), b:parseFloat(r.metricValues[2]?.value||0) }));
-
-  // Channels by day — pivot
-  const dayMap = {};
-  (channelsByDay?.rows||[]).forEach(r=>{ const d=r.dimensionValues[0].value; const ch=r.dimensionValues[1].value.toLowerCase(); const s=parseInt(r.metricValues[0].value); if(!dayMap[d])dayMap[d]={date:d,organic:0,direct:0,social:0,referral:0,email:0}; const k=ch.includes('organic')?'organic':ch.includes('direct')?'direct':ch.includes('social')?'social':ch.includes('referral')?'referral':ch.includes('email')?'email':'other'; dayMap[d][k]=(dayMap[d][k]||0)+s; });
-  const cbd = Object.values(dayMap).sort((a,b)=>a.date.localeCompare(b.date));
-
-  const nr = (newReturning?.rows||[]).map(r=>({ type:r.dimensionValues[0].value, u:parseInt(r.metricValues[0].value), s:parseInt(r.metricValues[1]?.value||0), eng:parseFloat(r.metricValues[2]?.value||0) }));
-
-  const ebd = (engagementByDay?.rows||[]).map(r=>({ date:r.dimensionValues[0].value, eng:parseFloat(r.metricValues[0].value), dur:parseFloat(r.metricValues[1].value) }));
-
-  // Realtime
-  const rtRows = rt?.rows||[];
-  const rtCountries = {}, rtPages = {};
-  rtRows.forEach(r=>{ const c=r.dimensionValues[0].value; const p=r.dimensionValues[1].value; const u=parseInt(r.metricValues[0].value); rtCountries[c]=(rtCountries[c]||0)+u; rtPages[p]=(rtPages[p]||0)+u; });
-  const rtTotal = Object.values(rtCountries).reduce((a,b)=>a+b,0);
-  const rtData = { total:rtTotal, countries:Object.entries(rtCountries).map(([c,u])=>({c,u})).sort((a,b)=>b.u-a.u).slice(0,6), pages:Object.entries(rtPages).map(([p,u])=>({p,u})).sort((a,b)=>b.u-a.u).slice(0,6) };
-
-  return { overview:ov, sessionsByDay:sd, sources:src, devices:dev, countries:ctry, browsers:brw, topPages:tp, events:ev, landingPages:lp, channelsByDay:cbd, newReturning:nr, engagementByDay:ebd, realtime:rtData };
+function parseAllData({overview,overviewPrev,sessionsByDay,sources,devices,countries,browsers,topPages,events,landingPages,channelsByDay,newReturning,rt}) {
+  const r0=overview?.rows?.[0]?.metricValues||[], p0=overviewPrev?.rows?.[0]?.metricValues||[];
+  function pct(c,p){const cv=parseFloat(c?.value||0),pv=parseFloat(p?.value||0);if(!pv)return null;return Math.round((cv-pv)/pv*100);}
+  const ov={sessions:parseInt(r0[0]?.value||0),users:parseInt(r0[1]?.value||0),newUsers:parseInt(r0[2]?.value||0),views:parseInt(r0[3]?.value||0),duration:parseFloat(r0[4]?.value||0),bounce:parseFloat(r0[5]?.value||0),pagesPerSession:parseFloat(r0[6]?.value||0),engagedSessions:parseInt(r0[7]?.value||0),engagementRate:parseFloat(r0[8]?.value||0),eventCount:parseInt(r0[9]?.value||0),dSessions:pct(r0[0],p0[0]),dUsers:pct(r0[1],p0[1]),dNewUsers:pct(r0[2],p0[2]),dViews:pct(r0[3],p0[3])};
+  const sbd=(sessionsByDay?.rows||[]).map(r=>({date:r.dimensionValues[0].value,sessions:parseInt(r.metricValues[0].value),users:parseInt(r.metricValues[1].value),engaged:parseInt(r.metricValues[2]?.value||0)}));
+  const src2=(sources?.rows||[]).map(r=>({ch:r.dimensionValues[0].value,s:parseInt(r.metricValues[0].value),u:parseInt(r.metricValues[1]?.value||0)}));
+  const dev2=(devices?.rows||[]).map(r=>{const n=r.dimensionValues[0].value;const icons={desktop:'💻',mobile:'📱',tablet:'📟'};return{name:n.charAt(0).toUpperCase()+n.slice(1),icon:icons[n]||'💻',s:parseInt(r.metricValues[0].value)};});
+  const ctr2=(countries?.rows||[]).map(r=>({c:r.dimensionValues[0].value,s:parseInt(r.metricValues[0].value),u:parseInt(r.metricValues[1]?.value||0)}));
+  const brw2=(browsers?.rows||[]).map(r=>({b:r.dimensionValues[0].value,s:parseInt(r.metricValues[0].value)}));
+  const tp2=(topPages?.rows||[]).map(r=>({p:r.dimensionValues[0].value,v:parseInt(r.metricValues[0].value),t:parseInt(parseFloat(r.metricValues[1].value)),u:parseInt(r.metricValues[2]?.value||0)}));
+  const ev2=(events?.rows||[]).map(r=>({e:r.dimensionValues[0].value,c:parseInt(r.metricValues[0].value)}));
+  const lp2=(landingPages?.rows||[]).map(r=>({p:r.dimensionValues[0].value,s:parseInt(r.metricValues[0].value),u:parseInt(r.metricValues[1]?.value||0),b:parseFloat(r.metricValues[2]?.value||0)}));
+  const dayMap={};
+  (channelsByDay?.rows||[]).forEach(r=>{const d=r.dimensionValues[0].value,ch=r.dimensionValues[1].value.toLowerCase(),s=parseInt(r.metricValues[0].value);if(!dayMap[d])dayMap[d]={date:d,organic:0,direct:0,social:0,referral:0,email:0};const k=ch.includes('organic')?'organic':ch.includes('direct')?'direct':ch.includes('social')?'social':ch.includes('referral')?'referral':ch.includes('email')?'email':'other';dayMap[d][k]=(dayMap[d][k]||0)+s;});
+  const cbd2=Object.values(dayMap).sort((a,b)=>a.date.localeCompare(b.date));
+  const nr2=(newReturning?.rows||[]).map(r=>({type:r.dimensionValues[0].value,u:parseInt(r.metricValues[0].value),s:parseInt(r.metricValues[1]?.value||0),eng:parseFloat(r.metricValues[2]?.value||0)}));
+  const rtRows=rt?.rows||[],rtC={},rtP={};
+  rtRows.forEach(r=>{const c=r.dimensionValues[0].value,p=r.dimensionValues[1].value,u=parseInt(r.metricValues[0].value);rtC[c]=(rtC[c]||0)+u;rtP[p]=(rtP[p]||0)+u;});
+  const rtTotal=Object.values(rtC).reduce((a,b)=>a+b,0);
+  const rtData={total:rtTotal,countries:Object.entries(rtC).map(([c,u])=>({c,u})).sort((a,b)=>b.u-a.u).slice(0,6),pages:Object.entries(rtP).map(([p,u])=>({p,u})).sort((a,b)=>b.u-a.u).slice(0,6)};
+  return{overview:ov,sessionsByDay:sbd,sources:src2,devices:dev2,countries:ctr2,browsers:brw2,topPages:tp2,events:ev2,landingPages:lp2,channelsByDay:cbd2,newReturning:nr2,realtime:rtData};
 }
+
+// ══════════════════════════════════════════════
+//  FORMATTERS
+// ══════════════════════════════════════════════
+function fmt(n){if(n===undefined||n===null)return'—';if(n>=1000000)return(n/1000000).toFixed(1)+'M';if(n>=1000)return(n/1000).toFixed(1)+'K';return n.toLocaleString();}
+function fmtDur(s){const m=Math.floor(s/60),sec=Math.floor(s%60);return`${m}:${String(sec).padStart(2,'0')}`;}
+function fmtPct(n){return(n*100).toFixed(1)+'%';}
 
 // ══════════════════════════════════════════════
 //  RENDERERS
 // ══════════════════════════════════════════════
-function fmt(n) { if(n===undefined||n===null)return'—'; if(n>=1000000)return(n/1000000).toFixed(1)+'M'; if(n>=1000)return(n/1000).toFixed(1)+'K'; return n.toLocaleString(); }
-function fmtDuration(s) { const m=Math.floor(s/60); const sec=Math.floor(s%60); return `${m}:${String(sec).padStart(2,'0')}`; }
-function fmtPct(n) { return (n*100).toFixed(1)+'%'; }
-function delta(v,cls='up') { return `<span class="kpi-delta ${cls}">${cls==='up'?'↑':'↓'} ${v}</span>`; }
-
 function renderKPIs(d) {
-  const o = d.overview;
-  document.getElementById('kpi-sessions').textContent = fmt(o.sessions);
-  document.getElementById('kpi-users').textContent = fmt(o.users);
-  document.getElementById('kpi-new').textContent = fmt(o.newUsers);
-  document.getElementById('kpi-views').textContent = fmt(o.views);
-  document.getElementById('kpi-duration').textContent = fmtDuration(o.duration);
-  document.getElementById('kpi-realtime').textContent = d.realtime?.total ?? '0';
-  document.getElementById('rt-count').textContent = d.realtime?.total ?? '0';
-
-  // Engagement rate KPI
-  const engEl = document.getElementById('kpi-engagement');
-  if (engEl) engEl.textContent = fmtPct(o.engagementRate);
-  const engSessEl = document.getElementById('kpi-engaged-sessions');
-  if (engSessEl) engSessEl.textContent = fmt(o.engagedSessions);
-
-  // Period-over-period deltas
-  const pairs = [
-    ['kpi-sessions-d', o.dSessions],
-    ['kpi-users-d',    o.dUsers],
-    ['kpi-new-d',      o.dNewUsers],
-    ['kpi-views-d',    o.dViews],
-  ];
-  pairs.forEach(([id, val]) => {
-    const el = document.getElementById(id);
-    if (!el) return;
-    if (val === null) { el.textContent = '—'; el.className='kpi-delta neutral'; return; }
-    const up = val >= 0;
-    el.textContent = `${up?'↑':'↓'} ${Math.abs(val)}% vs prev`;
-    el.className = `kpi-delta ${up?'up':'down'}`;
+  const o=d.overview;
+  document.getElementById('kpi-sessions').textContent=fmt(o.sessions);
+  document.getElementById('kpi-users').textContent=fmt(o.users);
+  document.getElementById('kpi-new').textContent=fmt(o.newUsers);
+  document.getElementById('kpi-views').textContent=fmt(o.views);
+  document.getElementById('kpi-duration').textContent=fmtDur(o.duration);
+  document.getElementById('kpi-engagement').textContent=fmtPct(o.engagementRate||0);
+  document.getElementById('kpi-engaged-sessions').textContent=fmt(o.engagedSessions);
+  document.getElementById('kpi-realtime').textContent=d.realtime?.total??'0';
+  document.getElementById('rt-count-hdr').textContent=(d.realtime?.total??'0')+' active';
+  [['kpi-sessions-d',o.dSessions],['kpi-users-d',o.dUsers],['kpi-new-d',o.dNewUsers],['kpi-views-d',o.dViews]].forEach(([id,val])=>{
+    const el=document.getElementById(id);if(!el)return;
+    if(val===null){el.textContent='—';el.className='kpi-delta ne';return;}
+    const up=val>=0;el.textContent=`${up?'↑':'↓'} ${Math.abs(val)}% vs prev`;el.className=`kpi-delta ${up?'up':'dn'}`;
   });
 }
 
 function renderSessionsChart(data) {
-  const ctx = document.getElementById('chart-sessions').getContext('2d');
-  if (charts.sessions) charts.sessions.destroy();
-  const labels = data.map(d=>{ const s=String(d.date); return `${s.slice(4,6)}/${s.slice(6,8)}`; });
-  charts.sessions = new Chart(ctx, {
-    type:'line',
-    data:{
-      labels,
-      datasets:[
-        { label:'Sessions', data:data.map(d=>d.sessions), borderColor:CHART_COLORS.accent, backgroundColor:'rgba(249,91,61,0.08)', borderWidth:2, pointRadius:0, pointHoverRadius:4, fill:true, tension:0.4 },
-        { label:'Users',    data:data.map(d=>d.users),    borderColor:CHART_COLORS.cyan,   backgroundColor:'rgba(0,200,255,0.05)', borderWidth:1.5, pointRadius:0, pointHoverRadius:3, fill:true, tension:0.4, borderDash:[4,3] },
-      ]
-    },
-    options:{ responsive:true, maintainAspectRatio:true, interaction:{mode:'index',intersect:false}, plugins:{ legend:{display:true,labels:{boxWidth:8,padding:16,color:'#8A8A9A',font:{size:10}}}, tooltip:{backgroundColor:'rgba(13,13,24,0.95)',borderColor:'rgba(249,91,61,0.3)',borderWidth:1,padding:10,titleFont:{family:"'Unbounded',sans-serif",size:10},bodyFont:{size:10}} }, scales:{ x:{grid:{color:'rgba(255,255,255,0.03)'},ticks:{maxTicksLimit:8,color:'#4A4A5A'}}, y:{grid:{color:'rgba(255,255,255,0.05)'},ticks:{color:'#4A4A5A'},beginAtZero:true} } }
-  });
+  const ctx=document.getElementById('chart-sessions').getContext('2d');
+  if(charts.sessions)charts.sessions.destroy();
+  const labels=data.map(d=>{const s=String(d.date);return`${s.slice(4,6)}/${s.slice(6,8)}`;});
+  charts.sessions=new Chart(ctx,{type:'line',data:{labels,datasets:[
+    {label:'Sessions',data:data.map(d=>d.sessions),borderColor:CC.red,backgroundColor:'rgba(230,57,70,.08)',borderWidth:2,pointRadius:0,pointHoverRadius:4,fill:true,tension:.4},
+    {label:'Users',data:data.map(d=>d.users),borderColor:CC.cyan,backgroundColor:'rgba(0,200,255,.04)',borderWidth:1.5,pointRadius:0,fill:true,tension:.4,borderDash:[4,3]},
+  ]},options:{responsive:true,maintainAspectRatio:true,interaction:{mode:'index',intersect:false},plugins:{legend:{display:true,labels:{boxWidth:8,padding:14,color:'#7A7A92',font:{size:9}}},tooltip:{backgroundColor:'rgba(7,7,15,.97)',borderColor:'rgba(230,57,70,.3)',borderWidth:1,padding:10}},scales:{x:{grid:{color:'rgba(255,255,255,.03)'},ticks:{maxTicksLimit:8,color:'#3A3A55'}},y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#3A3A55'},beginAtZero:true}}}});
 }
 
 function renderSourcesChart(data) {
-  const ctx = document.getElementById('chart-sources').getContext('2d');
-  if (charts.sources) charts.sources.destroy();
-  charts.sources = new Chart(ctx, {
-    type:'doughnut',
-    data:{ labels:data.map(d=>d.ch), datasets:[{ data:data.map(d=>d.s), backgroundColor:SOURCE_COLORS, borderColor:'rgba(7,7,13,0.8)', borderWidth:3, hoverBorderWidth:0 }] },
-    options:{ responsive:true, maintainAspectRatio:true, cutout:'72%', plugins:{ legend:{display:false}, tooltip:{backgroundColor:'rgba(13,13,24,0.95)',borderColor:'rgba(249,91,61,0.3)',borderWidth:1,padding:10} } }
-  });
-  const total = data.reduce((a,b)=>a+b.s,0);
-  const legend = document.getElementById('sources-legend');
-  legend.innerHTML = data.map((d,i)=>`<span style="display:inline-flex;align-items:center;gap:5px;font-size:10px;font-family:'IBM Plex Mono',monospace;color:var(--text-sec);"><span style="width:8px;height:8px;border-radius:50%;background:${SOURCE_COLORS[i]};display:inline-block;flex-shrink:0;"></span>${d.ch} <strong style="color:var(--text);">${Math.round(d.s/total*100)}%</strong></span>`).join('');
+  const ctx=document.getElementById('chart-sources').getContext('2d');
+  if(charts.sources)charts.sources.destroy();
+  charts.sources=new Chart(ctx,{type:'doughnut',data:{labels:data.map(d=>d.ch),datasets:[{data:data.map(d=>d.s),backgroundColor:SRC_COLORS,borderColor:'rgba(2,2,8,.8)',borderWidth:3,hoverBorderWidth:0}]},options:{responsive:true,maintainAspectRatio:true,cutout:'72%',plugins:{legend:{display:false},tooltip:{backgroundColor:'rgba(7,7,15,.97)',borderColor:'rgba(230,57,70,.3)',borderWidth:1,padding:10}}}});
+  const total=data.reduce((a,b)=>a+b.s,0);
+  document.getElementById('sources-legend').innerHTML=data.map((d,i)=>`<span style="display:inline-flex;align-items:center;gap:5px;font-size:9px;font-family:'IBM Plex Mono',monospace;color:var(--text-s);"><span style="width:7px;height:7px;border-radius:50%;background:${SRC_COLORS[i]};display:inline-block;flex-shrink:0;"></span>${d.ch} <strong style="color:var(--text);">${Math.round(d.s/total*100)}%</strong></span>`).join('');
 }
 
 function renderDevices(data) {
-  const total = data.reduce((a,b)=>a+b.s,0)||1;
-  document.getElementById('device-rows').innerHTML = data.map(d=>`
-    <div class="device-item">
-      <span class="device-icon">${d.icon}</span>
-      <span class="device-name">${d.name}</span>
-      <div class="device-pct-bar"><div class="device-pct-fill" style="width:${Math.round(d.s/total*100)}%"></div></div>
-      <span class="device-pct-num">${Math.round(d.s/total*100)}%</span>
-    </div>`).join('');
+  const total=data.reduce((a,b)=>a+b.s,0)||1;
+  document.getElementById('device-rows').innerHTML=data.map(d=>`<div class="dev-item"><span style="font-size:14px;width:22px;text-align:center;">${d.icon}</span><span class="dev-name">${d.name}</span><div class="dev-bar-wrap"><div class="dev-bar-fill" style="width:${Math.round(d.s/total*100)}%"></div></div><span class="dev-pct">${Math.round(d.s/total*100)}%</span></div>`).join('');
 }
 
 function renderCountries(data) {
-  const total = data.reduce((a,b)=>a+b.s,0)||1;
-  const flags = {'United States':'🇺🇸','United Kingdom':'🇬🇧','Canada':'🇨🇦','Australia':'🇦🇺','Germany':'🇩🇪','India':'🇮🇳','France':'🇫🇷','Netherlands':'🇳🇱','Brazil':'🇧🇷','Japan':'🇯🇵','Mexico':'🇲🇽','Spain':'🇪🇸','Italy':'🇮🇹'};
-  document.getElementById('countries-body').innerHTML = data.map(d=>`
-    <tr><td><span class="country-flag">${flags[d.c]||'🌍'}</span>${d.c}</td><td>${fmt(d.s)}</td><td style="color:var(--text-muted)">${Math.round(d.s/total*100)}%</td></tr>`).join('');
+  const total=data.reduce((a,b)=>a+b.s,0)||1;
+  const flags={'United States':'🇺🇸','United Kingdom':'🇬🇧','Canada':'🇨🇦','Australia':'🇦🇺','Germany':'🇩🇪','India':'🇮🇳','France':'🇫🇷','Netherlands':'🇳🇱','Brazil':'🇧🇷','Japan':'🇯🇵','Mexico':'🇲🇽','Spain':'🇪🇸'};
+  document.getElementById('countries-body').innerHTML=data.map(d=>`<tr><td><span class="flag">${flags[d.c]||'🌍'}</span>${d.c}</td><td>${fmt(d.s)}</td><td style="color:var(--text-m)">${Math.round(d.s/total*100)}%</td></tr>`).join('');
 }
 
 function renderBrowsers(data) {
-  const total = data.reduce((a,b)=>a+b.s,0)||1;
-  const icons = {'Chrome':'🟡','Safari':'🔵','Firefox':'🟠','Edge':'🔷','Opera':'🔴'};
-  document.getElementById('browsers-body').innerHTML = data.map(d=>`
-    <tr><td><span style="margin-right:8px;">${icons[d.b]||'🌐'}</span>${d.b}</td><td>${fmt(d.s)}</td><td style="color:var(--text-muted)">${Math.round(d.s/total*100)}%</td></tr>`).join('');
+  const total=data.reduce((a,b)=>a+b.s,0)||1;
+  document.getElementById('browsers-body').innerHTML=data.map(d=>`<tr><td>${d.b}</td><td>${fmt(d.s)}</td><td style="color:var(--text-m)">${Math.round(d.s/total*100)}%</td></tr>`).join('');
 }
 
 function renderTopPages(data) {
-  document.getElementById('pages-body').innerHTML = data.map((d,i)=>`
-    <tr><td><span class="table-rank">${i+1}</span></td><td style="font-family:'IBM Plex Mono',monospace;font-size:11px;">${d.p.length>28?d.p.slice(0,28)+'…':d.p}</td><td>${fmt(d.v)}</td><td style="color:var(--text-muted)">${fmtDuration(d.t)}</td></tr>`).join('');
+  document.getElementById('pages-body').innerHTML=data.map((d,i)=>`<tr><td><span class="rank">${i+1}</span></td><td style="font-family:'IBM Plex Mono',monospace;font-size:10px;">${d.p.length>30?d.p.slice(0,30)+'…':d.p}</td><td>${fmt(d.v)}</td><td style="color:var(--text-m)">${fmtDur(d.t)}</td></tr>`).join('');
 }
 
 function renderEvents(data) {
-  document.getElementById('events-body').innerHTML = data.map((d,i)=>`
-    <tr><td><span class="table-rank">${i+1}</span></td><td style="font-family:'IBM Plex Mono',monospace;font-size:11px;">${d.e}</td><td><strong style="color:var(--accent)">${fmt(d.c)}</strong></td></tr>`).join('');
+  document.getElementById('events-body').innerHTML=data.map((d,i)=>`<tr><td><span class="rank">${i+1}</span></td><td style="font-family:'IBM Plex Mono',monospace;font-size:10px;">${d.e}</td><td><strong style="color:var(--red)">${fmt(d.c)}</strong></td></tr>`).join('');
+}
+
+const CONV_EVENTS=new Set(['click_book_call','form_submit','purchase','generate_lead','contact_form','book_call','schedule_call','submit_form','sign_up','begin_checkout','add_to_cart','conversion']);
+function renderConversions(events, sessions) {
+  const convs=events.filter(e=>CONV_EVENTS.has(e.e));
+  const total=convs.reduce((a,b)=>a+b.c,0);
+  document.getElementById('total-conv-badge').textContent=fmt(total)+' total';
+  if(!convs.length){document.getElementById('conversions-notice').style.display='flex';document.getElementById('conversions-body').innerHTML=`<tr><td colspan="4" class="empty">No conversion events yet</td></tr>`;document.getElementById('cr-display').textContent='—';return;}
+  document.getElementById('conversions-body').innerHTML=convs.map((e,i)=>{const rate=sessions>0?(e.c/sessions*100).toFixed(1)+'%':'—';return`<tr><td><span class="rank">${i+1}</span></td><td style="font-family:'IBM Plex Mono',monospace;font-size:10px;">${e.e}</td><td><strong style="color:var(--red)">${fmt(e.c)}</strong></td><td style="color:var(--green);font-family:'IBM Plex Mono',monospace;font-size:10px;">${rate}</td></tr>`;}).join('');
+  const rate=sessions>0?(total/sessions*100).toFixed(1):0;
+  document.getElementById('cr-display').textContent=rate+'%';
+  document.getElementById('cr-sub').innerHTML=`<span style="font-size:9px;font-family:'IBM Plex Mono',monospace;color:var(--text-m);">${fmt(total)} conversions · ${fmt(sessions)} sessions</span>`;
 }
 
 function renderLandingPages(data) {
-  const total = data.reduce((a,b)=>a+b.s,0)||1;
-  const max = data[0]?.s||1;
-  document.getElementById('landing-funnel').innerHTML = data.map((d,i)=>`
-    <div class="funnel-step">
-      <div class="funnel-num">${i+1}</div>
-      <div class="funnel-bar-wrap">
-        <div class="funnel-bar" style="width:${Math.round(d.s/max*100)}%"></div>
-        <div class="funnel-label">${d.p.length>32?d.p.slice(0,32)+'…':d.p}</div>
-      </div>
-      <div class="funnel-pct" title="Bounce rate">${d.b!=null ? fmtPct(d.b)+' bnc' : Math.round(d.s/total*100)+'%'}</div>
-      <div class="funnel-count">${fmt(d.s)} <span style="font-size:9px;color:var(--text-muted)">sess</span></div>
-    </div>`).join('');
+  const max=data[0]?.s||1,total=data.reduce((a,b)=>a+b.s,0)||1;
+  document.getElementById('landing-funnel').innerHTML=data.map((d,i)=>`<div class="funnel-step"><div class="funnel-num">${i+1}</div><div class="funnel-bar-w"><div class="funnel-bar" style="width:${Math.round(d.s/max*100)}%"></div><div class="funnel-lbl">${d.p.length>34?d.p.slice(0,34)+'…':d.p}</div></div><div class="funnel-pct">${d.b!=null?fmtPct(d.b)+' bnc':Math.round(d.s/total*100)+'%'}</div><div class="funnel-cnt">${fmt(d.s)} sess</div></div>`).join('');
 }
 
 function renderChannelsChart(data) {
-  const ctx = document.getElementById('chart-channels').getContext('2d');
-  if (charts.channels) charts.channels.destroy();
-  const labels = data.map(d=>{ const s=String(d.date); return `${s.slice(4,6)}/${s.slice(6,8)}`; });
-  charts.channels = new Chart(ctx, {
-    type:'bar',
-    data:{ labels, datasets:[
-      { label:'Organic',  data:data.map(d=>d.organic||0),  backgroundColor:'rgba(249,91,61,0.7)', borderRadius:2, borderSkipped:false },
-      { label:'Direct',   data:data.map(d=>d.direct||0),   backgroundColor:'rgba(0,200,255,0.7)', borderRadius:2, borderSkipped:false },
-      { label:'Social',   data:data.map(d=>d.social||0),   backgroundColor:'rgba(139,92,246,0.7)', borderRadius:2, borderSkipped:false },
-      { label:'Referral', data:data.map(d=>d.referral||0), backgroundColor:'rgba(16,217,140,0.7)', borderRadius:2, borderSkipped:false },
-    ]},
-    options:{ responsive:true, maintainAspectRatio:true, interaction:{mode:'index',intersect:false}, plugins:{ legend:{display:true,labels:{boxWidth:8,padding:12,color:'#8A8A9A',font:{size:9}}}, tooltip:{backgroundColor:'rgba(13,13,24,0.95)',borderColor:'rgba(249,91,61,0.3)',borderWidth:1,padding:10} }, scales:{ x:{stacked:true,grid:{display:false},ticks:{maxTicksLimit:8,color:'#4A4A5A'}}, y:{stacked:true,grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#4A4A5A'},beginAtZero:true} } }
-  });
+  const ctx=document.getElementById('chart-channels').getContext('2d');
+  if(charts.channels)charts.channels.destroy();
+  const labels=data.map(d=>{const s=String(d.date);return`${s.slice(4,6)}/${s.slice(6,8)}`;});
+  charts.channels=new Chart(ctx,{type:'bar',data:{labels,datasets:[
+    {label:'Organic',data:data.map(d=>d.organic||0),backgroundColor:'rgba(230,57,70,.7)',borderRadius:2,borderSkipped:false},
+    {label:'Direct',data:data.map(d=>d.direct||0),backgroundColor:'rgba(0,200,255,.7)',borderRadius:2,borderSkipped:false},
+    {label:'Social',data:data.map(d=>d.social||0),backgroundColor:'rgba(139,92,246,.7)',borderRadius:2,borderSkipped:false},
+    {label:'Referral',data:data.map(d=>d.referral||0),backgroundColor:'rgba(16,217,140,.7)',borderRadius:2,borderSkipped:false},
+  ]},options:{responsive:true,maintainAspectRatio:true,interaction:{mode:'index',intersect:false},plugins:{legend:{display:true,labels:{boxWidth:8,padding:10,color:'#7A7A92',font:{size:9}}},tooltip:{backgroundColor:'rgba(7,7,15,.97)',borderColor:'rgba(230,57,70,.3)',borderWidth:1,padding:10}},scales:{x:{stacked:true,grid:{display:false},ticks:{maxTicksLimit:8,color:'#3A3A55'}},y:{stacked:true,grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#3A3A55'},beginAtZero:true}}}});
 }
 
 function renderBounce(rate) {
-  const pct = Math.round((rate||0)*100);
-  document.getElementById('bounce-number').textContent = pct + '%';
-  document.getElementById('bounce-number').style.color = pct > 60 ? '#FF6B6B' : pct > 40 ? CHART_COLORS.yellow : CHART_COLORS.green;
-  const ctx = document.getElementById('chart-bounce').getContext('2d');
-  if (charts.bounce) charts.bounce.destroy();
-  charts.bounce = new Chart(ctx, {
-    type:'doughnut',
-    data:{ datasets:[{ data:[pct,100-pct], backgroundColor:[pct>60?'rgba(255,107,107,0.8)':pct>40?'rgba(245,166,35,0.8)':'rgba(16,217,140,0.8)','rgba(255,255,255,0.05)'], borderWidth:0 }] },
-    options:{ responsive:true, maintainAspectRatio:true, cutout:'80%', plugins:{legend:{display:false},tooltip:{enabled:false}} }
-  });
+  const pct=Math.round((rate||0)*100);
+  document.getElementById('bounce-num').textContent=pct+'%';
+  document.getElementById('bounce-num').style.color=pct>60?'#FF6B6B':pct>40?CC.amber:CC.green;
+  const ctx=document.getElementById('chart-bounce').getContext('2d');
+  if(charts.bounce)charts.bounce.destroy();
+  charts.bounce=new Chart(ctx,{type:'doughnut',data:{datasets:[{data:[pct,100-pct],backgroundColor:[pct>60?'rgba(255,107,107,.8)':pct>40?'rgba(245,166,35,.8)':'rgba(16,217,140,.8)','rgba(255,255,255,.04)'],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:true,cutout:'80%',plugins:{legend:{display:false},tooltip:{enabled:false}}}});
 }
 
-function renderPagesPerSession(v) {
-  document.getElementById('pages-per-session').textContent = (v||0).toFixed(1);
-}
+function renderPagesPerSession(v){document.getElementById('pps').textContent=(v||0).toFixed(1);}
 
 function renderNewReturning(data) {
-  const newU = data.find(d=>d.type==='new')?.u || data.find(d=>d.type==='New Visitor')?.u || 0;
-  const retU = data.find(d=>d.type==='returning')?.u || data.find(d=>d.type==='Returning Visitor')?.u || 0;
-  const ctx = document.getElementById('chart-new-returning').getContext('2d');
-  if (charts.nr) charts.nr.destroy();
-  charts.nr = new Chart(ctx, {
-    type:'doughnut',
-    data:{ labels:['New','Returning'], datasets:[{ data:[newU,retU], backgroundColor:[CHART_COLORS.accent,'rgba(0,200,255,0.7)'], borderColor:'rgba(7,7,13,0.8)', borderWidth:3 }] },
-    options:{ responsive:true, maintainAspectRatio:true, cutout:'72%', plugins:{legend:{display:false},tooltip:{backgroundColor:'rgba(13,13,24,0.95)',borderColor:'rgba(249,91,61,0.3)',borderWidth:1,padding:10}} }
-  });
+  const newU=data.find(d=>d.type==='new'||d.type==='New Visitor')?.u||0;
+  const retU=data.find(d=>d.type==='returning'||d.type==='Returning Visitor')?.u||0;
+  const ctx=document.getElementById('chart-nr').getContext('2d');
+  if(charts.nr)charts.nr.destroy();
+  charts.nr=new Chart(ctx,{type:'doughnut',data:{labels:['New','Returning'],datasets:[{data:[newU,retU],backgroundColor:[CC.red,'rgba(0,200,255,.7)'],borderColor:'rgba(2,2,8,.8)',borderWidth:3}]},options:{responsive:true,maintainAspectRatio:true,cutout:'72%',plugins:{legend:{display:false},tooltip:{backgroundColor:'rgba(7,7,15,.97)',borderColor:'rgba(230,57,70,.3)',borderWidth:1,padding:10}}}});
   const total=(newU+retU)||1;
-  document.getElementById('new-returning-legend').innerHTML=`
-    <span style="display:flex;align-items:center;gap:5px;"><span style="width:8px;height:8px;border-radius:50%;background:${CHART_COLORS.accent};display:inline-block;"></span>New ${Math.round(newU/total*100)}%</span>
-    <span style="display:flex;align-items:center;gap:5px;"><span style="width:8px;height:8px;border-radius:50%;background:rgba(0,200,255,0.7);display:inline-block;"></span>Returning ${Math.round(retU/total*100)}%</span>`;
+  document.getElementById('nr-legend').innerHTML=`<span style="display:flex;align-items:center;gap:4px;"><span style="width:7px;height:7px;border-radius:50%;background:${CC.red};display:inline-block;"></span>New ${Math.round(newU/total*100)}%</span><span style="display:flex;align-items:center;gap:4px;"><span style="width:7px;height:7px;border-radius:50%;background:rgba(0,200,255,.7);display:inline-block;"></span>Returning ${Math.round(retU/total*100)}%</span>`;
 }
 
 function renderRealtime(rt) {
-  document.getElementById('realtime-countries').innerHTML = rt.countries.length
-    ? rt.countries.map(d=>`<tr><td>${d.c}</td><td><strong style="color:var(--green)">${d.u}</strong></td></tr>`).join('')
-    : `<tr><td colspan="2" class="empty-state">No active users right now</td></tr>`;
-  document.getElementById('realtime-pages').innerHTML = rt.pages.length
-    ? rt.pages.map(d=>`<tr><td style="font-family:'IBM Plex Mono',monospace;font-size:11px;">${d.p}</td><td><strong style="color:var(--green)">${d.u}</strong></td></tr>`).join('')
-    : `<tr><td colspan="2" class="empty-state">No active users right now</td></tr>`;
+  document.getElementById('rt-countries').innerHTML=rt.countries.length?rt.countries.map(d=>`<tr><td>${d.c}</td><td><strong style="color:var(--green)">${d.u}</strong></td></tr>`).join(''):`<tr><td colspan="2" class="empty">No active users</td></tr>`;
+  document.getElementById('rt-pages').innerHTML=rt.pages.length?rt.pages.map(d=>`<tr><td style="font-family:'IBM Plex Mono',monospace;font-size:10px;">${d.p}</td><td><strong style="color:var(--green)">${d.u}</strong></td></tr>`).join(''):`<tr><td colspan="2" class="empty">No active users</td></tr>`;
 }
 
-// Realtime auto-refresh every 30s
-setInterval(async () => {
-  if (!accessToken && !isDemoMode) return;
-  if (isDemoMode) {
-    const rt = genDemoData().realtime;
-    renderRealtime(rt);
-    document.getElementById('kpi-realtime').textContent = rt.total;
-    document.getElementById('rt-count').textContent = rt.total;
-    return;
+// ══════════════════════════════════════════════
+//  YOUTUBE RENDERER
+// ══════════════════════════════════════════════
+function renderYouTube({channel,topVideos,recentVideos,analytics,geography,trafficSources}) {
+  renderYouTubeGeo(geography);
+  renderYouTubeTraffic(trafficSources);
+  if (!channel) return;
+  const s=channel.statistics||{};
+  document.getElementById('yt-subs').textContent=fmt(parseInt(s.subscriberCount||0));
+  document.getElementById('yt-views').textContent=fmt(parseInt(s.viewCount||0));
+  document.getElementById('yt-vcount').textContent=fmt(parseInt(s.videoCount||0));
+  if (analytics?.rows) {
+    const rows=analytics.rows;
+    const headers=analytics.columnHeaders||[];
+    const totalMin=rows.reduce((a,r)=>a+parseFloat(r.values?.[1]||0),0);
+    const totalGained=rows.reduce((a,r)=>a+parseFloat(r.values?.[3]||0),0);
+    const avgDur=rows.length?rows.reduce((a,r)=>a+parseFloat(r.values?.[2]||0),0)/rows.length:0;
+    document.getElementById('yt-watchtime').textContent=fmt(Math.round(totalMin/60));
+    document.getElementById('yt-avgdur').textContent=Math.round(avgDur)+'s';
+    document.getElementById('yt-gained').textContent=`+${Math.round(totalGained)} gained / mo`;
+    const ctx1=document.getElementById('chart-yt-views').getContext('2d');
+    if(charts.ytV)charts.ytV.destroy();
+    const labels=rows.map(r=>{const d=r.dimensions?.[0]||'';return`${d.slice(5,7)}/${d.slice(8,10)}`;});
+    charts.ytV=new Chart(ctx1,{type:'line',data:{labels,datasets:[{label:'Views',data:rows.map(r=>parseFloat(r.values?.[0]||0)),borderColor:CC.red,backgroundColor:'rgba(230,57,70,.08)',borderWidth:2,pointRadius:0,pointHoverRadius:4,fill:true,tension:.4}]},options:{responsive:true,maintainAspectRatio:true,plugins:{legend:{display:false},tooltip:{backgroundColor:'rgba(7,7,15,.97)',borderColor:'rgba(230,57,70,.3)',borderWidth:1,padding:10}},scales:{x:{grid:{color:'rgba(255,255,255,.03)'},ticks:{maxTicksLimit:8,color:'#3A3A55'}},y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#3A3A55'},beginAtZero:true}}}});
+    const ctx2=document.getElementById('chart-yt-subs').getContext('2d');
+    if(charts.ytS)charts.ytS.destroy();
+    charts.ytS=new Chart(ctx2,{type:'bar',data:{labels,datasets:[{label:'Gained',data:rows.map(r=>parseFloat(r.values?.[3]||0)),backgroundColor:'rgba(16,217,140,.7)',borderRadius:2,borderSkipped:false},{label:'Lost',data:rows.map(r=>-parseFloat(r.values?.[4]||0)),backgroundColor:'rgba(255,107,107,.6)',borderRadius:2,borderSkipped:false}]},options:{responsive:true,maintainAspectRatio:true,plugins:{legend:{display:true,labels:{boxWidth:8,padding:10,color:'#7A7A92',font:{size:9}}},tooltip:{backgroundColor:'rgba(7,7,15,.97)',borderColor:'rgba(230,57,70,.3)',borderWidth:1,padding:10}},scales:{x:{grid:{display:false},ticks:{maxTicksLimit:8,color:'#3A3A55'}},y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#3A3A55'}}}}});
+  } else {
+    document.getElementById('yt-watchtime').textContent='—';
+    document.getElementById('yt-avgdur').textContent='—';
   }
-  const rt = await runRealtimeReport({ dimensions:[{name:'country'},{name:'unifiedScreenName'}], metrics:[{name:'activeUsers'}] });
-  if (!rt) return;
-  const d = parseAllData({ rt }).realtime;
-  renderRealtime(d);
-  document.getElementById('kpi-realtime').textContent = d.total;
-  document.getElementById('rt-count').textContent = d.total;
-}, 30000);
+  document.getElementById('yt-top-body').innerHTML=(topVideos||[]).map((v,i)=>{const st=v.statistics||{},thumb=v.snippet?.thumbnails?.default?.url||'',title=v.snippet?.title||'Untitled';return`<tr><td><span class="rank">${i+1}</span></td><td class="yt-cell">${thumb?`<img class="yt-thumb" src="${thumb}" alt=""/>`:''}<span class="yt-ttl" title="${title}">${title}</span></td><td><strong style="color:var(--red)">${fmt(parseInt(st.viewCount||0))}</strong></td><td style="color:var(--text-m)">${fmt(parseInt(st.likeCount||0))}</td><td style="color:var(--text-m)">${fmt(parseInt(st.commentCount||0))}</td></tr>`;}).join('')||`<tr><td colspan="5" class="empty">No videos found</td></tr>`;
+  document.getElementById('yt-recent-body').innerHTML=(recentVideos||[]).map((v,i)=>{const st=v.statistics||{},thumb=v.snippet?.thumbnails?.default?.url||'',title=v.snippet?.title||'Untitled',date=v.snippet?.publishedAt?new Date(v.snippet.publishedAt).toLocaleDateString('en-US',{month:'short',day:'numeric'}):'—';return`<tr><td><span class="rank">${i+1}</span></td><td class="yt-cell">${thumb?`<img class="yt-thumb" src="${thumb}" alt=""/>`:''}<span class="yt-ttl" title="${title}">${title}</span></td><td><strong style="color:var(--cyan)">${fmt(parseInt(st.viewCount||0))}</strong></td><td style="color:var(--text-m);font-family:'IBM Plex Mono',monospace;font-size:9px;">${date}</td></tr>`;}).join('')||`<tr><td colspan="4" class="empty">No recent videos</td></tr>`;
+}
 
+// ══════════════════════════════════════════════
+//  YOUTUBE AUDIENCE RENDERERS
+// ══════════════════════════════════════════════
+function renderYouTubeGeo(geography) {
+  const rows = geography?.rows || [];
+  if (!rows.length) { document.getElementById('yt-geo-body').innerHTML=`<tr><td colspan="4" class="empty">No geography data yet</td></tr>`; return; }
+  const totalViews = rows.reduce((a,r)=>a+parseFloat(r.values?.[0]||0),0)||1;
+  const flags={'US':'🇺🇸','GB':'🇬🇧','CA':'🇨🇦','AU':'🇦🇺','IN':'🇮🇳','DE':'🇩🇪','FR':'🇫🇷','BR':'🇧🇷','MX':'🇲🇽','NG':'🇳🇬','ZA':'🇿🇦','PH':'🇵🇭','JP':'🇯🇵','NL':'🇳🇱','KE':'🇰🇪'};
+  document.getElementById('yt-geo-body').innerHTML = rows.map((r,i)=>{
+    const cc=r.dimensions?.[0]||'??',views=parseFloat(r.values?.[0]||0),mins=parseFloat(r.values?.[1]||0),hrs=(mins/60).toFixed(1),pct=Math.round(views/totalViews*100);
+    return `<tr><td><span class="flag">${flags[cc]||'🌍'}</span>${cc}</td><td><strong style="color:var(--red)">${fmt(views)}</strong></td><td style="color:var(--text-m)">${hrs}h</td><td style="color:var(--text-m)">${pct}%</td></tr>`;
+  }).join('');
+}
+
+function renderYouTubeTraffic(trafficSources) {
+  const rows = trafficSources?.rows || [];
+  if (!rows.length) { document.getElementById('yt-traffic-legend').innerHTML=`<span style="font-size:10px;color:var(--text-m);font-family:'IBM Plex Mono',monospace;">No traffic source data yet</span>`; return; }
+  const labels = {'YT_SEARCH':'YouTube Search','SUGGESTED_VIDEO':'Suggested Videos','EXT_URL':'External / Social','BROWSE':'Browse Features','YT_OTHER_PAGE':'Other YouTube','NO_LINK_OTHER':'Direct / Unknown','NOTIFICATION':'Notifications','PLAYLIST':'Playlists'};
+  const srcLabels = rows.map(r=>labels[r.dimensions?.[0]]||r.dimensions?.[0]||'Other');
+  const srcData = rows.map(r=>parseFloat(r.values?.[0]||0));
+  const total = srcData.reduce((a,b)=>a+b,0)||1;
+  const colors = [CC.red,CC.cyan,CC.purple,CC.green,CC.amber,CC.pink,'#6366F1','#EC4899'];
+  const ctx = document.getElementById('chart-yt-traffic').getContext('2d');
+  if (charts.ytTraffic) charts.ytTraffic.destroy();
+  charts.ytTraffic = new Chart(ctx,{type:'doughnut',data:{labels:srcLabels,datasets:[{data:srcData,backgroundColor:colors.slice(0,rows.length),borderColor:'rgba(2,2,8,.8)',borderWidth:3}]},options:{responsive:true,maintainAspectRatio:true,cutout:'72%',plugins:{legend:{display:false},tooltip:{backgroundColor:'rgba(7,7,15,.97)',borderColor:'rgba(230,57,70,.3)',borderWidth:1,padding:10}}}});
+  document.getElementById('yt-traffic-legend').innerHTML = srcLabels.map((l,i)=>`<span style="display:inline-flex;align-items:center;gap:5px;font-size:9px;font-family:'IBM Plex Mono',monospace;color:var(--text-s);"><span style="width:7px;height:7px;border-radius:50%;background:${colors[i]};display:inline-block;flex-shrink:0;"></span>${l} <strong style="color:var(--text)">${Math.round(srcData[i]/total*100)}%</strong></span>`).join('');
+}
+
+// ══════════════════════════════════════════════
+//  SEARCH CONSOLE RENDERER
+// ══════════════════════════════════════════════
+function renderSearchConsole({siteUrl,queries,pages}) {
+  if(siteUrl){const b=document.getElementById('sc-site');if(b)b.textContent=siteUrl.replace(/^https?:\/\//,'').replace(/\/$/,'');}
+  const pc=p=>p<=3?'sc-top':p<=10?'sc-mid':'sc-low';
+  document.getElementById('sc-queries').innerHTML=(queries||[]).length?queries.map((q,i)=>`<tr><td><span class="rank">${i+1}</span></td><td style="font-family:'IBM Plex Mono',monospace;font-size:10px;max-width:170px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${q.keys?.[0]||'—'}</td><td><strong style="color:var(--red)">${fmt(q.clicks)}</strong></td><td style="color:var(--text-m)">${fmt(q.impressions)}</td><td style="color:var(--green);font-family:'IBM Plex Mono',monospace;font-size:9px;">${(q.ctr*100).toFixed(1)}%</td><td><span class="sc-pos ${pc(q.position)}">${q.position.toFixed(1)}</span></td></tr>`).join(''):`<tr><td colspan="6" class="empty">No search data yet</td></tr>`;
+  document.getElementById('sc-pages').innerHTML=(pages||[]).length?pages.map((p,i)=>{const pg=(p.keys?.[0]||'').replace(/^https?:\/\/[^/]+/,'');return`<tr><td><span class="rank">${i+1}</span></td><td style="font-family:'IBM Plex Mono',monospace;font-size:10px;">${pg.length>30?pg.slice(0,30)+'…':pg||'/'}</td><td><strong style="color:var(--cyan)">${fmt(p.clicks)}</strong></td><td style="color:var(--green);font-family:'IBM Plex Mono',monospace;font-size:9px;">${(p.ctr*100).toFixed(1)}%</td><td><span class="sc-pos ${pc(p.position)}">${p.position.toFixed(1)}</span></td></tr>`;}).join(''):`<tr><td colspan="5" class="empty">No page data yet</td></tr>`;
+}
+
+// ══════════════════════════════════════════════
+//  REVENUE TRACKER
+// ══════════════════════════════════════════════
+function getLeads(){try{return JSON.parse(localStorage.getItem('hi_leads')||'[]');}catch{return[];}}
+function saveLeads(l){localStorage.setItem('hi_leads',JSON.stringify(l));}
+function addLead(){
+  const name=document.getElementById('rev-name').value.trim();
+  const value=parseFloat(document.getElementById('rev-value').value)||0;
+  const status=document.getElementById('rev-status').value;
+  const service=document.getElementById('rev-service').value.trim();
+  if(!name){document.getElementById('rev-name').focus();return;}
+  const leads=getLeads();
+  leads.unshift({id:Date.now(),name,value,status,service,date:new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})});
+  saveLeads(leads);
+  document.getElementById('rev-name').value='';document.getElementById('rev-value').value='';document.getElementById('rev-service').value='';
+  renderLeads();
+}
+function deleteLead(id){saveLeads(getLeads().filter(l=>l.id!==id));renderLeads();}
+function updateLeadStatus(id,status){saveLeads(getLeads().map(l=>l.id===id?{...l,status}:l));renderLeads();}
+function renderLeads(){
+  const leads=getLeads();
+  const pipeline=leads.filter(l=>l.status!=='won'&&l.status!=='lost').reduce((a,l)=>a+l.value,0);
+  const won=leads.filter(l=>l.status==='won').reduce((a,l)=>a+l.value,0);
+  const closed=leads.filter(l=>l.status==='won'||l.status==='lost').length;
+  const wonCount=leads.filter(l=>l.status==='won').length;
+  document.getElementById('rev-pipeline').textContent='$'+fmt(pipeline);
+  document.getElementById('rev-won').textContent='$'+fmt(won);
+  document.getElementById('rev-leads').textContent=fmt(leads.length);
+  document.getElementById('rev-winrate').textContent=closed>0?Math.round(wonCount/closed*100)+'%':'—';
+  const empty=document.getElementById('leads-empty'),table=document.getElementById('leads-table');
+  if(!leads.length){empty.style.display='block';table.style.display='none';return;}
+  empty.style.display='none';table.style.display='table';
+  document.getElementById('leads-body').innerHTML=leads.map((l,i)=>`<tr><td><span class="rank">${i+1}</span></td><td style="font-weight:500;color:var(--text);">${l.name}</td><td style="font-size:10px;color:var(--text-m);font-family:'IBM Plex Mono',monospace;">${l.service||'—'}</td><td><strong style="color:var(--green);">${l.value?'$'+fmt(l.value):'—'}</strong></td><td><select onchange="updateLeadStatus(${l.id},this.value)" style="background:transparent;border:none;cursor:pointer;font-size:10px;outline:none;color:var(--text-s);">${['lead','proposal','won','lost'].map(s=>`<option value="${s}"${l.status===s?' selected':''}>${s.charAt(0).toUpperCase()+s.slice(1)}</option>`).join('')}</select></td><td style="font-size:9px;color:var(--text-m);font-family:'IBM Plex Mono',monospace;">${l.date}</td><td><button class="del-btn" onclick="deleteLead(${l.id})">✕</button></td></tr>`).join('');
+}
+
+// ══════════════════════════════════════════════
+//  REALTIME AUTO-REFRESH
+// ══════════════════════════════════════════════
+setInterval(async()=>{
+  if(!accessToken&&!isDemoMode)return;
+  if(isDemoMode){const rt=genDemoData().realtime;renderRealtime(rt);document.getElementById('kpi-realtime').textContent=rt.total;document.getElementById('rt-count-hdr').textContent=rt.total+' active';return;}
+  const rt=await runRealtimeReport({dimensions:[{name:'country'},{name:'unifiedScreenName'}],metrics:[{name:'activeUsers'}]});
+  if(!rt)return;
+  const parsed=parseAllData({rt}).realtime;
+  renderRealtime(parsed);
+  document.getElementById('kpi-realtime').textContent=parsed.total;
+  document.getElementById('rt-count-hdr').textContent=parsed.total+' active';
+},30000);
 </script>
 </body>
 </html>

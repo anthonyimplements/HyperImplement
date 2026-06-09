@@ -10,7 +10,12 @@ const CREDENTIALS = JSON.parse(fs.readFileSync(path.join(__dirname, 'client-secr
 const TOKENS_FILE = path.join(__dirname, 'tokens.json');
 const PROPERTY_ID = '540752503';
 const PORT = 3001;
-const SCOPES = ['https://www.googleapis.com/auth/analytics.readonly'];
+const SCOPES = [
+  'https://www.googleapis.com/auth/analytics.readonly',
+  'https://www.googleapis.com/auth/youtube.readonly',
+  'https://www.googleapis.com/auth/yt-analytics.readonly',
+  'https://www.googleapis.com/auth/webmasters.readonly',
+];
 
 const oauth2Client = new google.auth.OAuth2(
   CREDENTIALS.client_id,
@@ -78,6 +83,134 @@ async function fetchAllData(range) {
   return { overview, overviewPrev, sessionsByDay, sources, devices, countries, browsers, topPages, events, landingPages, channelsByDay, newReturning, engagementByDay, rt };
 }
 
+// ── YouTube Data ──
+async function fetchYouTubeData() {
+  const youtube = google.youtube({ version: 'v3', auth: oauth2Client });
+
+  // Channel stats + uploads playlist
+  const channelRes = await youtube.channels.list({
+    part: ['statistics', 'snippet', 'contentDetails'],
+    mine: true,
+  });
+  const channel = channelRes.data.items?.[0];
+  if (!channel) return { channel: null, topVideos: [], recentVideos: [], analytics: null };
+
+  const uploadsPlaylistId = channel.contentDetails?.relatedPlaylists?.uploads;
+  let allVideoIds = [];
+
+  if (uploadsPlaylistId) {
+    const playlistRes = await youtube.playlistItems.list({
+      part: ['contentDetails'],
+      playlistId: uploadsPlaylistId,
+      maxResults: 50,
+    });
+    allVideoIds = (playlistRes.data.items || []).map(i => i.contentDetails.videoId);
+  }
+
+  let topVideos = [];
+  let recentVideos = [];
+  if (allVideoIds.length > 0) {
+    const statsRes = await youtube.videos.list({
+      part: ['statistics', 'snippet', 'contentDetails'],
+      id: allVideoIds.slice(0, 50),
+    });
+    const all = statsRes.data.items || [];
+    topVideos = [...all].sort((a, b) => parseInt(b.statistics?.viewCount || 0) - parseInt(a.statistics?.viewCount || 0)).slice(0, 10);
+    recentVideos = [...all].sort((a, b) => new Date(b.snippet?.publishedAt) - new Date(a.snippet?.publishedAt)).slice(0, 10);
+  }
+
+  // YouTube Analytics — daily metrics, geography, and traffic sources
+  let analytics = null, geography = null, trafficSources = null;
+  try {
+    const ya = google.youtubeAnalytics({ version: 'v2', auth: oauth2Client });
+    const endDate = new Date().toISOString().slice(0, 10);
+    const startDate = new Date(Date.now() - 30 * 86400000).toISOString().slice(0, 10);
+    const [dailyRes, geoRes, trafficRes] = await Promise.all([
+      ya.reports.query({
+        ids: `channel==${channel.id}`,
+        startDate, endDate,
+        metrics: 'views,estimatedMinutesWatched,averageViewDuration,subscribersGained,subscribersLost',
+        dimensions: 'day',
+        sort: 'day',
+      }),
+      ya.reports.query({
+        ids: `channel==${channel.id}`,
+        startDate, endDate,
+        metrics: 'views,estimatedMinutesWatched',
+        dimensions: 'country',
+        sort: '-views',
+        maxResults: 15,
+      }),
+      ya.reports.query({
+        ids: `channel==${channel.id}`,
+        startDate, endDate,
+        metrics: 'views',
+        dimensions: 'insightTrafficSourceType',
+        sort: '-views',
+      }),
+    ]);
+    analytics = dailyRes.data;
+    geography = geoRes.data;
+    trafficSources = trafficRes.data;
+  } catch (e) {
+    console.warn('YouTube Analytics error (may need re-auth with new scopes):', e.message);
+  }
+
+  return { channel, topVideos, recentVideos, analytics, geography, trafficSources };
+}
+
+// ── YouTube Content Research ──
+async function fetchYouTubeResearch(query) {
+  const youtube = google.youtube({ version: 'v3', auth: oauth2Client });
+  // Search for popular videos matching the query
+  const searchRes = await youtube.search.list({
+    part: ['snippet'],
+    q: query,
+    order: 'viewCount',
+    type: ['video'],
+    maxResults: 12,
+    relevanceLanguage: 'en',
+    safeSearch: 'moderate',
+  });
+  const videoIds = (searchRes.data.items || []).map(i => i.id?.videoId).filter(Boolean);
+  if (!videoIds.length) return { items: [] };
+  const statsRes = await youtube.videos.list({
+    part: ['statistics', 'snippet', 'contentDetails'],
+    id: videoIds,
+  });
+  return { items: statsRes.data.items || [] };
+}
+
+// ── Search Console Data ──
+async function fetchSearchConsoleData() {
+  const sc = google.webmasters({ version: 'v3', auth: oauth2Client });
+
+  // Get verified sites
+  const sitesRes = await sc.sites.list();
+  const siteUrl = sitesRes.data.siteEntry?.[0]?.siteUrl;
+  if (!siteUrl) return { siteUrl: null, queries: [], pages: [] };
+
+  const endDate = new Date().toISOString().slice(0, 10);
+  const startDate = new Date(Date.now() - 28 * 86400000).toISOString().slice(0, 10);
+
+  const [queriesRes, pagesRes] = await Promise.all([
+    sc.searchanalytics.query({
+      siteUrl,
+      requestBody: { startDate, endDate, dimensions: ['query'], rowLimit: 20 },
+    }),
+    sc.searchanalytics.query({
+      siteUrl,
+      requestBody: { startDate, endDate, dimensions: ['page'], rowLimit: 10 },
+    }),
+  ]);
+
+  return {
+    siteUrl,
+    queries: queriesRes.data.rows || [],
+    pages: pagesRes.data.rows || [],
+  };
+}
+
 // ── HTTP Server ──
 const server = http.createServer(async (req, res) => {
   const url = new URL(req.url, `http://localhost:${PORT}`);
@@ -107,6 +240,64 @@ const server = http.createServer(async (req, res) => {
     } catch(e) {
       console.error('Auth error:', e.message);
       res.writeHead(500); res.end('Auth failed: ' + e.message);
+    }
+    return;
+  }
+
+  // YouTube research API
+  if (url.pathname === '/api/youtube-research') {
+    if (!oauth2Client.credentials?.access_token && !oauth2Client.credentials?.refresh_token) {
+      res.writeHead(401, {'Content-Type':'application/json'});
+      res.end(JSON.stringify({ error: 'not_authenticated' }));
+      return;
+    }
+    const q = url.searchParams.get('q') || 'business automation AI';
+    try {
+      const data = await fetchYouTubeResearch(q);
+      res.writeHead(200, {'Content-Type':'application/json'});
+      res.end(JSON.stringify(data));
+    } catch(e) {
+      console.error('YT research error:', e.message);
+      res.writeHead(500, {'Content-Type':'application/json'});
+      res.end(JSON.stringify({ error: e.message }));
+    }
+    return;
+  }
+
+  // YouTube data API
+  if (url.pathname === '/api/youtube') {
+    if (!oauth2Client.credentials?.access_token && !oauth2Client.credentials?.refresh_token) {
+      res.writeHead(401, {'Content-Type':'application/json'});
+      res.end(JSON.stringify({ error: 'not_authenticated' }));
+      return;
+    }
+    try {
+      const data = await fetchYouTubeData();
+      res.writeHead(200, {'Content-Type':'application/json'});
+      res.end(JSON.stringify(data));
+    } catch(e) {
+      console.error('YouTube fetch error:', e.message);
+      res.writeHead(e.message.includes('insufficientPermissions') || e.message.includes('403') ? 403 : 500, {'Content-Type':'application/json'});
+      res.end(JSON.stringify({ error: e.message }));
+    }
+    return;
+  }
+
+  // Search Console data API
+  if (url.pathname === '/api/search-console') {
+    if (!oauth2Client.credentials?.access_token && !oauth2Client.credentials?.refresh_token) {
+      res.writeHead(401, {'Content-Type':'application/json'});
+      res.end(JSON.stringify({ error: 'not_authenticated' }));
+      return;
+    }
+    try {
+      const data = await fetchSearchConsoleData();
+      res.writeHead(200, {'Content-Type':'application/json'});
+      res.end(JSON.stringify(data));
+    } catch(e) {
+      console.error('Search Console fetch error:', e.message);
+      res.writeHead(e.message.includes('insufficientPermissions') || e.message.includes('403') ? 403 : 500, {'Content-Type':'application/json'});
+      res.end(JSON.stringify({ error: e.message }));
     }
     return;
   }
