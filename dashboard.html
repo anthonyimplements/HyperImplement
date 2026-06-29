@@ -186,6 +186,55 @@
     .empty{text-align:center;padding:28px 16px;color:var(--text-m);font-size:11px;font-family:'IBM Plex Mono',monospace;}
     .skel{background:linear-gradient(90deg,rgba(255,255,255,.04) 25%,rgba(255,255,255,.07) 50%,rgba(255,255,255,.04) 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;border-radius:3px;}
 
+    /* ── CONTENT CALENDAR ── */
+    .cal-wrap{display:flex;flex-direction:column;gap:18px;}
+    .cal-controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+    .cal-mbtn{background:rgba(255,255,255,.04);border:1px solid var(--border-d);border-radius:6px;padding:7px 14px;color:var(--text-s);font-size:11px;font-family:'IBM Plex Mono',monospace;letter-spacing:.04em;cursor:pointer;transition:all .2s;text-transform:uppercase;}
+    .cal-mbtn:hover{border-color:var(--red);color:var(--text);}
+    .cal-mbtn.active{background:var(--red-dim);border-color:rgba(230,57,70,.4);color:var(--red);}
+    .cal-legend{display:flex;gap:14px;flex-wrap:wrap;margin-left:auto;}
+    .cal-leg{display:inline-flex;align-items:center;gap:6px;font-size:9px;font-family:'IBM Plex Mono',monospace;color:var(--text-s);text-transform:uppercase;letter-spacing:.05em;}
+    .cal-leg .dot{width:8px;height:8px;border-radius:2px;flex-shrink:0;}
+    .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;}
+    .cal-dow{font-size:9px;font-family:'IBM Plex Mono',monospace;color:var(--text-m);text-transform:uppercase;letter-spacing:.1em;text-align:center;padding:4px 0;font-weight:500;}
+    .cal-cell{background:var(--card);border:1px solid var(--border-d);border-radius:5px;min-height:104px;padding:7px 7px 8px;display:flex;flex-direction:column;gap:4px;position:relative;transition:border-color .2s;overflow:hidden;}
+    .cal-cell.empty-day{background:rgba(255,255,255,.012);border-style:dashed;border-color:rgba(255,255,255,.04);}
+    .cal-cell.pad{background:transparent;border:none;min-height:0;}
+    .cal-cell.today{border-color:rgba(230,57,70,.5);box-shadow:0 0 0 1px rgba(230,57,70,.25),0 0 20px rgba(230,57,70,.1);}
+    .cal-daynum{font-size:11px;font-family:'Unbounded',sans-serif;font-weight:600;color:var(--text-s);line-height:1;display:flex;align-items:center;justify-content:space-between;}
+    .cal-cell.today .cal-daynum{color:var(--red);}
+    .cal-daynum .film{font-size:8px;font-family:'IBM Plex Mono',monospace;color:var(--amber);letter-spacing:.04em;background:rgba(245,166,35,.1);border:1px solid rgba(245,166,35,.25);border-radius:3px;padding:1px 4px;text-transform:uppercase;}
+    .cal-chip{font-size:9px;font-family:'IBM Plex Mono',monospace;line-height:1.25;padding:3px 6px;border-radius:4px;cursor:pointer;border:1px solid;transition:transform .12s,box-shadow .12s;display:flex;align-items:center;gap:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .cal-chip:hover{transform:translateX(2px);box-shadow:0 2px 10px rgba(0,0,0,.4);}
+    .cal-chip .ci{flex-shrink:0;font-size:9px;}
+    .cal-chip .ct{overflow:hidden;text-overflow:ellipsis;}
+    .cal-chip.yt{background:rgba(230,57,70,.13);border-color:rgba(230,57,70,.32);color:#ff8b95;}
+    .cal-chip.sf{background:rgba(0,200,255,.1);border-color:rgba(0,200,255,.28);color:#7fdcff;}
+    .cal-cell-cnt{margin-top:auto;font-size:8px;font-family:'IBM Plex Mono',monospace;color:var(--text-m);letter-spacing:.04em;}
+    /* detail drawer */
+    .cal-detail{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:0;overflow:hidden;animation:fadeUp .35s ease both;}
+    .cal-detail.hidden{display:none;}
+    .cd-head{display:flex;align-items:flex-start;gap:12px;padding:16px 20px;border-bottom:1px solid var(--border-d);position:relative;}
+    .cd-badge{font-size:9px;font-family:'IBM Plex Mono',monospace;letter-spacing:.08em;text-transform:uppercase;padding:4px 9px;border-radius:4px;flex-shrink:0;border:1px solid;}
+    .cd-badge.yt{background:var(--red-dim);color:var(--red);border-color:rgba(230,57,70,.3);}
+    .cd-badge.sf{background:rgba(0,200,255,.1);color:var(--cyan);border-color:rgba(0,200,255,.3);}
+    .cd-htitle{font-family:'Unbounded',sans-serif;font-size:15px;font-weight:600;color:var(--text);line-height:1.3;letter-spacing:-.01em;}
+    .cd-hmeta{font-size:10px;font-family:'IBM Plex Mono',monospace;color:var(--text-m);margin-top:4px;text-transform:uppercase;letter-spacing:.05em;}
+    .cd-close{margin-left:auto;background:none;border:1px solid var(--border-d);color:var(--text-s);width:26px;height:26px;border-radius:5px;cursor:pointer;font-size:14px;flex-shrink:0;transition:all .2s;}
+    .cd-close:hover{border-color:var(--red);color:var(--red);}
+    .cd-body{padding:18px 20px;display:grid;grid-template-columns:1fr 1fr;gap:16px 24px;}
+    .cd-field{display:flex;flex-direction:column;gap:5px;}
+    .cd-field.full{grid-column:1 / -1;}
+    .cd-flabel{font-size:9px;font-family:'IBM Plex Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--red);font-weight:500;display:flex;align-items:center;gap:6px;}
+    .cd-fval{font-size:12.5px;line-height:1.55;color:var(--text);font-family:'IBM Plex Sans',sans-serif;}
+    .cd-fval.mono{font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--text-s);}
+    .cd-tools{display:flex;flex-wrap:wrap;gap:6px;margin-top:2px;}
+    .cd-tool{font-size:9.5px;font-family:'IBM Plex Mono',monospace;background:rgba(255,255,255,.04);border:1px solid var(--border-d);border-radius:4px;padding:3px 8px;color:var(--text-s);}
+    .cd-caption{background:rgba(255,255,255,.025);border:1px solid var(--border-d);border-left:2px solid var(--cyan);border-radius:5px;padding:11px 13px;font-size:12px;line-height:1.6;color:var(--text-s);font-style:normal;}
+    .cd-copy{font-size:9px;font-family:'IBM Plex Mono',monospace;color:var(--text-m);cursor:pointer;border:1px solid var(--border-d);border-radius:4px;padding:2px 7px;transition:all .2s;text-transform:uppercase;letter-spacing:.05em;}
+    .cd-copy:hover{border-color:var(--cyan);color:var(--cyan);}
+    @media(max-width:820px){.cal-cell{min-height:84px;}.cd-body{grid-template-columns:1fr;}.cal-chip .ct{max-width:none;}}
+
     /* ── NOTICE ── */
     .notice{display:flex;align-items:center;gap:10px;background:rgba(245,166,35,.07);border:1px solid rgba(245,166,35,.2);border-radius:6px;padding:10px 14px;margin-bottom:12px;font-size:11px;color:rgba(245,166,35,.9);font-family:'IBM Plex Mono',monospace;}
     .notice a{color:var(--red);cursor:pointer;text-decoration:underline;}
@@ -468,6 +517,27 @@
     <table class="dt"><thead><tr><th>#</th><th>Video</th><th>Views</th><th>Likes</th><th>Duration</th></tr></thead><tbody id="niche-body"><tr><td colspan="5" class="empty">Loading trending videos…</td></tr></tbody></table>
   </div>
 
+  <!-- CONTENT CALENDAR -->
+  <div class="sl"><span class="sl-bracket">[</span><img class="sl-chip" src="ChipLogo.png" alt=""/><span>CONTENT CALENDAR</span><span class="sl-bracket">]</span></div>
+  <div class="card card-inner" style="animation-delay:80ms;">
+    <div class="card-hdr">
+      <div><div class="card-title">Posting Schedule</div><div class="card-sub">2 YouTube videos / week · 2 short-form pieces / day · click any item for the full brief</div></div>
+    </div>
+    <div class="cal-wrap">
+      <div class="cal-controls">
+        <button class="cal-mbtn" data-month="2026-06" onclick="setCalMonth('2026-06')">June 2026</button>
+        <button class="cal-mbtn" data-month="2026-07" onclick="setCalMonth('2026-07')">July 2026</button>
+        <div class="cal-legend">
+          <span class="cal-leg"><span class="dot" style="background:#E63946"></span>YouTube (long)</span>
+          <span class="cal-leg"><span class="dot" style="background:#00C8FF"></span>Short-form</span>
+          <span class="cal-leg"><span class="dot" style="background:rgba(245,166,35,.6)"></span>Film day</span>
+        </div>
+      </div>
+      <div class="cal-grid" id="cal-grid"></div>
+      <div class="cal-detail hidden" id="cal-detail"></div>
+    </div>
+  </div>
+
   <!-- SEARCH CONSOLE -->
   <div class="sl"><span class="sl-bracket">[</span><img class="sl-chip" src="ChipLogo.png" alt=""/><span>SEARCH CONSOLE</span><span class="sl-bracket">]</span></div>
   <div id="sc-notice" class="notice" style="display:none;">⚠ Search Console needs re-authorization. Enable the Search Console API at console.cloud.google.com → APIs & Services → Library → "Google Search Console API" → Enable. Then <a onclick="reAuth()">re-auth here</a>.</div>
@@ -614,6 +684,7 @@ function showDashboard() {
   document.getElementById('dash-footer').style.display='block';
   document.getElementById('rt-count-hdr').style.display='flex';
   renderLeads();
+  renderContentCalendar();
 }
 
 // ══════════════════════════════════════════════
@@ -1154,6 +1225,251 @@ function renderLeads(){
   if(!leads.length){empty.style.display='block';table.style.display='none';return;}
   empty.style.display='none';table.style.display='table';
   document.getElementById('leads-body').innerHTML=leads.map((l,i)=>`<tr><td><span class="rank">${i+1}</span></td><td style="font-weight:500;color:var(--text);">${l.name}</td><td style="font-size:10px;color:var(--text-m);font-family:'IBM Plex Mono',monospace;">${l.service||'—'}</td><td><strong style="color:var(--green);">${l.value?'$'+fmt(l.value):'—'}</strong></td><td><select onchange="updateLeadStatus(${l.id},this.value)" style="background:transparent;border:none;cursor:pointer;font-size:10px;outline:none;color:var(--text-s);">${['lead','proposal','won','lost'].map(s=>`<option value="${s}"${l.status===s?' selected':''}>${s.charAt(0).toUpperCase()+s.slice(1)}</option>`).join('')}</select></td><td style="font-size:9px;color:var(--text-m);font-family:'IBM Plex Mono',monospace;">${l.date}</td><td><button class="del-btn" onclick="deleteLead(${l.id})">✕</button></td></tr>`).join('');
+}
+
+// ══════════════════════════════════════════════
+//  CONTENT CALENDAR
+//  Source of truth: content-log.md + hook-library.md
+//  Each Sunday, append the next 7 days below.
+// ══════════════════════════════════════════════
+const TODAY_ISO = '2026-06-28';
+// p: 'yt' (long-form) | 'sf' (short-form)
+// status: 'film' | 'publish' | 'post'
+const CONTENT_SCHEDULE = {
+  '2026-06-28': [
+    {p:'sf',t:'Stop "Learning" AI — Start Implementing It',status:'post',ch:'TikTok · IG · FB · Shorts',
+     hook:'"Most business owners are stuck \'learning\' AI. That\'s the trap."',
+     show:'Talking-head punch-in over B-roll of you actually building on screen. Contrast "watching tutorials" vs "shipping a working tool."',
+     tools:['CapCut','Screen recording'],
+     cta:'Follow — I post a real build every week.',
+     cap:'You don\'t learn AI. You implement it. 🛠️ Watching one more tutorial won\'t change your business — building one thing will.\n#AIforbusiness #smallbusiness #automation'},
+    {p:'sf',t:'The AI Setup I\'d Build First for Any Business',status:'post',ch:'TikTok · IG · FB · Shorts',
+     hook:'"If I had one hour to AI-ify your business, here\'s the very first thing I\'d build."',
+     show:'Fast screen-record of a simple lead-capture → auto-reply automation coming together. Show the trigger and the result, not every step.',
+     tools:['Make.com','Gmail'],
+     cta:'Comment "BUILD" and I\'ll send you the workflow.',
+     cap:'The first AI system every business should have. ⚡ Comment BUILD for the template.\n#automation #AItools #smallbusinesstips'},
+  ],
+  '2026-06-29': [
+    {p:'yt',t:'FILM: How a Complete Beginner Can Build a Website with AI',status:'film',
+     hook:'"This is a real, live business website — and the person who built it had never written a line of code. Here\'s exactly how."',
+     show:'Screen-record the full build from a blank screen: describe the business, let AI generate the site, refine it, and ship it live. Narrate every decision so a non-technical owner can follow. (Publishes Wed Jul 1.)',
+     tools:['Claude Code','Cursor or VS Code','Netlify/Vercel for deploy'],
+     cta:'Mid-video: "Exact prompts are in the free AI Implementation Alliance." End: "Want this built for you? Book a 15-min call — link below."',
+     cap:'FILM DAY — flagship build-along. Capture clean screen + audio; grab 3–4 short clips while filming (blank→site moment, the first prompt, the live reveal).'},
+    {p:'sf',t:'No Code. No Website Builder. No Problem.',status:'post',ch:'TikTok · IG · FB · Shorts',
+     hook:'Overlay: "Watch AI build a website in real time." / "You don\'t need Wix, Squarespace, or a developer."',
+     show:'60-second speed-build clip pulled from today\'s filming — blank screen to a finished homepage.',
+     tools:['Claude Code','CapCut'],
+     cta:'Full step-by-step drops Wednesday — follow so you don\'t miss it.',
+     cap:'No code. No website builder. No problem. 🤯 Built this in real time with AI — full tutorial Wednesday.\n#AIwebsiteI #nocode #smallbusiness'},
+    {p:'sf',t:'1 Prompt That Builds Your Landing Page',status:'post',ch:'TikTok · IG · FB · Shorts',
+     hook:'"This one prompt writes your entire landing page."',
+     show:'Screen-record: paste the prompt, watch the page generate, scroll the result. Keep it under 30s.',
+     tools:['Claude'],
+     cta:'Comment "PAGE" and I\'ll send you the exact prompt.',
+     cap:'Steal this prompt. 👇 One paste = a full landing page.\n#AIprompts #marketing #smallbusinesstips'},
+  ],
+  '2026-06-30': [
+    {p:'sf',t:'Still Building Websites the Old Way?',status:'post',ch:'TikTok · IG · FB · Shorts',
+     hook:'"If you\'re dragging boxes around Wix at midnight — stop."',
+     show:'Split screen: tedious manual website builder vs AI generating the same thing in seconds.',
+     tools:['CapCut','Screen recording'],
+     cta:'Full AI build tutorial drops tomorrow — follow.',
+     cap:'There\'s a faster way. ⏳➡️⚡ Stop fighting page builders.\n#webdesign #AItools #smallbusiness'},
+    {p:'sf',t:'This Free AI Beats Tools You Pay For',status:'post',ch:'TikTok · IG · FB · Shorts',
+     hook:'"You\'re paying monthly for AI that a free one does better."',
+     show:'Quick side-by-side: paid tool output vs free tool output on the same task.',
+     tools:['Claude','ChatGPT free'],
+     cta:'Save this before your next AI subscription.',
+     cap:'Don\'t pay for that yet. 🛑 The free option is genuinely better here.\n#AItools #savemoney #smallbusiness'},
+  ],
+  '2026-07-01': [
+    {p:'yt',t:'How a Complete Beginner Can Build a Website with AI (Full Build)',status:'publish',
+     hook:'"This is a real, live business website — and the person who built it had never written a line of code."',
+     show:'PUBLISH the flagship build-along filmed Monday. Add timestamped chapters in the description (Setup, First Prompt, Refining, Going Live).',
+     tools:['Claude Code','Netlify/Vercel'],
+     cta:'Description: free Alliance link (prompts) + "Book a build call" link. Pin a comment with the prompt.',
+     cap:'YouTube title: "How a Complete Beginner Can Build a Website with AI (Full Build, No Code)". First two lines: "No code, no website builder, no developer. Watch a complete beginner build a real business website with AI, start to finish." Add chapters + 4 hashtags: #AIwebsite #nocode #ClaudeCode #smallbusiness.'},
+    {p:'sf',t:'Blank Screen → Real Website (The Moment)',status:'post',ch:'TikTok · IG · FB · Shorts',
+     hook:'"Watch a blank screen turn into a real website."',
+     show:'The single most satisfying 20–30s clip from the full build — the reveal moment. Clip of long-form.',
+     tools:['CapCut'],
+     cta:'Full build is live now — link in bio.',
+     cap:'From nothing to a live site. 🌐 Full step-by-step is up now.\n#AIwebsite #buildwithme #nocode'},
+    {p:'sf',t:'5 Things to Do the Second You Open Claude Code',status:'post',ch:'TikTok · IG · FB · Shorts',
+     hook:'"Just installed Claude Code? Do these 5 things first."',
+     show:'Quick list-style screen-record: the 5 first moves (set project, add context, first prompt, etc.).',
+     tools:['Claude Code'],
+     cta:'Full beginner setup is in the free Alliance — link in bio.',
+     cap:'Save this for your first Claude Code session. 📌\n#ClaudeCode #AItools #beginners'},
+  ],
+  '2026-07-02': [
+    {p:'yt',t:'FILM: The Email Automation That Replaced My Inbox',status:'film',
+     hook:'"I used to spend two hours a day in my inbox. Now AI sorts, drafts, and routes everything — here\'s the whole build."',
+     show:'Screen-record building an email triage + auto-draft automation end to end. Show a real before/after of the inbox. (Publishes Sun Jul 5.)',
+     tools:['Make.com or n8n','Gmail','Claude API'],
+     cta:'Mid: "Template\'s in the free Alliance." End: "Want this wired into your business? Book a call."',
+     cap:'FILM DAY — automation build #2. Capture the inbox before/after on camera + 3 clips (the trigger firing, the AI draft appearing, the empty inbox).'},
+    {p:'sf',t:'Your Inbox Is Stealing 2 Hours a Day',status:'post',ch:'TikTok · IG · FB · Shorts',
+     hook:'"Your inbox is quietly stealing two hours of your day."',
+     show:'Teaser clip from today\'s automation build — show the auto-draft appearing in Gmail.',
+     tools:['Make.com','Gmail'],
+     cta:'Full build drops Sunday — follow.',
+     cap:'2 hours a day. Gone. 📧 AI now runs my inbox — full build Sunday.\n#automation #productivity #smallbusiness'},
+    {p:'sf',t:'Turn One Blog Post Into 10 Posts — Automatically',status:'post',ch:'TikTok · IG · FB · Shorts',
+     hook:'"One blog post becomes ten social posts — automatically."',
+     show:'Screen-record an n8n/Make flow that takes a URL and outputs captions for each platform.',
+     tools:['n8n','Claude API'],
+     cta:'Comment "REPURPOSE" for the workflow.',
+     cap:'Write once, post everywhere. ♻️ Comment REPURPOSE for the flow.\n#contentmarketing #automation #AItools'},
+  ],
+  '2026-07-03': [
+    {p:'sf',t:'Stop Copy-Pasting Between Apps',status:'post',ch:'TikTok · IG · FB · Shorts',
+     hook:'"If you\'re copy-pasting between apps all day, you\'re doing it wrong."',
+     show:'Show a tiny automation that moves data between two apps (form → spreadsheet → notification) with zero manual steps.',
+     tools:['Make.com'],
+     cta:'Save this — you\'ll want it Monday morning.',
+     cap:'Never copy-paste between apps again. 🔁\n#automation #productivity #smallbusinesstips'},
+    {p:'sf',t:'The $0 AI Setup That Replaces a $3,000 Developer',status:'post',ch:'TikTok · IG · FB · Shorts',
+     hook:'"This free AI setup does what I used to pay a developer $3,000 for."',
+     show:'Quick montage of the website + automation builds with cost callouts on screen.',
+     tools:['Claude Code','Make.com'],
+     cta:'Want it built for you? Book a 15-min call — link in bio.',
+     cap:'$3,000 → $0. 💸 Same result, no developer.\n#AItools #smallbusiness #savemoney'},
+  ],
+  '2026-07-04': [
+    {p:'sf',t:'A Day Implementing AI in Chicago',status:'post',ch:'TikTok · IG · FB · Shorts',
+     hook:'"POV: a day in the life of actually implementing AI for businesses."',
+     show:'Casual BTS day-in-the-life — coffee, laptop, a quick client build, Chicago B-roll. Personal-brand piece.',
+     tools:['Phone camera','CapCut'],
+     cta:'Follow for the builds behind the scenes.',
+     cap:'Less talk, more implementing. 🏙️ A day on the job in Chicago.\n#dayinthelife #AIconsultant #chicago'},
+    {p:'sf',t:'AI Won\'t Replace You — But This Will',status:'post',ch:'TikTok · IG · FB · Shorts',
+     hook:'"AI won\'t replace you. But a business owner who uses AI will."',
+     show:'Punchy talking-head over fast B-roll. One idea, clean delivery.',
+     tools:['CapCut'],
+     cta:'The free Alliance is where owners learn this — link in bio.',
+     cap:'It\'s not AI vs you. It\'s you+AI vs everyone who waited. 🚀\n#AIforbusiness #mindset #smallbusiness'},
+  ],
+  '2026-07-05': [
+    {p:'yt',t:'The Email Automation That Replaced My Inbox (Build With Me)',status:'publish',
+     hook:'"I used to spend two hours a day in my inbox. Now AI handles it — here\'s the full build."',
+     show:'PUBLISH the automation build filmed Thursday. Chapters: The Problem, The Trigger, The AI Draft Step, Going Live.',
+     tools:['Make.com / n8n','Gmail','Claude API'],
+     cta:'Description: free Alliance template link + "Book an automation call" link. Pin the template comment.',
+     cap:'YouTube title: "The AI Email Automation That Replaced My Inbox (Full Build)". First lines: "Two hours a day, gone. Watch me build the email automation that sorts, drafts, and routes everything — step by step." Chapters + #automation #AItools #smallbusiness #ClaudeAI.'},
+    {p:'sf',t:'The Empty Inbox Reveal',status:'post',ch:'TikTok · IG · FB · Shorts',
+     hook:'"This is what your inbox looks like when AI runs it."',
+     show:'The before/after inbox reveal clip from the full build. Clip of long-form.',
+     tools:['CapCut'],
+     cta:'Full build is live now — link in bio.',
+     cap:'Inbox zero, automatically. 📭 Full build up now.\n#automation #productivity #AItools'},
+    {p:'sf',t:'Automate This in the Next 10 Minutes',status:'post',ch:'TikTok · IG · FB · Shorts',
+     hook:'"You can automate this one task in the next ten minutes."',
+     show:'One tight, finishable automation start to finish (e.g. auto-reply to new leads).',
+     tools:['Make.com'],
+     cta:'Comment "10" for the step-by-step.',
+     cap:'10 minutes. One automation. Hours saved. ⏱️\n#automation #smallbusinesstips #AItools'},
+  ],
+  '2026-07-06': [
+    {p:'yt',t:'FILM: 7 AI Tools Every Small Business Should Use in 2026',status:'film',
+     hook:'"Here are the 7 AI tools I install for every small business I consult for — and the two everyone wastes money on."',
+     show:'Screen-record a quick demo of each tool with a one-line "who it\'s for." Honest picks, name the overhyped ones. (Publishes next week.)',
+     tools:['Claude','Make.com','n8n','ElevenLabs','Canva AI'],
+     cta:'Mid: "Full stack list is in the free Alliance." End: "Not sure which fits your business? Book a call."',
+     cap:'FILM DAY — evergreen tool roundup. Capture clean demo clips of each tool for 3–4 derivative shorts.'},
+    {p:'sf',t:'The AI Tools Wasting Your Money',status:'post',ch:'TikTok · IG · FB · Shorts',
+     hook:'"You\'re probably paying for two AI tools you don\'t need."',
+     show:'Fast callout of the overhyped tools + the cheaper/free alternative for each.',
+     tools:['CapCut'],
+     cta:'Full 7-tool stack drops this week — follow.',
+     cap:'Cancel these. ❌ The full stack that actually matters is coming.\n#AItools #savemoney #smallbusiness'},
+    {p:'sf',t:'You Don\'t Need to Be Technical to Use AI',status:'post',ch:'TikTok · IG · FB · Shorts',
+     hook:'"You don\'t need to be technical to run AI in your business."',
+     show:'Talking-head + quick example of a non-technical owner using a tool successfully.',
+     tools:['CapCut'],
+     cta:'The free Alliance is built for non-technical owners — link in bio.',
+     cap:'Not technical? Doesn\'t matter. 🙌 You can still implement this.\n#AIforbusiness #beginners #smallbusiness'},
+  ],
+  '2026-07-07': [
+    {p:'sf',t:'I Tried 12 AI Tools So You Don\'t Have To',status:'post',ch:'TikTok · IG · FB · Shorts',
+     hook:'"I tested 12 AI tools so your business doesn\'t waste a dollar."',
+     show:'Rapid-fire montage of the tools with a thumbs up/down on each. Teaser for the full roundup.',
+     tools:['CapCut'],
+     cta:'Follow for the full breakdown this week.',
+     cap:'12 tools tested. Only a few made the cut. ✅❌\n#AItools #smallbusiness #review'},
+    {p:'sf',t:'The Only 3 AI Skills That Actually Matter',status:'post',ch:'TikTok · IG · FB · Shorts',
+     hook:'"Forget the 50 AI courses — only 3 skills actually matter."',
+     show:'Clean list short: prompting, connecting tools (automation), and knowing what to build. One line each.',
+     tools:['CapCut'],
+     cta:'Save this — it\'s your whole AI learning path.',
+     cap:'Skip the overwhelm. 🎯 These 3 skills are the whole game.\n#AIforbusiness #skills #smallbusinesstips'},
+  ],
+};
+
+let CAL_MONTH = '2026-06';
+function setCalMonth(m){ CAL_MONTH = m; renderContentCalendar(); }
+function renderContentCalendar(){
+  const grid = document.getElementById('cal-grid'); if(!grid) return;
+  document.querySelectorAll('.cal-mbtn').forEach(b=>b.classList.toggle('active', b.dataset.month===CAL_MONTH));
+  const [y,mo] = CAL_MONTH.split('-').map(Number);
+  const first = new Date(y, mo-1, 1), daysIn = new Date(y, mo, 0).getDate(), startDow = first.getDay();
+  const dows = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  let html = dows.map(d=>`<div class="cal-dow">${d}</div>`).join('');
+  for(let i=0;i<startDow;i++) html += `<div class="cal-cell pad"></div>`;
+  for(let d=1; d<=daysIn; d++){
+    const iso = `${y}-${String(mo).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const items = CONTENT_SCHEDULE[iso] || [];
+    const isToday = iso===TODAY_ISO;
+    const filmItem = items.find(it=>it.status==='film');
+    const dayBadge = filmItem ? `<span class="film">● Film</span>` : '';
+    const cls = ['cal-cell']; if(isToday) cls.push('today'); if(!items.length) cls.push('empty-day');
+    const chips = items.map((it,idx)=>{
+      const cn = it.p==='yt' ? 'yt' : 'sf';
+      const icon = it.p==='yt' ? (it.status==='film'?'🎬':'▶') : '✦';
+      const short = it.t.replace(/^FILM:\s*/,'');
+      return `<div class="cal-chip ${cn}" onclick="openCalDetail('${iso}',${idx})" title="${short.replace(/"/g,'&quot;')}"><span class="ci">${icon}</span><span class="ct">${short}</span></div>`;
+    }).join('');
+    const count = items.length ? `<div class="cal-cell-cnt">${items.filter(i=>i.p==='sf').length} short · ${items.filter(i=>i.p==='yt').length} long</div>` : '';
+    html += `<div class="${cls.join(' ')}"><div class="cal-daynum"><span>${d}</span>${dayBadge}</div>${chips}${count}</div>`;
+  }
+  grid.innerHTML = html;
+  document.getElementById('cal-detail').classList.add('hidden');
+}
+function openCalDetail(iso, idx){
+  const it = (CONTENT_SCHEDULE[iso]||[])[idx]; if(!it) return;
+  const d = new Date(iso+'T00:00:00');
+  const dateStr = d.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
+  const badgeCls = it.p==='yt' ? 'yt' : 'sf';
+  const badgeTxt = it.p==='yt' ? (it.status==='film'?'🎬 YouTube · Film Day':'▶ YouTube · Publish') : '✦ Short-Form';
+  const tools = (it.tools||[]).map(t=>`<span class="cd-tool">${t}</span>`).join('');
+  const chRow = it.ch ? `<div class="cd-hmeta">${it.ch}</div>` : '';
+  const capId = `cap-${iso}-${idx}`;
+  const panel = document.getElementById('cal-detail');
+  panel.innerHTML = `
+    <div class="cd-head">
+      <span class="cd-badge ${badgeCls}">${badgeTxt}</span>
+      <div><div class="cd-htitle">${it.t.replace(/^FILM:\s*/,'')}</div><div class="cd-hmeta">${dateStr}</div>${chRow}</div>
+      <button class="cd-close" onclick="document.getElementById('cal-detail').classList.add('hidden')">✕</button>
+    </div>
+    <div class="cd-body">
+      <div class="cd-field full"><div class="cd-flabel">🎣 Hook (first 3–10 sec)</div><div class="cd-fval">${it.hook||'—'}</div></div>
+      <div class="cd-field"><div class="cd-flabel">🎥 What to show</div><div class="cd-fval">${it.show||'—'}</div></div>
+      <div class="cd-field"><div class="cd-flabel">🧰 Tools</div><div class="cd-tools">${tools||'<span class="cd-fval mono">—</span>'}</div></div>
+      <div class="cd-field full"><div class="cd-flabel">📣 Call to action</div><div class="cd-fval">${it.cta||'—'}</div></div>
+      <div class="cd-field full"><div class="cd-flabel">✍️ Caption / Post copy <span class="cd-copy" onclick="copyCal('${capId}')">Copy</span></div><div class="cd-caption" id="${capId}">${(it.cap||'—').replace(/\n/g,'<br>')}</div></div>
+    </div>`;
+  panel.classList.remove('hidden');
+  panel.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function copyCal(id){
+  const el=document.getElementById(id); if(!el) return;
+  const txt=el.innerText||el.textContent;
+  navigator.clipboard?.writeText(txt).then(()=>{
+    const btn=el.previousElementSibling?.querySelector('.cd-copy');
+    const b=document.querySelector(`[onclick="copyCal('${id}')"]`); if(b){const o=b.textContent;b.textContent='Copied ✓';setTimeout(()=>b.textContent=o,1400);}
+  });
 }
 
 // ══════════════════════════════════════════════
