@@ -261,6 +261,53 @@
       font-size: 12px; color: var(--text-muted);
       font-family: 'IBM Plex Mono', monospace; letter-spacing: 0.05em;
     }
+    /* ── Hero service cards ── */
+    .hero-services {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 14px; max-width: 900px; margin: 0 0 40px;
+    }
+    .hero-service {
+      display: flex; flex-direction: column; gap: 11px;
+      padding: 22px 20px; border-radius: 14px;
+      background: var(--bg-surface); border: 1px solid var(--border);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+      transition: transform 0.34s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.34s, border-color 0.34s;
+    }
+    .hero-service:hover {
+      transform: translateY(-5px);
+      border-color: var(--border-acc);
+      box-shadow: 0 16px 34px rgba(249,91,61,0.13), 0 4px 12px rgba(0,0,0,0.05);
+    }
+    .hero-service-icon {
+      width: 40px; height: 40px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(249,91,61,0.09); color: var(--accent);
+      border: 1px solid var(--border-acc);
+    }
+    .hero-service-icon svg { width: 21px; height: 21px; }
+    .hero-service-title {
+      font-weight: 800; font-size: 15.5px; color: var(--text);
+      letter-spacing: -0.01em;
+    }
+    .hero-service-desc {
+      font-size: 13px; line-height: 1.55; color: var(--text-sec);
+      font-weight: 300;
+    }
+    .hero-service-tag {
+      display: inline-flex; align-items: center; gap: 5px; align-self: flex-start;
+      margin-top: auto;
+      font-family: 'IBM Plex Mono', monospace; font-size: 10px;
+      letter-spacing: 0.05em; text-transform: uppercase; font-weight: 500;
+      color: var(--accent-dark); background: rgba(249,91,61,0.08);
+      border: 1px solid var(--border-acc); padding: 4px 9px; border-radius: 20px;
+    }
+    .hero-service-tag svg { width: 11px; height: 11px; }
+    @media(max-width:860px){
+      .hero-services { grid-template-columns: 1fr; max-width: 540px; gap: 11px; }
+      .hero-service { flex-direction: row; align-items: flex-start; flex-wrap: wrap; }
+      .hero-service-icon { flex-shrink: 0; }
+      .hero-service-title, .hero-service-desc, .hero-service-tag { flex-basis: calc(100% - 52px); }
+    }
 
     /* ─── STATS ─── */
     .stats-section {
@@ -803,7 +850,7 @@
       margin-bottom: 20px; margin-top: -8px;
     }
     .gap-card-icon img {
-      width: 160px; height: 160px;
+      width: 200px; height: 200px;
       object-fit: contain; display: block;
       transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1), filter 0.35s;
       filter: drop-shadow(0 6px 18px rgba(249,91,61,0.18));
@@ -813,7 +860,7 @@
       filter: drop-shadow(0 12px 28px rgba(249,91,61,0.28));
     }
     @media(max-width:768px){
-      .gap-card-icon img { width: 120px; height: 120px; }
+      .gap-card-icon img { width: 150px; height: 150px; }
     }
     .gap-card-title {
       font-family: 'Unbounded', sans-serif; font-size: 14px;
@@ -1085,18 +1132,45 @@
         AI Implementation Agency &mdash; Since May 2025
       </div>
       <h1 class="reveal d1">
-        Stop Drowning in AI Tools.<br/>
-        <em>Start Implementing Them<br/>In Your Business.</em>
+        You Know You Need AI.<br/>
+        <em>Start Implementing It.</em>
       </h1>
       <p class="hero-sub reveal d2">
-        AI is the biggest shift in a generation. Most people and businesses know they need to adapt — they just don't know how to actually make it work. That's the only thing we do: implement AI into real workflows, real businesses, and real daily lives.
+        It feels like everyone&rsquo;s using AI to pull ahead &mdash; and you&rsquo;re still not sure which parts of your business it even applies to. That stops here. You know AI can move the needle; we build and install the pieces that actually do it. Even one simple system can change how you scale.
       </p>
-      <div class="hero-cta-group reveal d3">
+      <div class="hero-services reveal d3">
+        <div class="hero-service">
+          <span class="hero-service-icon" aria-hidden="true">
+            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 010 18M12 3a15 15 0 000 18"/></svg>
+          </span>
+          <div class="hero-service-title">AI Smart Websites</div>
+          <p class="hero-service-desc">The second someone shows interest, our system follows up instantly &mdash; by text, email, or call &mdash; so no lead ever goes cold.</p>
+          <span class="hero-service-tag">
+            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            Increase Speed-to-Lead
+          </span>
+        </div>
+        <div class="hero-service">
+          <span class="hero-service-icon" aria-hidden="true">
+            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 10.5V7a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h12a1 1 0 001-1v-3.5l4 3v-9l-4 3z"/></svg>
+          </span>
+          <div class="hero-service-title">AI Video Ads &amp; Social</div>
+          <p class="hero-service-desc">Cinematic, scroll-stopping ads that pull attention off social media and straight to your site &mdash; plus one-click posting across every platform.</p>
+        </div>
+        <div class="hero-service">
+          <span class="hero-service-icon" aria-hidden="true">
+            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+          </span>
+          <div class="hero-service-title">Workflow Automation</div>
+          <p class="hero-service-desc">We take the back-end admin busywork off your shoulders so you can spend your time on the high-value work only you can do.</p>
+        </div>
+      </div>
+      <div class="hero-cta-group reveal d4">
         <a href="#contact" class="btn-primary">
-          Book a Free Implementation Call
+          Show Me What to Implement
           <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </a>
-        <span class="hero-note">Free · 30 minutes · Actionable output guaranteed</span>
+        <span class="hero-note">Free 30-min call · You&rsquo;ll leave knowing exactly where AI fits in your business.</span>
       </div>
     </div>
   </section>
