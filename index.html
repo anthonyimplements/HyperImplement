@@ -357,12 +357,12 @@
       animation: ticker 30s linear infinite;
     }
     .ticker-item {
-      display: inline-flex; align-items: center; gap: 18px;
+      display: inline-flex; align-items: center; gap: 0; line-height: 1;
       font-family: 'Unbounded', sans-serif; font-size: 10px;
       font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
-      color: white; padding: 0 28px;
+      color: white; padding: 0;
     }
-    .tdot { width: 4px; height: 4px; background: rgba(255,255,255,0.5); border-radius: 50%; flex-shrink:0; }
+    .tdot { width: 4px; height: 4px; margin: 0 26px; background: rgba(255,255,255,0.5); border-radius: 50%; flex-shrink:0; }
     @keyframes ticker { 0%{transform:translateX(0)}100%{transform:translateX(-50%)} }
 
     /* ─── GAP / PROBLEM ─── */
@@ -849,6 +849,7 @@
       display: flex; justify-content: center;
       margin-bottom: 20px; margin-top: -8px;
     }
+    .gap-card-icon.gap-card-icon-lg img { width: 240px; height: 240px; }
     .gap-card-icon img {
       width: 200px; height: 200px;
       object-fit: contain; display: block;
@@ -861,6 +862,7 @@
     }
     @media(max-width:768px){
       .gap-card-icon img { width: 150px; height: 150px; }
+      .gap-card-icon.gap-card-icon-lg img { width: 180px; height: 180px; }
     }
     .gap-card-title {
       font-family: 'Unbounded', sans-serif; font-size: 14px;
@@ -1155,14 +1157,14 @@
             <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 10.5V7a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h12a1 1 0 001-1v-3.5l4 3v-9l-4 3z"/></svg>
           </span>
           <div class="hero-service-title">AI Video Ads &amp; Social</div>
-          <p class="hero-service-desc">Cinematic, scroll-stopping ads that pull attention off social media and straight to your site &mdash; plus one-click posting across every platform.</p>
+          <p class="hero-service-desc">Going viral has never been easier &mdash; hyper-realistic, cinematic AI content of your brand, products, and services.</p>
         </div>
         <div class="hero-service">
           <span class="hero-service-icon" aria-hidden="true">
             <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
           </span>
           <div class="hero-service-title">Workflow Automation</div>
-          <p class="hero-service-desc">We take the back-end admin busywork off your shoulders so you can spend your time on the high-value work only you can do.</p>
+          <p class="hero-service-desc">If it&rsquo;s a manual, repetitive task, we can automate it &mdash; and hand your time back to you.</p>
         </div>
       </div>
       <div class="hero-cta-group reveal d4">
@@ -1204,39 +1206,39 @@
   <!-- ═══ TICKER ═══ -->
   <div class="ticker-wrap">
     <div class="ticker-inner">
-      <span class="ticker-item">ChatGPT <span class="tdot"></span></span>
-      <span class="ticker-item">Claude AI <span class="tdot"></span></span>
-      <span class="ticker-item">Google Gemini <span class="tdot"></span></span>
-      <span class="ticker-item">Perplexity AI <span class="tdot"></span></span>
-      <span class="ticker-item">n8n Workflows <span class="tdot"></span></span>
-      <span class="ticker-item">Zapier Automations <span class="tdot"></span></span>
-      <span class="ticker-item">Make.com Pipelines <span class="tdot"></span></span>
-      <span class="ticker-item">Social Media Scheduling <span class="tdot"></span></span>
-      <span class="ticker-item">AI Content Creation <span class="tdot"></span></span>
-      <span class="ticker-item">ElevenLabs Voice AI <span class="tdot"></span></span>
-      <span class="ticker-item">Midjourney <span class="tdot"></span></span>
-      <span class="ticker-item">Sora Video AI <span class="tdot"></span></span>
-      <span class="ticker-item">AI Lead Qualification <span class="tdot"></span></span>
-      <span class="ticker-item">Email Automation <span class="tdot"></span></span>
-      <span class="ticker-item">AI Agents &amp; Employees <span class="tdot"></span></span>
-      <span class="ticker-item">Auto-Posting Workflows <span class="tdot"></span></span>
+      <span class="ticker-item">ChatGPT<span class="tdot"></span></span>
+      <span class="ticker-item">Claude AI<span class="tdot"></span></span>
+      <span class="ticker-item">Google Gemini<span class="tdot"></span></span>
+      <span class="ticker-item">Perplexity AI<span class="tdot"></span></span>
+      <span class="ticker-item">n8n Workflows<span class="tdot"></span></span>
+      <span class="ticker-item">Zapier Automations<span class="tdot"></span></span>
+      <span class="ticker-item">Make.com Pipelines<span class="tdot"></span></span>
+      <span class="ticker-item">Social Media Scheduling<span class="tdot"></span></span>
+      <span class="ticker-item">AI Content Creation<span class="tdot"></span></span>
+      <span class="ticker-item">ElevenLabs Voice AI<span class="tdot"></span></span>
+      <span class="ticker-item">Midjourney<span class="tdot"></span></span>
+      <span class="ticker-item">Sora Video AI<span class="tdot"></span></span>
+      <span class="ticker-item">AI Lead Qualification<span class="tdot"></span></span>
+      <span class="ticker-item">Email Automation<span class="tdot"></span></span>
+      <span class="ticker-item">AI Agents &amp; Employees<span class="tdot"></span></span>
+      <span class="ticker-item">Auto-Posting Workflows<span class="tdot"></span></span>
       <!-- duplicate for seamless loop -->
-      <span class="ticker-item">ChatGPT <span class="tdot"></span></span>
-      <span class="ticker-item">Claude AI <span class="tdot"></span></span>
-      <span class="ticker-item">Google Gemini <span class="tdot"></span></span>
-      <span class="ticker-item">Perplexity AI <span class="tdot"></span></span>
-      <span class="ticker-item">n8n Workflows <span class="tdot"></span></span>
-      <span class="ticker-item">Zapier Automations <span class="tdot"></span></span>
-      <span class="ticker-item">Make.com Pipelines <span class="tdot"></span></span>
-      <span class="ticker-item">Social Media Scheduling <span class="tdot"></span></span>
-      <span class="ticker-item">AI Content Creation <span class="tdot"></span></span>
-      <span class="ticker-item">ElevenLabs Voice AI <span class="tdot"></span></span>
-      <span class="ticker-item">Midjourney <span class="tdot"></span></span>
-      <span class="ticker-item">Sora Video AI <span class="tdot"></span></span>
-      <span class="ticker-item">AI Lead Qualification <span class="tdot"></span></span>
-      <span class="ticker-item">Email Automation <span class="tdot"></span></span>
-      <span class="ticker-item">AI Agents &amp; Employees <span class="tdot"></span></span>
-      <span class="ticker-item">Auto-Posting Workflows <span class="tdot"></span></span>
+      <span class="ticker-item">ChatGPT<span class="tdot"></span></span>
+      <span class="ticker-item">Claude AI<span class="tdot"></span></span>
+      <span class="ticker-item">Google Gemini<span class="tdot"></span></span>
+      <span class="ticker-item">Perplexity AI<span class="tdot"></span></span>
+      <span class="ticker-item">n8n Workflows<span class="tdot"></span></span>
+      <span class="ticker-item">Zapier Automations<span class="tdot"></span></span>
+      <span class="ticker-item">Make.com Pipelines<span class="tdot"></span></span>
+      <span class="ticker-item">Social Media Scheduling<span class="tdot"></span></span>
+      <span class="ticker-item">AI Content Creation<span class="tdot"></span></span>
+      <span class="ticker-item">ElevenLabs Voice AI<span class="tdot"></span></span>
+      <span class="ticker-item">Midjourney<span class="tdot"></span></span>
+      <span class="ticker-item">Sora Video AI<span class="tdot"></span></span>
+      <span class="ticker-item">AI Lead Qualification<span class="tdot"></span></span>
+      <span class="ticker-item">Email Automation<span class="tdot"></span></span>
+      <span class="ticker-item">AI Agents &amp; Employees<span class="tdot"></span></span>
+      <span class="ticker-item">Auto-Posting Workflows<span class="tdot"></span></span>
     </div>
   </div>
 
@@ -1272,7 +1274,7 @@
 
         <!-- Card 2 (center) -->
         <div class="gap-node-card" id="gap-center-card">
-          <span class="gap-card-icon"><img src="AwarenessBGremoved.png" alt="Awareness without action" /></span>
+          <span class="gap-card-icon gap-card-icon-lg"><img src="AwarenessBGremoved.png" alt="Awareness without action" /></span>
           <div class="gap-card-title">Awareness Without Action</div>
           <p class="gap-card-body">Knowing about ChatGPT, Claude, or Gemini is not the same as having them run real tasks for you. The gap between knowing and doing is where time, money, and opportunity disappear.</p>
         </div>
@@ -1603,19 +1605,10 @@
             Every client I work with leaves with something deployed. Not a strategy doc. Not a roadmap. An actual system running for them.
           </p>
           <div class="about-edu">
-            <div class="about-edu-icon">🎓</div>
+            <div class="about-edu-icon" aria-hidden="true"><svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="#F95B3D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M8 17v-5M13 17V8M18 17v-3"/></svg></div>
             <div class="about-edu-text">
-              <strong>Business Analytics &amp; Information Systems</strong><br/>
-              With an emphasis in AI Implementation — studying how organizations can actually adopt, deploy, and scale AI tools in real-world environments.
-            </div>
-          </div>
-          <div class="about-socials">
-            <div class="about-socials-label">Find me at @anthonyimplements</div>
-            <div class="social-row">
-              <a href="https://www.youtube.com/@AnthonyImplements" target="_blank" rel="noopener" class="social-chip"><span class="social-platform">YouTube</span>@anthonyimplements</a>
-              <div class="social-chip"><span class="social-platform">TikTok</span>@anthonyimplements</div>
-              <div class="social-chip"><span class="social-platform">Instagram</span>@anthonyimplements</div>
-              <div class="social-chip"><span class="social-platform">X / Twitter</span>@anthonyimplements</div>
+              <strong>Expert in Business Analytics &amp; Information Systems</strong><br/>
+              Specialized in AI Implementation — I turn how organizations adopt, deploy, and scale AI into real systems that run in the real world.
             </div>
           </div>
         </div>
@@ -1667,13 +1660,6 @@
             <div class="diff-content">
               <h4>We use every tool we build with</h4>
               <p>Claude Code, Make, n8n, Higgsfield, OpenClaw — we run these ourselves. You're getting genuine expertise, not resold knowledge.</p>
-            </div>
-          </div>
-          <div class="diff-item">
-            <div class="diff-num">04</div>
-            <div class="diff-content">
-              <h4>You own everything</h4>
-              <p>No lock-in. No retainer dependency. You leave with systems you own, understand, and can run — or hand to a team.</p>
             </div>
           </div>
         </div>
