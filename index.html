@@ -345,11 +345,14 @@
       display: none; font-family: 'IBM Plex Mono', monospace; font-size: 11px;
       color: var(--text-muted); letter-spacing: 0.06em; margin-top: 4px;
     }
+    /* Height is fixed; width follows each video's real aspect ratio
+       (set inline per card) so vertical clips stay vertical. */
     .work-card {
-      flex: 0 0 380px; scroll-snap-align: start;
+      flex: 0 0 auto; scroll-snap-align: start;
       position: relative; display: block; padding: 0; margin: 0;
+      height: 420px; width: auto;
       border: none; background: #0D0D0D; border-radius: 14px; overflow: hidden;
-      cursor: pointer; aspect-ratio: 16 / 9;
+      cursor: pointer;
       box-shadow: 0 2px 6px rgba(0,0,0,0.05);
       transition: transform 0.4s cubic-bezier(0.34,1.4,0.64,1), box-shadow 0.4s;
     }
@@ -442,12 +445,12 @@
       .work-arrow.next { right: 4px; }
     }
     @media(max-width:900px){
-      .work-card { flex: 0 0 300px; }
+      .work-card { height: 340px; }
       .work-arrow { display: none; }
       .work-hint { display: block; }
     }
     @media(max-width:640px){
-      .work-card { flex: 0 0 84%; }
+      .work-card { height: 300px; }
       .work-rail { gap: 14px; }
       .work-lb { padding: 16px; }
       .work-lb-close { top: -44px; }
@@ -751,6 +754,9 @@
     }
 
     /* ─── WHY ─── */
+    /* Hidden for now — kept in the markup so it can be restored by
+       deleting this one rule. ("We Build. We Ship. We Implement.") */
+    #why { display: none; }
     .why-section { background: var(--bg-elevated); }
     .why-grid {
       display: grid; grid-template-columns: 1fr 1fr;
@@ -1402,7 +1408,7 @@
       <div class="work-head reveal">
         <div class="label">Previous Work</div>
         <h2 class="section-title">See It in Motion.</h2>
-        <p class="work-sub">Real sites and brand work I&rsquo;ve already built and shipped for clients — captured in motion. Scroll through and tap any frame to watch.</p>
+        <p class="work-sub">I use next-generation AI tools to produce high-quality advertisements at a fraction of what they used to cost. Below is real work I&rsquo;ve made for other businesses — scroll through and tap any one to watch. Whatever kind of ad you need, we can build it.</p>
       </div>
       <div class="work-rail-wrap reveal">
         <button class="work-arrow prev" id="work-prev" onclick="railScroll(-1)" aria-label="Previous work">
@@ -2047,16 +2053,17 @@
     // ═══ WORK / REEL ═══
     // To add a real ad: drop the .mp4 + poster image in the repo, then add an
     // entry below. `src` and `poster` are just file paths relative to this page.
+    // `ratio` matches each file's real dimensions so vertical clips render vertical.
     const WORK = [
-      { name:'Steakhouse Site, In Motion', client:'SHO Wagyu Steakhouse', badge:'Website Showcase', dur:'0:08',
+      { label:'Restaurant Advertisement',        dur:'0:08', ratio:'9 / 16',
         poster:'work/sho-1.jpg',    src:'work/sho-1.mp4' },
-      { name:'Artist Portfolio Site',      client:'Artist Project',       badge:'Website Showcase', dur:'0:09',
+      { label:'Barbershop Advertisement',        dur:'0:09', ratio:'16 / 9',
         poster:'work/artist-2.jpg', src:'work/artist-2.mp4' },
-      { name:'Artist Site — Mobile Cut',   client:'Artist Project',       badge:'Website Showcase', dur:'0:10',
+      { label:'Barbershop Advertisement',        dur:'0:10', ratio:'9 / 16',
         poster:'work/artist-3.jpg', src:'work/artist-3.mp4' },
-      { name:'Golf Brand Site',            client:'Golf Project',         badge:'Website Showcase', dur:'0:08',
+      { label:'Golf Cart Company Advertisement', dur:'0:08', ratio:'16 / 9',
         poster:'work/golf-4.jpg',   src:'work/golf-4.mp4' },
-      { name:'Golf Brand Site — Alt Cut',  client:'Golf Project',         badge:'Website Showcase', dur:'0:08',
+      { label:'Golf Cart Company Advertisement', dur:'0:08', ratio:'16 / 9',
         poster:'work/golf-5.jpg',   src:'work/golf-5.mp4' },
     ];
 
@@ -2065,26 +2072,24 @@
       const grid = document.getElementById('work-rail');
       if (!grid) return;
       grid.innerHTML = WORK.map((w,i) => `
-        <button class="work-card" onclick="openWork(${i})" aria-label="Play: ${w.name} for ${w.client}">
+        <button class="work-card" style="aspect-ratio:${w.ratio}" onclick="openWork(${i})" aria-label="Play ${w.label}">
           <img class="work-thumb" src="${w.poster}" alt="" loading="lazy" />
           <span class="work-tint"></span>
           <span class="work-scrim"></span>
-          <span class="work-badge">${w.badge}</span>
           <span class="work-dur">${w.dur}</span>
           <span class="work-play">
             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
           </span>
           <span class="work-meta">
-            <span class="work-client">${w.client}</span>
-            <span class="work-name">${w.name}</span>
+            <span class="work-name">${w.label}</span>
           </span>
         </button>`).join('');
     }
     function openWork(i) {
       workIdx = i;
       const w = WORK[i], lb = document.getElementById('work-lb'), v = document.getElementById('work-video');
-      document.getElementById('work-lb-title').textContent = w.name;
-      document.getElementById('work-lb-client').textContent = w.client + ' · ' + w.badge;
+      document.getElementById('work-lb-title').textContent = w.label;
+      document.getElementById('work-lb-client').textContent = '';
       v.poster = w.poster;
       if (w.src) { v.src = w.src; v.play().catch(()=>{}); }
       else { v.removeAttribute('src'); v.load(); }   // no file yet → shows poster
