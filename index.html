@@ -309,6 +309,152 @@
       .hero-service-title, .hero-service-desc, .hero-service-tag { flex-basis: calc(100% - 52px); }
     }
 
+    /* ─── WORK / REEL ─── */
+    .work-section { background: var(--bg-surface); }
+    .work-head { margin-bottom: 44px; }
+    .work-sub {
+      font-size: 15px; color: var(--text-sec); line-height: 1.7;
+      font-weight: 300; max-width: 620px;
+    }
+    /* Carousel rail */
+    .work-rail-wrap { position: relative; }
+    .work-rail {
+      display: flex; gap: 20px; overflow-x: auto;
+      scroll-snap-type: x mandatory; scroll-behavior: smooth;
+      padding: 6px 2px 20px; margin: 0 -2px;
+      scrollbar-width: none; -ms-overflow-style: none;
+      -webkit-overflow-scrolling: touch;
+    }
+    .work-rail::-webkit-scrollbar { display: none; }
+    .work-arrow {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      width: 46px; height: 46px; border-radius: 50%; z-index: 5;
+      background: #fff; border: 1px solid var(--border); color: var(--text);
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 6px 22px rgba(0,0,0,0.13);
+      transition: background 0.22s, color 0.22s, border-color 0.22s, opacity 0.22s, transform 0.15s;
+    }
+    .work-arrow svg { width: 18px; height: 18px; }
+    .work-arrow:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+    .work-arrow:active { transform: translateY(-50%) scale(0.93); }
+    .work-arrow:focus-visible { outline: none; box-shadow: 0 0 0 3px var(--accent); }
+    .work-arrow.prev { left: -20px; }
+    .work-arrow.next { right: -20px; }
+    .work-arrow[disabled] { opacity: 0.28; pointer-events: none; }
+    .work-hint {
+      display: none; font-family: 'IBM Plex Mono', monospace; font-size: 11px;
+      color: var(--text-muted); letter-spacing: 0.06em; margin-top: 4px;
+    }
+    .work-card {
+      flex: 0 0 380px; scroll-snap-align: start;
+      position: relative; display: block; padding: 0; margin: 0;
+      border: none; background: #0D0D0D; border-radius: 14px; overflow: hidden;
+      cursor: pointer; aspect-ratio: 16 / 9;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      transition: transform 0.4s cubic-bezier(0.34,1.4,0.64,1), box-shadow 0.4s;
+    }
+    .work-card:hover { transform: translateY(-6px); box-shadow: 0 20px 42px rgba(249,91,61,0.18), 0 6px 16px rgba(0,0,0,0.10); }
+    .work-card:focus-visible { outline: none; transform: translateY(-6px); box-shadow: 0 0 0 3px var(--accent), 0 20px 42px rgba(249,91,61,0.2); }
+    .work-card:active { transform: translateY(-2px); }
+    .work-thumb {
+      width: 100%; height: 100%; object-fit: cover; display: block;
+      transition: transform 0.55s cubic-bezier(0.2,0.7,0.3,1);
+    }
+    .work-card:hover .work-thumb { transform: scale(1.06); }
+    .work-scrim {
+      position: absolute; inset: 0; pointer-events: none;
+      background: linear-gradient(to top, rgba(13,13,13,0.85) 0%, rgba(13,13,13,0.28) 46%, rgba(13,13,13,0) 72%);
+    }
+    .work-tint {
+      position: absolute; inset: 0; pointer-events: none;
+      background: var(--accent); mix-blend-mode: multiply;
+      opacity: 0; transition: opacity 0.4s;
+    }
+    .work-card:hover .work-tint { opacity: 0.16; }
+    .work-play {
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%,-50%) scale(0.88);
+      width: 58px; height: 58px; border-radius: 50%;
+      background: rgba(255,255,255,0.94); color: var(--accent);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none;
+      box-shadow: 0 8px 26px rgba(0,0,0,0.3);
+      transition: opacity 0.35s, transform 0.35s cubic-bezier(0.34,1.5,0.64,1);
+    }
+    .work-card:hover .work-play,
+    .work-card:focus-visible .work-play { opacity: 1; transform: translate(-50%,-50%) scale(1); }
+    .work-play svg { width: 21px; height: 21px; margin-left: 3px; }
+    .work-meta { position: absolute; left: 0; right: 0; bottom: 0; padding: 16px 18px; text-align: left; pointer-events: none; display: block; }
+    .work-client {
+      display: block;
+      font-family: 'IBM Plex Mono', monospace; font-size: 10px;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: rgba(255,255,255,0.7); margin-bottom: 6px;
+    }
+    .work-name {
+      display: block;
+      font-family: 'Unbounded', sans-serif; font-size: 15px; font-weight: 700;
+      color: #fff; line-height: 1.3; letter-spacing: -0.01em;
+    }
+    .work-dur {
+      position: absolute; top: 12px; right: 12px;
+      font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: #fff;
+      background: rgba(13,13,13,0.62); backdrop-filter: blur(4px);
+      padding: 3px 7px; border-radius: 4px; letter-spacing: 0.04em;
+    }
+    .work-badge {
+      position: absolute; top: 12px; left: 12px;
+      font-family: 'IBM Plex Mono', monospace; font-size: 9px;
+      letter-spacing: 0.08em; text-transform: uppercase; font-weight: 500;
+      color: #fff; background: rgba(249,91,61,0.92);
+      padding: 4px 8px; border-radius: 4px;
+    }
+    /* Lightbox */
+    .work-lb {
+      position: fixed; inset: 0; z-index: 200; display: none;
+      align-items: center; justify-content: center; padding: 24px;
+      background: rgba(8,8,8,0.93); backdrop-filter: blur(10px);
+    }
+    .work-lb.open { display: flex; animation: lbIn 0.28s ease both; }
+    @keyframes lbIn { from { opacity: 0 } to { opacity: 1 } }
+    .work-lb-inner { position: relative; width: 100%; max-width: 1040px; }
+    .work-lb video {
+      display: block; margin: 0 auto;
+      width: auto; max-width: 100%; max-height: 78vh;
+      border-radius: 12px; background: #000;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.6);
+    }
+    .work-lb-bar { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 14px; flex-wrap: wrap; }
+    .work-lb-title { color: #fff; font-family: 'Unbounded', sans-serif; font-weight: 700; font-size: 16px; }
+    .work-lb-client { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: rgba(255,255,255,0.6); letter-spacing: 0.08em; text-transform: uppercase; margin-top: 5px; }
+    .work-lb-nav { display: flex; gap: 8px; }
+    .work-lb-btn, .work-lb-close {
+      width: 38px; height: 38px; border-radius: 8px;
+      background: rgba(255,255,255,0.09); border: 1px solid rgba(255,255,255,0.16);
+      color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center;
+      font-size: 17px; transition: background 0.2s, border-color 0.2s, transform 0.2s;
+    }
+    .work-lb-btn:hover, .work-lb-close:hover { background: rgba(249,91,61,0.92); border-color: var(--accent); }
+    .work-lb-btn:active, .work-lb-close:active { transform: scale(0.94); }
+    .work-lb-close { position: absolute; top: -48px; right: 0; }
+    @media(max-width:1100px){
+      .work-arrow.prev { left: 4px; }
+      .work-arrow.next { right: 4px; }
+    }
+    @media(max-width:900px){
+      .work-card { flex: 0 0 300px; }
+      .work-arrow { display: none; }
+      .work-hint { display: block; }
+    }
+    @media(max-width:640px){
+      .work-card { flex: 0 0 84%; }
+      .work-rail { gap: 14px; }
+      .work-lb { padding: 16px; }
+      .work-lb-close { top: -44px; }
+      /* No hover on touch — always show affordances */
+      .work-play { opacity: 1; transform: translate(-50%,-50%) scale(1); width: 50px; height: 50px; }
+    }
+
     /* ─── STATS ─── */
     .stats-section {
       background: var(--text);
@@ -1106,7 +1252,7 @@
     </a>
     <div class="nav-links">
       <a href="#services">Services</a>
-      <a href="#implemented">Real Work</a>
+      <a href="#work">Real Work</a>
       <a href="#about">About</a>
       <a href="#book" class="nav-cta">Book an Implementation Call</a>
     </div>
@@ -1118,7 +1264,7 @@
   <!-- Mobile dropdown menu -->
   <div class="nav-mobile-menu" id="navMobileMenu">
     <a href="#services" class="nav-mobile-link" onclick="closeMobileMenu()">Services</a>
-    <a href="#implemented" class="nav-mobile-link" onclick="closeMobileMenu()">Real Work</a>
+    <a href="#work" class="nav-mobile-link" onclick="closeMobileMenu()">Real Work</a>
     <a href="#about" class="nav-mobile-link" onclick="closeMobileMenu()">About</a>
     <a href="#book" class="nav-mobile-link nav-mobile-cta" onclick="closeMobileMenu()">Book an Implementation Call</a>
   </div>
@@ -1247,6 +1393,45 @@
       <span class="ticker-item">Email Automation<span class="tdot"></span></span>
       <span class="ticker-item">AI Agents &amp; Employees<span class="tdot"></span></span>
       <span class="ticker-item">Auto-Posting Workflows<span class="tdot"></span></span>
+    </div>
+  </div>
+
+  <!-- ═══ WORK / REEL ═══ -->
+  <section class="work-section" id="work">
+    <div class="inner">
+      <div class="work-head reveal">
+        <div class="label">Previous Work</div>
+        <h2 class="section-title">See It in Motion.</h2>
+        <p class="work-sub">Real sites and brand work I&rsquo;ve already built and shipped for clients — captured in motion. Scroll through and tap any frame to watch.</p>
+      </div>
+      <div class="work-rail-wrap reveal">
+        <button class="work-arrow prev" id="work-prev" onclick="railScroll(-1)" aria-label="Previous work">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 19l-7-7 7-7"/></svg>
+        </button>
+        <div class="work-rail" id="work-rail"></div>
+        <button class="work-arrow next" id="work-next" onclick="railScroll(1)" aria-label="More work">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg>
+        </button>
+        <div class="work-hint">Swipe to see more &rarr;</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Video lightbox -->
+  <div class="work-lb" id="work-lb" role="dialog" aria-modal="true" aria-label="Video player" onclick="if(event.target===this)closeWork()">
+    <div class="work-lb-inner">
+      <button class="work-lb-close" onclick="closeWork()" aria-label="Close video">&#10005;</button>
+      <video id="work-video" controls playsinline preload="metadata"></video>
+      <div class="work-lb-bar">
+        <div>
+          <div class="work-lb-title" id="work-lb-title"></div>
+          <div class="work-lb-client" id="work-lb-client"></div>
+        </div>
+        <div class="work-lb-nav">
+          <button class="work-lb-btn" onclick="stepWork(-1)" aria-label="Previous video">&#8249;</button>
+          <button class="work-lb-btn" onclick="stepWork(1)" aria-label="Next video">&#8250;</button>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -1858,6 +2043,90 @@
     els.forEach(el => obs.observe(el));
     // Hero fires immediately
     document.querySelectorAll('.hero .reveal').forEach((el,i) => setTimeout(()=>el.classList.add('visible'), 80+i*140));
+
+    // ═══ WORK / REEL ═══
+    // To add a real ad: drop the .mp4 + poster image in the repo, then add an
+    // entry below. `src` and `poster` are just file paths relative to this page.
+    const WORK = [
+      { name:'Steakhouse Site, In Motion', client:'SHO Wagyu Steakhouse', badge:'Website Showcase', dur:'0:08',
+        poster:'work/sho-1.jpg',    src:'work/sho-1.mp4' },
+      { name:'Artist Portfolio Site',      client:'Artist Project',       badge:'Website Showcase', dur:'0:09',
+        poster:'work/artist-2.jpg', src:'work/artist-2.mp4' },
+      { name:'Artist Site — Mobile Cut',   client:'Artist Project',       badge:'Website Showcase', dur:'0:10',
+        poster:'work/artist-3.jpg', src:'work/artist-3.mp4' },
+      { name:'Golf Brand Site',            client:'Golf Project',         badge:'Website Showcase', dur:'0:08',
+        poster:'work/golf-4.jpg',   src:'work/golf-4.mp4' },
+      { name:'Golf Brand Site — Alt Cut',  client:'Golf Project',         badge:'Website Showcase', dur:'0:08',
+        poster:'work/golf-5.jpg',   src:'work/golf-5.mp4' },
+    ];
+
+    let workIdx = 0;
+    function renderWork() {
+      const grid = document.getElementById('work-rail');
+      if (!grid) return;
+      grid.innerHTML = WORK.map((w,i) => `
+        <button class="work-card" onclick="openWork(${i})" aria-label="Play: ${w.name} for ${w.client}">
+          <img class="work-thumb" src="${w.poster}" alt="" loading="lazy" />
+          <span class="work-tint"></span>
+          <span class="work-scrim"></span>
+          <span class="work-badge">${w.badge}</span>
+          <span class="work-dur">${w.dur}</span>
+          <span class="work-play">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+          </span>
+          <span class="work-meta">
+            <span class="work-client">${w.client}</span>
+            <span class="work-name">${w.name}</span>
+          </span>
+        </button>`).join('');
+    }
+    function openWork(i) {
+      workIdx = i;
+      const w = WORK[i], lb = document.getElementById('work-lb'), v = document.getElementById('work-video');
+      document.getElementById('work-lb-title').textContent = w.name;
+      document.getElementById('work-lb-client').textContent = w.client + ' · ' + w.badge;
+      v.poster = w.poster;
+      if (w.src) { v.src = w.src; v.play().catch(()=>{}); }
+      else { v.removeAttribute('src'); v.load(); }   // no file yet → shows poster
+      lb.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeWork() {
+      const lb = document.getElementById('work-lb'), v = document.getElementById('work-video');
+      v.pause(); lb.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+    function stepWork(d) { openWork((workIdx + d + WORK.length) % WORK.length); }
+    document.addEventListener('keydown', e => {
+      if (!document.getElementById('work-lb')?.classList.contains('open')) return;
+      if (e.key === 'Escape') closeWork();
+      if (e.key === 'ArrowRight') stepWork(1);
+      if (e.key === 'ArrowLeft') stepWork(-1);
+    });
+
+    // Carousel rail
+    function railScroll(dir) {
+      const rail = document.getElementById('work-rail');
+      const card = rail.querySelector('.work-card');
+      if (!card) return;
+      const step = card.offsetWidth + 20; // card + gap
+      rail.scrollBy({ left: dir * step, behavior: 'smooth' });
+    }
+    function updateArrows() {
+      const rail = document.getElementById('work-rail');
+      const prev = document.getElementById('work-prev'), next = document.getElementById('work-next');
+      if (!rail || !prev || !next) return;
+      const max = rail.scrollWidth - rail.clientWidth - 2;
+      prev.disabled = rail.scrollLeft <= 2;
+      next.disabled = rail.scrollLeft >= max;
+    }
+    renderWork();
+    const railEl = document.getElementById('work-rail');
+    if (railEl) {
+      railEl.addEventListener('scroll', updateArrows, { passive: true });
+      window.addEventListener('resize', updateArrows);
+      updateArrows();
+    }
 
     // FORM → n8n webhook
     async function handleSubmit(e) {
