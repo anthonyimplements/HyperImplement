@@ -57,6 +57,12 @@
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
+    /* Touch-friendly: remove the 300ms tap delay + double-tap zoom that can
+       cause jumpy taps / unexpected scroll on iOS. */
+    a, button, input, select, textarea, label, .work-card, .pipe-chip, .cal-chip {
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+    }
     html {
       scroll-behavior: smooth;
       -webkit-text-size-adjust: 100%;
@@ -599,6 +605,67 @@
     .svc-cta p { font-size: 15px; color: var(--text-sec); max-width: 560px; line-height: 1.6; }
     .svc-cta strong { color: var(--text); }
 
+    /* ─── SERVICES PIPELINE (compact, always-flowing) ─── */
+    .pipeline-section { background: var(--bg-surface); padding: 54px 0 50px; overflow: hidden; }
+    .pipeline-head { max-width: 1240px; margin: 0 auto 8px; padding: 0 48px; }
+    .pipeline-head .section-title { font-size: clamp(26px, 3vw, 42px); margin-bottom: 10px; }
+    .pipeline-head .section-sub { font-size: 14px; color: var(--text-sec); line-height: 1.65; font-weight: 300; max-width: 560px; }
+    .pipe-stage { position: relative; height: 158px; margin-top: 10px; }
+    .pipe-stage::before, .pipe-stage::after {
+      content: ''; position: absolute; top: 0; bottom: 0; width: 90px; z-index: 3; pointer-events: none;
+    }
+    .pipe-stage::before { left: 0; background: linear-gradient(90deg, var(--bg-surface), transparent); }
+    .pipe-stage::after { right: 0; background: linear-gradient(270deg, var(--bg-surface), transparent); }
+    /* the conduit line */
+    .pipe-conduit { position: absolute; left: 0; right: 0; top: 50%; height: 3px; transform: translateY(-50%);
+      background: rgba(249,91,61,0.18); z-index: 0; }
+    .pipe-flow { position: absolute; left: 0; right: 0; top: 50%; height: 3px; transform: translateY(-50%); z-index: 1;
+      background-image: repeating-linear-gradient(90deg, var(--accent) 0 16px, transparent 16px 46px);
+      opacity: 0.9; animation: pipeFlow 0.9s linear infinite;
+      -webkit-mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+      mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent); }
+    @keyframes pipeFlow { to { background-position: 46px 0; } }
+    /* scrolling track */
+    .pipe-track { position: absolute; top: 0; left: 0; height: 100%; display: flex; align-items: center;
+      animation: pipeScroll 40s linear infinite; z-index: 2; will-change: transform; }
+    .pipe-stage:hover .pipe-track { animation-play-state: paused; }
+    @keyframes pipeScroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+    /* grouped cluster */
+    .pipe-cluster { display: flex; align-items: center; gap: 12px; padding: 16px 20px; margin: 0 6px;
+      border: 1.5px dashed var(--border-acc); border-radius: 18px; background: rgba(249,91,61,0.035); position: relative; }
+    .pipe-cluster-label { position: absolute; top: -8px; left: 18px; padding: 0 8px;
+      font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--accent); background: var(--bg-surface); }
+    /* chip */
+    .pipe-chip { background: #fff; border: 1px solid var(--border); border-radius: 13px; padding: 13px 17px;
+      min-width: 210px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      transition: transform 0.3s cubic-bezier(0.34,1.4,0.64,1), box-shadow 0.3s, border-color 0.3s; }
+    .pipe-chip:hover { transform: translateY(-4px); border-color: var(--border-acc); box-shadow: 0 12px 26px rgba(249,91,61,0.16); }
+    .pipe-chip .pc-tag { font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--accent); display: inline-flex; align-items: center; gap: 6px; margin-bottom: 7px; }
+    .pipe-chip .pc-tag::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
+    .pipe-chip .pc-name { font-family: 'Unbounded', sans-serif; font-size: 13.5px; font-weight: 700; color: var(--text); line-height: 1.3; letter-spacing: -0.01em; }
+    /* gap between separate clusters — a glowing node on the line */
+    .pipe-gap { display: flex; align-items: center; justify-content: center; width: 86px; flex-shrink: 0; }
+    .pipe-gap .pn { width: 11px; height: 11px; border-radius: 50%; background: var(--accent);
+      box-shadow: 0 0 0 5px rgba(249,91,61,0.14), 0 0 14px rgba(249,91,61,0.5); animation: pnPulse 1.8s ease-in-out infinite; }
+    @keyframes pnPulse { 0%,100% { box-shadow: 0 0 0 4px rgba(249,91,61,0.12), 0 0 10px rgba(249,91,61,0.4); } 50% { box-shadow: 0 0 0 7px rgba(249,91,61,0.05), 0 0 18px rgba(249,91,61,0.6); } }
+    .pipeline-cta { max-width: 1240px; margin: 30px auto 0; padding: 0 48px; display: flex; align-items: center;
+      justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+    .pipeline-cta p { font-size: 14px; color: var(--text-sec); line-height: 1.6; max-width: 540px; }
+    .pipeline-cta strong { color: var(--text); }
+    @media (prefers-reduced-motion: reduce) {
+      .pipe-track, .pipe-flow, .pipe-gap .pn { animation: none; }
+    }
+    @media(max-width:640px){
+      .pipeline-section { padding: 44px 0 40px; }
+      .pipeline-head, .pipeline-cta { padding: 0 20px; }
+      .pipe-chip { min-width: 168px; padding: 12px 14px; }
+      .pipe-chip .pc-name { font-size: 12px; }
+      .pipe-gap { width: 56px; }
+      .pipe-stage { height: 150px; }
+    }
+
     /* ─── IMPLEMENTED ─── */
     /* ─── REVIEWS ─── */
     /* ─── REVIEWS MARQUEE ─── */
@@ -863,7 +930,7 @@
       width: 100%; background: var(--bg);
       border: 1px solid var(--border); border-radius: 6px;
       padding: 12px 14px;
-      font-family: 'IBM Plex Sans', sans-serif; font-size: 14px;
+      font-family: 'IBM Plex Sans', sans-serif; font-size: 16px;
       color: var(--text); outline: none;
       transition: border-color 0.2s, box-shadow 0.2s;
       -webkit-appearance: none; appearance: none;
@@ -1258,7 +1325,7 @@
 
   <!-- ═══ NAV ═══ -->
   <nav class="nav" id="navbar">
-    <a href="#" class="nav-logo">
+    <a href="#home" class="nav-logo">
       <img src="MainLogoTransparent.png" alt="HyperImplement" />
     </a>
     <div class="nav-links">
@@ -1524,85 +1591,64 @@
   <div class="rule"></div>
 
   <!-- ═══ SERVICES ═══ -->
-  <section class="services-section" id="services">
-    <div class="inner">
-      <div class="reveal">
-        <div class="label">What We Do</div>
-        <h2 class="section-title">We Build the AI<br/>That Runs Your Day.</h2>
-        <p class="section-sub">Every implementation is different. These are the areas where we build — pick what fits your situation, or let us figure it out together.</p>
+  <section class="pipeline-section" id="services">
+    <div class="pipeline-head reveal">
+      <div class="label">What We Do</div>
+      <h2 class="section-title">We Build the AI That Runs Your Day.</h2>
+      <p class="section-sub">Separate services that often get wired together into one system. Here&rsquo;s everything flowing through the pipeline — grouped where they're usually bundled.</p>
+    </div>
+
+    <div class="pipe-stage reveal">
+      <div class="pipe-conduit"></div>
+      <div class="pipe-flow"></div>
+      <div class="pipe-track" id="pipe-track">
+        <!-- half A -->
+        <div class="pipe-cluster">
+          <span class="pipe-cluster-label">Strategy &amp; Setup</span>
+          <div class="pipe-chip"><div class="pc-tag">Strategy</div><div class="pc-name">AI Strategy &amp; Tool Selection</div></div>
+          <div class="pipe-chip"><div class="pc-tag">Setup &amp; Training</div><div class="pc-name">Claude Code &amp; OpenClaw Installs</div></div>
+        </div>
+        <div class="pipe-gap"><span class="pn"></span></div>
+        <div class="pipe-cluster">
+          <span class="pipe-cluster-label">Build &amp; Launch</span>
+          <div class="pipe-chip"><div class="pc-tag">Development</div><div class="pc-name">AI-Powered Websites</div></div>
+          <div class="pipe-chip"><div class="pc-tag">Creative</div><div class="pc-name">AI Video Advertisements</div></div>
+        </div>
+        <div class="pipe-gap"><span class="pn"></span></div>
+        <div class="pipe-cluster">
+          <span class="pipe-cluster-label">Automate</span>
+          <div class="pipe-chip"><div class="pc-tag">Automation</div><div class="pc-name">AI Employees &amp; Agents</div></div>
+          <div class="pipe-chip"><div class="pc-tag">Automation</div><div class="pc-name">Workflow Automation</div></div>
+        </div>
+        <div class="pipe-gap"><span class="pn"></span></div>
+        <!-- half B (duplicate for seamless loop) -->
+        <div class="pipe-cluster">
+          <span class="pipe-cluster-label">Strategy &amp; Setup</span>
+          <div class="pipe-chip"><div class="pc-tag">Strategy</div><div class="pc-name">AI Strategy &amp; Tool Selection</div></div>
+          <div class="pipe-chip"><div class="pc-tag">Setup &amp; Training</div><div class="pc-name">Claude Code &amp; OpenClaw Installs</div></div>
+        </div>
+        <div class="pipe-gap"><span class="pn"></span></div>
+        <div class="pipe-cluster">
+          <span class="pipe-cluster-label">Build &amp; Launch</span>
+          <div class="pipe-chip"><div class="pc-tag">Development</div><div class="pc-name">AI-Powered Websites</div></div>
+          <div class="pipe-chip"><div class="pc-tag">Creative</div><div class="pc-name">AI Video Advertisements</div></div>
+        </div>
+        <div class="pipe-gap"><span class="pn"></span></div>
+        <div class="pipe-cluster">
+          <span class="pipe-cluster-label">Automate</span>
+          <div class="pipe-chip"><div class="pc-tag">Automation</div><div class="pc-name">AI Employees &amp; Agents</div></div>
+          <div class="pipe-chip"><div class="pc-tag">Automation</div><div class="pc-name">Workflow Automation</div></div>
+        </div>
+        <div class="pipe-gap"><span class="pn"></span></div>
       </div>
+    </div>
 
-      <div class="svc-node-grid">
-
-        <!-- Row 1 -->
-        <div class="svc-node-row">
-          <div class="svc-card-new reveal">
-            <div class="svc-node-corner"></div>
-            <div class="svc-type">Strategy</div>
-            <div class="svc-card-title">AI Strategy &amp; Tool Selection</div>
-            <p class="svc-card-desc">We map your day, workflow, and business to find exactly where AI creates leverage. You walk away knowing what to build and in what order — no guesswork.</p>
-          </div>
-          <div class="svc-card-new reveal d1">
-            <div class="svc-node-corner"></div>
-            <div class="svc-type">Setup &amp; Training</div>
-            <div class="svc-card-title">Claude Code &amp; OpenClaw Installs</div>
-            <p class="svc-card-desc">Agentic AI coding environments for individuals and business owners — no tech background needed. Your own AI developer, configured and ready to build for you.</p>
-          </div>
-          <div class="svc-card-new reveal d2">
-            <div class="svc-node-corner"></div>
-            <div class="svc-type">Automation</div>
-            <div class="svc-card-title">AI Employees &amp; Agents</div>
-            <p class="svc-card-desc">AI agents that run real business tasks — lead qualification, email replies, appointment booking — fully autonomous, around the clock.</p>
-          </div>
-        </div>
-
-        <!-- Circuit rail between rows -->
-        <div class="svc-node-rail reveal">
-          <div class="svc-rail-line"></div>
-          <div class="svc-rail-dot"></div>
-          <div class="svc-rail-line"></div>
-          <div class="svc-rail-dot"></div>
-          <div class="svc-rail-line"></div>
-          <div class="svc-rail-dot"></div>
-          <div class="svc-rail-line"></div>
-          <div class="svc-rail-dot"></div>
-          <div class="svc-rail-line"></div>
-          <div class="svc-rail-dot"></div>
-          <div class="svc-rail-line"></div>
-        </div>
-
-        <!-- Row 2 -->
-        <div class="svc-node-row">
-          <div class="svc-card-new reveal">
-            <div class="svc-node-corner"></div>
-            <div class="svc-type">Creative</div>
-            <div class="svc-card-title">AI Video Advertisements</div>
-            <p class="svc-card-desc">Cinematic, scroll-stopping AI-generated video ads for your brand. Faster, cheaper, and more scalable than traditional production — no compromises on quality.</p>
-          </div>
-          <div class="svc-card-new reveal d1">
-            <div class="svc-node-corner"></div>
-            <div class="svc-type">Development</div>
-            <div class="svc-card-title">AI-Powered Website Design</div>
-            <p class="svc-card-desc">Conversion-focused websites built with AI-powered development. Modern, fully functional, shipped in days — from landing page to complete business site.</p>
-          </div>
-          <div class="svc-card-new reveal d2">
-            <div class="svc-node-corner"></div>
-            <div class="svc-type">Automation</div>
-            <div class="svc-card-title">Workflow Automation</div>
-            <p class="svc-card-desc">Replace repetitive tasks with intelligent pipelines using Make, n8n, and AI. Stop doing manually what a system can handle automatically, every day.</p>
-          </div>
-        </div>
-
-        <!-- CTA bar -->
-        <div class="svc-cta reveal" style="margin-top:2px;">
-          <p><strong>Not sure where to start?</strong> These aren't steps — they're options. Book a free call and we'll figure out the right entry point for you.</p>
-          <a href="#contact" class="btn-dark">
-            Book a Free Implementation Call
-            <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-          </a>
-        </div>
-
-      </div>
+    <div class="pipeline-cta reveal">
+      <p><strong>Not sure where to start?</strong> These aren&rsquo;t steps — they&rsquo;re options. Book a free call and we&rsquo;ll find your entry point.</p>
+      <a href="#contact" class="btn-dark">
+        Book a Free Implementation Call
+        <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
     </div>
   </section>
 
@@ -2007,14 +2053,14 @@
         </div>
         <div class="footer-col">
           <h5>Connect</h5>
-          <a href="#">@anthonyimplements</a>
+          <a href="https://www.youtube.com/@AnthonyImplements" target="_blank" rel="noopener">@anthonyimplements</a>
           <a href="#contact">Book a Free Implementation Call</a>
           <a href="mailto:anthonyscollins21@gmail.com">Email Anthony</a>
         </div>
       </div>
       <div class="footer-bottom">
         <p>© 2026 HyperImplement. All rights reserved.</p>
-        <p>Built with AI by <a href="#">HyperImplement</a></p>
+        <p>Built with AI by <a href="#home">HyperImplement</a></p>
       </div>
     </div>
   </footer>
@@ -2074,8 +2120,6 @@
         poster:'work/sho-july-1.jpg', src:'work/sho-july-1.mp4' },
       { label:'Restaurant Advertisement', dur:'0:13', ratio:'9 / 16',
         poster:'work/sho-july-2.jpg', src:'work/sho-july-2.mp4' },
-      { label:'Restaurant Advertisement', dur:'0:13', ratio:'16 / 9',
-        poster:'work/sho-july-3.jpg', src:'work/sho-july-3.mp4' },
     ];
 
     let workIdx = 0;
