@@ -2105,19 +2105,35 @@
     // To add a real ad: drop the .mp4 + poster image in the repo, then add an
     // entry below. `src` and `poster` are just file paths relative to this page.
     // `ratio` matches each file's real dimensions so vertical clips render vertical.
+    // OSOS couch ads (Lincoln / Gracie / Eva) interleaved with the other ads
+    // so no two similar couches sit next to each other.
     const WORK = [
+      { label:'Furniture Advertisement',         dur:'0:15', ratio:'1 / 1',
+        poster:'work/lincoln-2.jpg',  src:'work/lincoln-2.mp4' },
       { label:'Restaurant Advertisement',        dur:'0:08', ratio:'9 / 16',
         poster:'work/sho-1.jpg',    src:'work/sho-1.mp4' },
+      { label:'Furniture Advertisement',         dur:'0:14', ratio:'16 / 9',
+        poster:'work/lincoln-8.jpg',  src:'work/lincoln-8.mp4' },
       { label:'Barbershop Advertisement',        dur:'0:09', ratio:'16 / 9',
         poster:'work/artist-2.jpg', src:'work/artist-2.mp4' },
+      { label:'Furniture Advertisement',         dur:'0:13', ratio:'1 / 1',
+        poster:'work/lincoln-11.jpg', src:'work/lincoln-11.mp4' },
       { label:'Barbershop Advertisement',        dur:'0:10', ratio:'9 / 16',
         poster:'work/artist-3.jpg', src:'work/artist-3.mp4' },
+      { label:'Furniture Advertisement',         dur:'0:13', ratio:'9 / 16',
+        poster:'work/lincoln-7.jpg',  src:'work/lincoln-7.mp4' },
       { label:'Golf Cart Company Advertisement', dur:'0:08', ratio:'16 / 9',
         poster:'work/golf-4.jpg',   src:'work/golf-4.mp4' },
+      { label:'Furniture Advertisement',         dur:'0:13', ratio:'16 / 9',
+        poster:'work/gracie-5.jpg',   src:'work/gracie-5.mp4' },
       { label:'Golf Cart Company Advertisement', dur:'0:08', ratio:'16 / 9',
         poster:'work/golf-5.jpg',   src:'work/golf-5.mp4' },
+      { label:'Furniture Advertisement',         dur:'0:13', ratio:'16 / 9',
+        poster:'work/gracie-2.jpg',   src:'work/gracie-2.mp4' },
       { label:'Restaurant Advertisement', dur:'0:14', ratio:'1 / 1',
         poster:'work/sho-july-1.jpg', src:'work/sho-july-1.mp4' },
+      { label:'Furniture Advertisement',         dur:'0:13', ratio:'16 / 9',
+        poster:'work/eva-2.jpg',      src:'work/eva-2.mp4' },
       { label:'Restaurant Advertisement', dur:'0:13', ratio:'9 / 16',
         poster:'work/sho-july-2.jpg', src:'work/sho-july-2.mp4' },
     ];
