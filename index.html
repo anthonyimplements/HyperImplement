@@ -830,6 +830,11 @@
       gap: 60px; align-items: end; margin-bottom: 56px;
     }
     .contact-body { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+    /* Message form temporarily disabled — booking only for now.
+       To restore the form: delete this one rule block. The form markup
+       below (#lead-form / "Send a Message" pane) is left fully intact. */
+    .contact-form-wrap { display: none; }
+    .contact-body { grid-template-columns: 1fr; max-width: 680px; margin: 0 auto; }
     .contact-form-wrap, .contact-book-wrap {
       background: var(--bg-surface);
       border: 1px solid var(--border);
@@ -1877,7 +1882,7 @@
         </div>
         <div>
           <p style="font-size:16px;color:var(--text-sec);line-height:1.75;font-weight:300;">
-            Fill out the form and we'll reach out within 24 hours — or jump straight to picking a time on the calendar. Either way, you'll walk away with a clear implementation plan.
+            Pick a time on the calendar and let's talk. Come with a problem — you'll walk away with a clear implementation plan.
           </p>
         </div>
       </div>
