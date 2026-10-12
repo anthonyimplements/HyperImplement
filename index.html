@@ -1154,7 +1154,7 @@
       6% { border-color: var(--accent); box-shadow: 0 0 0 4px rgba(249,91,61,0.16), 0 0 40px rgba(249,91,61,0.5), 0 12px 30px rgba(0,0,0,0.08); }
       26% { border-color: var(--border); box-shadow: 0 12px 30px rgba(0,0,0,0.06); }
     }
-    .cycle-img { width: 32%; max-width: 68px; height: auto; object-fit: contain; margin-bottom: 5px;
+    .cycle-img { width: 42%; max-width: 98px; height: auto; object-fit: contain; margin-bottom: 6px;
       filter: drop-shadow(0 4px 10px rgba(249,91,61,0.18)); }
     .cycle-step { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.1em; color: var(--accent); margin-bottom: 3px; }
     .cycle-title { font-family: 'Unbounded', sans-serif; font-weight: 700; font-size: clamp(12px, 1.5vw, 15px);
@@ -1173,14 +1173,16 @@
       .cycle-node, .cycle-center .spin { animation: none; }
     }
     @media (max-width: 560px) {
-      .cycle { max-width: 440px; aspect-ratio: 720 / 560; }
-      .cycle-node { width: 45%; padding: 5%; }
-      .cycle-node.n1 { margin-left: -22.5%; }
-      .cycle-img { max-width: 46px; margin-bottom: 3px; }
+      /* keep container aspect == SVG viewBox (720/600) so the triangle, arrows
+         and circles stay aligned and all three arrows remain visible */
+      .cycle { max-width: 430px; }
+      .cycle-node { width: 43%; padding: 5%; }
+      .cycle-node.n1 { margin-left: -21.5%; }
+      .cycle-img { width: 46%; max-width: 70px; margin-bottom: 4px; }
       .cycle-text { display: none; }           /* keep circles clean on phones */
-      .cycle-title { font-size: 13px; }
-      .cycle-center { width: 62px; height: 62px; }
-      .cycle-center .spin { font-size: 23px; }
+      .cycle-title { font-size: 12.5px; }
+      .cycle-center { width: 60px; height: 60px; }
+      .cycle-center .spin { font-size: 22px; }
     }
 
     /* ─── SERVICES NODE LAYOUT ─── */
@@ -1458,6 +1460,92 @@
       .gv-card { padding: 28px 22px 24px; border-radius: 18px; }
       .gv-title { font-size: 21px; }
     }
+
+    /* ─── Ghost link button (hero secondary) ─── */
+    .btn-ghost-link {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-family: 'Unbounded', sans-serif; font-weight: 600; font-size: 13px;
+      color: var(--text); text-decoration: none; padding: 14px 6px;
+      transition: color 0.2s, gap 0.2s;
+    }
+    .btn-ghost-link:hover { color: var(--accent); gap: 10px; }
+
+    /* ─── AD PICKER (gamified free-ad flow) ─── */
+    .ap-overlay {
+      position: fixed; inset: 0; z-index: 420; display: none;
+      align-items: center; justify-content: center; padding: 20px;
+      background: rgba(13,13,13,0.6); backdrop-filter: blur(9px); -webkit-backdrop-filter: blur(9px);
+    }
+    .ap-overlay.open { display: flex; animation: gvFade 0.3s ease both; }
+    .ap-card {
+      position: relative; width: 100%; max-width: 620px; background: #fff;
+      border-radius: 24px; padding: 36px 36px 30px; overflow: hidden;
+      box-shadow: 0 30px 80px rgba(13,13,13,0.42), 0 0 0 1px rgba(249,91,61,0.1);
+      animation: gvPop 0.4s cubic-bezier(0.34,1.4,0.64,1) both;
+      max-height: 92vh; overflow-y: auto;
+    }
+    .ap-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 5px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-deep)); }
+    .ap-close {
+      position: absolute; top: 14px; right: 14px; width: 32px; height: 32px; border-radius: 50%;
+      background: var(--bg-surface); border: 1px solid var(--border); color: var(--text-sec);
+      font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: background 0.2s, color 0.2s, transform 0.15s; z-index: 2;
+    }
+    .ap-close:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+    .ap-badge {
+      display: inline-flex; align-items: center; gap: 7px; font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 500;
+      color: var(--accent); background: rgba(249,91,61,0.08); border: 1px solid var(--border-acc);
+      padding: 5px 11px; border-radius: 20px; margin-bottom: 15px;
+    }
+    .ap-badge .gv-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); animation: blink 1.6s infinite; }
+    .ap-title { font-family: 'Unbounded', sans-serif; font-weight: 800; font-size: clamp(22px,3.4vw,30px);
+      line-height: 1.12; letter-spacing: -0.02em; color: var(--text); margin-bottom: 8px; }
+    .ap-title em { color: var(--accent); font-style: normal; }
+    .ap-sub { font-size: 14px; line-height: 1.6; color: var(--text-sec); margin-bottom: 22px; font-weight: 300; }
+    .ap-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .ap-opt {
+      text-align: left; background: var(--bg-surface); border: 1.5px solid var(--border);
+      border-radius: 16px; padding: 18px; cursor: pointer; transition: transform 0.25s cubic-bezier(0.34,1.4,0.64,1), border-color 0.2s, box-shadow 0.2s;
+      display: flex; flex-direction: column; gap: 9px;
+    }
+    .ap-opt:hover { transform: translateY(-4px); border-color: var(--border-acc); box-shadow: 0 14px 30px rgba(249,91,61,0.14); }
+    .ap-opt:focus-visible { outline: none; box-shadow: 0 0 0 3px rgba(249,91,61,0.3); }
+    .ap-opt-emoji { font-size: 30px; line-height: 1; }
+    .ap-opt-name { font-family: 'Unbounded', sans-serif; font-weight: 700; font-size: 15px; color: var(--text); letter-spacing: -0.01em; }
+    .ap-opt-desc { font-size: 12px; line-height: 1.45; color: var(--text-sec); }
+    .ap-fine { font-size: 10.5px; color: var(--text-muted); line-height: 1.5; margin-top: 16px; text-align: center; }
+    /* step 2 */
+    .ap-step2 { text-align: center; padding: 8px 4px; }
+    .ap-step2-ring { width: 68px; height: 68px; margin: 6px auto 18px; border-radius: 50%;
+      background: rgba(249,91,61,0.1); border: 2px solid var(--border-acc); display: flex;
+      align-items: center; justify-content: center; font-size: 34px; }
+    .ap-step2 h3 { font-family: 'Unbounded', sans-serif; font-weight: 800; font-size: 23px; color: var(--text); margin-bottom: 10px; letter-spacing: -0.01em; }
+    .ap-step2 h3 em { color: var(--accent); font-style: normal; }
+    .ap-step2 p { font-size: 14px; color: var(--text-sec); line-height: 1.6; margin-bottom: 22px; max-width: 440px; margin-left: auto; margin-right: auto; }
+    .ap-book-btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 9px;
+      background: var(--accent); color: #fff; border: none; border-radius: 12px; padding: 15px 28px;
+      font-family: 'Unbounded', sans-serif; font-weight: 700; font-size: 14px; cursor: pointer;
+      box-shadow: 0 8px 22px rgba(249,91,61,0.3); transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+    }
+    .ap-book-btn:hover { background: var(--accent-dark); box-shadow: 0 12px 28px rgba(249,91,61,0.4); }
+    .ap-book-btn:active { transform: scale(0.98); }
+    .ap-back { display: block; margin: 16px auto 0; background: none; border: none; color: var(--text-muted);
+      font-size: 12px; cursor: pointer; text-decoration: underline; }
+    /* free-ad banner above the Calendly booking */
+    .freead-banner { display: none; align-items: center; gap: 12px; background: rgba(249,91,61,0.06);
+      border: 1.5px solid var(--border-acc); border-radius: 12px; padding: 14px 18px; margin-bottom: 20px; }
+    .freead-banner.show { display: flex; }
+    .freead-banner .fb-emoji { font-size: 26px; flex-shrink: 0; }
+    .freead-banner .fb-text { font-size: 13.5px; color: var(--text); line-height: 1.5; }
+    .freead-banner .fb-text strong { color: var(--accent); }
+    @media(max-width:560px){
+      .ap-card { padding: 28px 20px 24px; border-radius: 18px; }
+      .ap-grid { grid-template-columns: 1fr; }
+      .ap-title { font-size: 21px; }
+    }
   </style>
 </head>
 <body>
@@ -1511,6 +1599,53 @@
     </div>
   </div>
 
+  <!-- ═══ AD PICKER (free-ad gamified flow) ═══ -->
+  <div class="ap-overlay" id="ap-overlay" role="dialog" aria-modal="true" aria-labelledby="ap-title" onclick="if(event.target===this)closeAdPicker()">
+    <div class="ap-card">
+      <button class="ap-close" onclick="closeAdPicker()" aria-label="Close">&#10005;</button>
+
+      <div id="ap-step1-view">
+        <span class="ap-badge"><span class="gv-dot"></span>Free AI Ad &mdash; On Us</span>
+        <h2 class="ap-title" id="ap-title">Pick the ad you want us to <em>make you free.</em></h2>
+        <p class="ap-sub">Choose a style below. On your free call we&rsquo;ll create one real AI ad for your brand in that style &mdash; so you see exactly what we can do before spending anything.</p>
+        <div class="ap-grid">
+          <button type="button" class="ap-opt" onclick="pickAd('Cartoon Ad')">
+            <span class="ap-opt-emoji">🎨</span>
+            <span class="ap-opt-name">Cartoon Ad</span>
+            <span class="ap-opt-desc">Playful animated style that stops the scroll and makes your brand memorable.</span>
+          </button>
+          <button type="button" class="ap-opt" onclick="pickAd('UGC Ad')">
+            <span class="ap-opt-emoji">🤳</span>
+            <span class="ap-opt-name">UGC Ad</span>
+            <span class="ap-opt-desc">Authentic creator-style content that feels native to social feeds.</span>
+          </button>
+          <button type="button" class="ap-opt" onclick="pickAd('Storytelling AI Ad')">
+            <span class="ap-opt-emoji">📖</span>
+            <span class="ap-opt-name">Storytelling AI</span>
+            <span class="ap-opt-desc">A short narrative spot that builds emotion and sells without feeling salesy.</span>
+          </button>
+          <button type="button" class="ap-opt" onclick="pickAd('Movie-Scene Ad')">
+            <span class="ap-opt-emoji">🎬</span>
+            <span class="ap-opt-name">Movie-Scene Ad</span>
+            <span class="ap-opt-desc">Cinematic, hyper-realistic footage that makes your brand look blockbuster.</span>
+          </button>
+        </div>
+        <p class="ap-fine">No cost, no catch. One free ad per brand, delivered after a quick 30-minute call.</p>
+      </div>
+
+      <div class="ap-step2 ap-step2-view" id="ap-step2-view" style="display:none;">
+        <div class="ap-step2-ring">🎬</div>
+        <h3>Nice pick — <em id="ap-choice-label">your ad</em>.</h3>
+        <p>Book your free 30-minute call and we&rsquo;ll create your <strong id="ap-choice-inline">ad</strong>. Come with your brand, leave with a real example of what AI can do for your marketing.</p>
+        <button type="button" class="ap-book-btn" onclick="proceedToBook()">
+          Book My Free Call &amp; Claim It
+          <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </button>
+        <button type="button" class="ap-back" onclick="apBack()">&larr; Pick a different style</button>
+      </div>
+    </div>
+  </div>
+
   <!-- ═══ NAV ═══ -->
   <nav class="nav" id="navbar">
     <a href="#home" class="nav-logo">
@@ -1520,7 +1655,7 @@
       <a href="#services">Services</a>
       <a href="#work">Real Work</a>
       <a href="#about">About</a>
-      <a href="#book" class="nav-cta">Book an Implementation Call</a>
+      <a href="#book" class="nav-cta" onclick="event.preventDefault();openAdPicker();">Claim My Free AI Ad</a>
     </div>
     <!-- Mobile hamburger -->
     <button class="nav-hamburger" id="navHamburger" aria-label="Open menu" aria-expanded="false">
@@ -1532,7 +1667,7 @@
     <a href="#services" class="nav-mobile-link" onclick="closeMobileMenu()">Services</a>
     <a href="#work" class="nav-mobile-link" onclick="closeMobileMenu()">Real Work</a>
     <a href="#about" class="nav-mobile-link" onclick="closeMobileMenu()">About</a>
-    <a href="#book" class="nav-mobile-link nav-mobile-cta" onclick="closeMobileMenu()">Book an Implementation Call</a>
+    <a href="#book" class="nav-mobile-link nav-mobile-cta" onclick="event.preventDefault();closeMobileMenu();openAdPicker();">Claim My Free AI Ad</a>
   </div>
 
   <!-- ═══ HERO ═══ -->
@@ -1543,14 +1678,14 @@
     <div class="hero-inner">
       <div class="hero-eyebrow reveal">
         <span class="hero-eyebrow-dot"></span>
-        AI Implementation Agency &mdash; Since May 2025
+        AI Marketing &amp; Ad Studio &mdash; Chicago
       </div>
       <h1 class="reveal d1">
-        You Know You Need AI.<br/>
-        <em>Start Implementing It.</em>
+        See What AI Can Do for Your Brand.<br/>
+        <em>Your First Ad&rsquo;s on Us.</em>
       </h1>
       <p class="hero-sub reveal d2">
-        It feels like everyone&rsquo;s using AI to pull ahead &mdash; and you&rsquo;re still not sure which parts of your business it even applies to. That stops here. You know AI can move the needle; we build and install the pieces that actually do it. Even one simple system can change how you scale.
+        We&rsquo;re an AI ad studio and coaching practice that helps brands actually use AI for marketing. Pick the ad style you want, book a quick call, and we&rsquo;ll make you one free AI ad &mdash; so you see exactly what&rsquo;s possible before you spend a dollar.
       </p>
       <div class="hero-services reveal d3">
         <div class="hero-service">
@@ -1588,11 +1723,12 @@
         </div>
       </div>
       <div class="hero-cta-group reveal d4">
-        <a href="#contact" class="btn-primary">
-          Show Me What to Implement
+        <button type="button" class="btn-primary" onclick="openAdPicker()" style="border:none;cursor:pointer;font-family:inherit;">
+          Claim My Free AI Ad
           <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        </a>
-        <span class="hero-note">Free 30-min call · You&rsquo;ll leave knowing exactly where AI fits in your business.</span>
+        </button>
+        <a href="#problem" class="btn-ghost-link">See where AI fits &rarr;</a>
+        <span class="hero-note">Free 30-min call &middot; Pick your ad style &middot; No cost, no catch.</span>
       </div>
     </div>
   </section>
@@ -2170,9 +2306,13 @@
 
         <!-- BOOK -->
         <div class="contact-book-wrap reveal d1" id="book">
+          <div class="freead-banner" id="freead-banner">
+            <span class="fb-emoji">🎁</span>
+            <span class="fb-text">Your free <strong id="fb-choice">AI ad</strong> is reserved. Book your call below and we&rsquo;ll create it for you.</span>
+          </div>
           <div class="contact-pane-label">Jump Straight In</div>
-          <div class="contact-pane-title">Book an Implementation Call</div>
-          <p class="contact-pane-sub">30 minutes. Free. Come with a problem, leave with a plan.</p>
+          <div class="contact-pane-title">Book Your Free Call</div>
+          <p class="contact-pane-sub">30 minutes. Free. Leave with a real AI ad for your brand and a clear plan.</p>
           <div class="book-perks">
             <div class="book-perk">
               <div class="book-perk-bar"></div>
@@ -2244,6 +2384,57 @@
     const GHL_WEBHOOK_URL = 'https://services.leadconnectorhq.com/hooks/alEN2jCxcJXw4HV12875/webhook-trigger/076693fc-5182-451e-a94d-05766b4fae44';
     const GV_SEEN_KEY = 'hi_gv_seen_v1';
     let gvQ1 = '', gvQ2 = '';
+
+    // ═══ AD PICKER (free-ad gamified flow) ═══
+    let adChoice = '';
+    function openAdPicker() {
+      // always start on step 1
+      document.getElementById('ap-step1-view').style.display = 'block';
+      document.getElementById('ap-step2-view').style.display = 'none';
+      document.getElementById('ap-overlay').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeAdPicker() {
+      document.getElementById('ap-overlay').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+    function apBack() {
+      document.getElementById('ap-step2-view').style.display = 'none';
+      document.getElementById('ap-step1-view').style.display = 'block';
+    }
+    function pickAd(style) {
+      adChoice = style;
+      try { localStorage.setItem('hi_ad_choice', style); } catch(e) {}
+      document.getElementById('ap-choice-label').textContent = style;
+      document.getElementById('ap-choice-inline').textContent = style;
+      document.getElementById('ap-step1-view').style.display = 'none';
+      document.getElementById('ap-step2-view').style.display = 'block';
+    }
+    function proceedToBook() {
+      // reveal the free-ad banner with the chosen style, close modal, scroll to booking
+      const banner = document.getElementById('freead-banner');
+      if (adChoice) {
+        document.getElementById('fb-choice').textContent = adChoice;
+        banner.classList.add('show');
+      }
+      closeAdPicker();
+      const book = document.getElementById('book');
+      if (book) book.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    // Restore a previously chosen ad style on load (e.g. returning visitor)
+    (function apRestore(){
+      try {
+        const saved = localStorage.getItem('hi_ad_choice');
+        if (saved) {
+          adChoice = saved;
+          const fb = document.getElementById('fb-choice');
+          if (fb) { fb.textContent = saved; document.getElementById('freead-banner').classList.add('show'); }
+        }
+      } catch(e) {}
+    })();
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && document.getElementById('ap-overlay').classList.contains('open')) closeAdPicker();
+    });
 
     function gvChipSetup(groupId, setter) {
       document.querySelectorAll('#' + groupId + ' .gv-chip').forEach(chip => {
