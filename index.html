@@ -179,6 +179,28 @@
       font-weight: 900; color: var(--text); margin-bottom: 18px;
     }
     .section-title em { color: var(--accent); font-style: normal; }
+
+    /* ─── HOW THE FREE AD WORKS ─── */
+    .howfree { background: var(--bg-surface); padding: 66px 48px; }
+    .howfree-inner { max-width: 1120px; margin: 0 auto; }
+    .howfree-head { text-align: center; margin-bottom: 42px; }
+    .howfree-head .label { justify-content: center; }
+    .howfree-head .section-title { font-size: clamp(26px, 3vw, 40px); margin-bottom: 0; }
+    .howfree-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .howfree-step {
+      background: #fff; border: 1px solid var(--border); border-radius: 18px; padding: 30px 26px;
+      position: relative; transition: transform 0.3s cubic-bezier(0.34,1.4,0.64,1), box-shadow 0.3s, border-color 0.3s;
+    }
+    .howfree-step:hover { transform: translateY(-4px); border-color: var(--border-acc); box-shadow: 0 14px 32px rgba(249,91,61,0.1); }
+    .howfree-num {
+      font-family: 'Unbounded', sans-serif; font-weight: 800; font-size: 15px; color: #fff;
+      background: var(--accent); width: 36px; height: 36px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center; margin-bottom: 18px;
+      box-shadow: 0 6px 16px rgba(249,91,61,0.3);
+    }
+    .howfree-step h4 { font-family: 'Unbounded', sans-serif; font-weight: 700; font-size: 16.5px; color: var(--text); margin-bottom: 9px; letter-spacing: -0.01em; }
+    .howfree-step p { font-size: 13.5px; color: var(--text-sec); line-height: 1.6; }
+    @media(max-width:760px){ .howfree-steps { grid-template-columns: 1fr; gap: 14px; } .howfree { padding: 48px 20px; } }
     .section-sub {
       font-size: 17px; color: var(--text-sec);
       max-width: 560px; line-height: 1.75; font-weight: 300;
@@ -1730,6 +1752,39 @@
         </button>
         <a href="#problem" class="btn-ghost-link">See where AI fits &rarr;</a>
         <span class="hero-note">Free 30-min call &middot; Pick your ad style &middot; No cost, no catch.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ HOW THE FREE AD WORKS ═══ -->
+  <section class="howfree">
+    <div class="howfree-inner">
+      <div class="howfree-head reveal">
+        <div class="label">How Your Free Ad Works</div>
+        <h2 class="section-title">Three Steps. <em>Zero Cost.</em></h2>
+      </div>
+      <div class="howfree-steps reveal">
+        <div class="howfree-step">
+          <div class="howfree-num">1</div>
+          <h4>Pick your ad style</h4>
+          <p>Cartoon, UGC, storytelling, or movie-scene &mdash; choose the look that fits your brand. Takes 10 seconds.</p>
+        </div>
+        <div class="howfree-step">
+          <div class="howfree-num">2</div>
+          <h4>Book a 30-minute call</h4>
+          <p>We learn your brand, your offer, and who you&rsquo;re trying to reach. Quick, friendly, no pressure.</p>
+        </div>
+        <div class="howfree-step">
+          <div class="howfree-num">3</div>
+          <h4>Get your free AI ad</h4>
+          <p>We create one real ad you can actually use &mdash; living proof of what AI can do for your marketing.</p>
+        </div>
+      </div>
+      <div style="text-align:center;margin-top:36px;" class="reveal">
+        <button type="button" class="btn-primary" onclick="openAdPicker()" style="border:none;cursor:pointer;font-family:inherit;">
+          Claim My Free AI Ad
+          <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </button>
       </div>
     </div>
   </section>
