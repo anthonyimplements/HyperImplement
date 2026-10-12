@@ -178,6 +178,7 @@
       font-size: clamp(30px, 3.8vw, 52px);
       font-weight: 900; color: var(--text); margin-bottom: 18px;
     }
+    .section-title em { color: var(--accent); font-style: normal; }
     .section-sub {
       font-size: 17px; color: var(--text-sec);
       max-width: 560px; line-height: 1.75; font-weight: 300;
@@ -1886,12 +1887,12 @@
 
       <!-- Conclusion card -->
       <div class="gap-conclusion reveal">
-        <div class="gap-conclusion-title">Skip the hype. <em>Have an actual plan.</em></div>
-        <p class="gap-conclusion-sub">We sit down with you, map where AI creates real leverage, and build the system — until it's live and running for you. That's the only thing we do.</p>
-        <a href="#contact" class="btn-primary" style="font-size:12px;">
-          Book a Free Implementation Call
+        <div class="gap-conclusion-title">Break the loop. <em>Start with a free ad.</em></div>
+        <p class="gap-conclusion-sub">Instead of another demo you forget, we&rsquo;ll make you one real AI ad for your brand — so you see exactly where AI fits your marketing. Pick your style, book a quick call, done.</p>
+        <button type="button" class="btn-primary" onclick="openAdPicker()" style="font-size:12px;border:none;cursor:pointer;font-family:inherit;">
+          Claim My Free AI Ad
           <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        </a>
+        </button>
       </div>
 
     </div>
@@ -1953,11 +1954,11 @@
     </div>
 
     <div class="pipeline-cta reveal">
-      <p><strong>Not sure where to start?</strong> These aren&rsquo;t steps — they&rsquo;re options. Book a free call and we&rsquo;ll find your entry point.</p>
-      <a href="#contact" class="btn-dark">
-        Book a Free Implementation Call
+      <p><strong>Not sure where to start?</strong> Start with a free AI ad for your brand. Pick a style, book a quick call, and see what we can do — then we&rsquo;ll map the rest.</p>
+      <button type="button" class="btn-dark" onclick="openAdPicker()" style="border:none;cursor:pointer;font-family:inherit;">
+        Claim My Free AI Ad
         <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-      </a>
+      </button>
     </div>
   </section>
 
@@ -2122,11 +2123,11 @@
 
     <div class="inner">
       <div style="text-align:center;margin-top:48px;" class="reveal">
-        <p style="font-size:14px;color:var(--text-muted);margin-bottom:18px;font-family:'IBM Plex Mono',monospace;letter-spacing:0.05em;">What could we build for you?</p>
-        <a href="#book" class="btn-primary">
-          Book a Free Implementation Call
+        <p style="font-size:14px;color:var(--text-muted);margin-bottom:18px;font-family:'IBM Plex Mono',monospace;letter-spacing:0.05em;">Want results like these for your brand?</p>
+        <button type="button" class="btn-primary" onclick="openAdPicker()" style="border:none;cursor:pointer;font-family:inherit;">
+          Claim My Free AI Ad
           <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        </a>
+        </button>
       </div>
     </div>
   </section>
@@ -2193,10 +2194,10 @@
             We skip straight to the part where <strong>AI is actually running your life and business</strong> — not just living in a browser tab.
           </p>
           <div style="margin-top:32px;">
-            <a href="#contact" class="btn-primary">
-              Start Implementing
+            <button type="button" class="btn-primary" onclick="openAdPicker()" style="border:none;cursor:pointer;font-family:inherit;">
+              Claim My Free AI Ad
               <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-            </a>
+            </button>
           </div>
         </div>
         <div class="reveal d2">
@@ -2232,12 +2233,12 @@
     <div class="inner">
       <div class="contact-header reveal">
         <div>
-          <div class="label">Let's Build Something</div>
-          <h2 class="section-title">Ready to Stop<br/>Hearing About AI<br/>and Start Using It?</h2>
+          <div class="label">Claim Your Free Ad</div>
+          <h2 class="section-title">Book the Call.<br/>Get Your<br/><em>Free AI Ad.</em></h2>
         </div>
         <div>
           <p style="font-size:16px;color:var(--text-sec);line-height:1.75;font-weight:300;">
-            Pick a time on the calendar and let's talk. Come with a problem — you'll walk away with a clear implementation plan.
+            Pick a time below. On the call we&rsquo;ll learn your brand and create one real AI ad in the style you chose — so you leave with something you can actually use, plus a clear plan for what&rsquo;s next.
           </p>
         </div>
       </div>
@@ -2367,7 +2368,7 @@
         <div class="footer-col">
           <h5>Connect</h5>
           <a href="https://www.youtube.com/@AnthonyImplements" target="_blank" rel="noopener">@anthonyimplements</a>
-          <a href="#contact">Book a Free Implementation Call</a>
+          <a href="#book" onclick="event.preventDefault();openAdPicker();">Claim a Free AI Ad</a>
           <a href="mailto:anthonyscollins21@gmail.com">Email Anthony</a>
         </div>
       </div>
@@ -2418,6 +2419,8 @@
         banner.classList.add('show');
       }
       closeAdPicker();
+      // re-render the calendar so the chosen ad style rides along on the booking
+      if (typeof renderCalendly === 'function') renderCalendly(adChoice);
       const book = document.getElementById('book');
       if (book) book.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
@@ -2694,20 +2697,30 @@
     }
 
     // CALENDLY
-    // Replace with your link, e.g. 'https://calendly.com/anthonyimplements/30min'
     const CALENDLY_URL = 'https://calendly.com/anthonyscollins21/30min?hide_gdpr_banner=1';
-    if (CALENDLY_URL !== 'YOUR_CALENDLY_URL') {
+    let calendlyReady = false;
+    function renderCalendly(adStyle) {
+      if (typeof Calendly === 'undefined') return;
       const c = document.getElementById('calendly-container');
+      if (!c) return;
+      let url = CALENDLY_URL;
+      // pass the chosen ad style into the booking via UTM so it shows on the event
+      if (adStyle) url += '&utm_campaign=free-ai-ad&utm_source=website&utm_content=' + encodeURIComponent(adStyle);
       c.innerHTML = '';
-      c.className = 'calendly-embed-live';
+      Calendly.initInlineWidget({ url, parentElement: c });
+    }
+    (function loadCalendly(){
+      const c = document.getElementById('calendly-container');
+      if (!c) return;
+      c.innerHTML = ''; c.className = 'calendly-embed-live';
       const link = document.createElement('link');
       link.rel='stylesheet'; link.href='https://assets.calendly.com/assets/external/widget.css';
       document.head.appendChild(link);
       const s = document.createElement('script');
       s.src='https://assets.calendly.com/assets/external/widget.js';
-      s.onload=()=>Calendly.initInlineWidget({url:CALENDLY_URL,parentElement:c});
+      s.onload=()=>{ calendlyReady = true; renderCalendly(localStorage.getItem('hi_ad_choice')); };
       document.body.appendChild(s);
-    }
+    })();
 
     // SMOOTH SCROLL
     document.querySelectorAll('a[href^="#"]').forEach(a=>{
