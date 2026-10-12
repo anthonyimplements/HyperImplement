@@ -2572,12 +2572,24 @@
       document.getElementById('gv-success-view').style.display = 'block';
     }
 
-    // Fire once per visitor, 5s after load
+    // Fire once per visitor, only after ~15s of ACTIVE time on the page
+    // (timer pauses when the tab is hidden) — so it only reaches engaged visitors,
+    // not quick bounces or background tabs. Adjust GV_DELAY_MS to taste.
+    const GV_DELAY_MS = 15000;
     (function gvInit() {
       let seen = false;
       try { seen = localStorage.getItem(GV_SEEN_KEY) === '1'; } catch(e) {}
       if (seen) return;
-      setTimeout(gvOpen, 5000);
+      let elapsed = 0, last = Date.now(), fired = false;
+      document.addEventListener('visibilitychange', () => { last = Date.now(); });
+      (function tick() {
+        if (fired) return;
+        const now = Date.now();
+        if (document.visibilityState === 'visible') elapsed += now - last;
+        last = now;
+        if (elapsed >= GV_DELAY_MS) { fired = true; gvOpen(); return; }
+        setTimeout(tick, 1000);
+      })();
     })();
     document.addEventListener('keydown', e => {
       if (e.key === 'Escape' && document.getElementById('gv-overlay').classList.contains('open')) gvClose();
