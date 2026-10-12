@@ -1374,9 +1374,142 @@
       .nav-hamburger { display: flex; }
       .nav-mobile-menu { display: flex; }
     }
+
+    /* ─── GIVEAWAY POPUP ─── */
+    .gv-overlay {
+      position: fixed; inset: 0; z-index: 400; display: none;
+      align-items: center; justify-content: center; padding: 20px;
+      background: rgba(13,13,13,0.55); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    }
+    .gv-overlay.open { display: flex; animation: gvFade 0.3s ease both; }
+    @keyframes gvFade { from { opacity: 0; } to { opacity: 1; } }
+    .gv-card {
+      position: relative; width: 100%; max-width: 480px; background: #fff;
+      border-radius: 22px; padding: 34px 34px 30px; overflow: hidden;
+      box-shadow: 0 30px 80px rgba(13,13,13,0.4), 0 0 0 1px rgba(249,91,61,0.1);
+      animation: gvPop 0.4s cubic-bezier(0.34,1.4,0.64,1) both;
+    }
+    @keyframes gvPop { from { opacity: 0; transform: translateY(24px) scale(0.96); } to { opacity: 1; transform: translateY(0) scale(1); } }
+    .gv-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 5px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-deep));
+    }
+    .gv-close {
+      position: absolute; top: 14px; right: 14px; width: 32px; height: 32px; border-radius: 50%;
+      background: var(--bg-surface); border: 1px solid var(--border); color: var(--text-sec);
+      font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: background 0.2s, color 0.2s, transform 0.15s; z-index: 2;
+    }
+    .gv-close:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+    .gv-close:active { transform: scale(0.92); }
+    .gv-badge {
+      display: inline-flex; align-items: center; gap: 7px; font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 500;
+      color: var(--accent); background: rgba(249,91,61,0.08); border: 1px solid var(--border-acc);
+      padding: 5px 11px; border-radius: 20px; margin-bottom: 16px;
+    }
+    .gv-badge .gv-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); animation: blink 1.6s infinite; }
+    .gv-title { font-family: 'Unbounded', sans-serif; font-weight: 800; font-size: clamp(22px, 3.4vw, 28px);
+      line-height: 1.12; letter-spacing: -0.02em; color: var(--text); margin-bottom: 10px; }
+    .gv-title em { color: var(--accent); font-style: normal; }
+    .gv-sub { font-size: 14px; line-height: 1.6; color: var(--text-sec); margin-bottom: 22px; font-weight: 300; }
+    .gv-q { margin-bottom: 18px; }
+    .gv-q-label { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--text-muted); margin-bottom: 9px; display: block; }
+    .gv-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+    .gv-chip {
+      font-size: 12.5px; font-weight: 500; color: var(--text-sec);
+      background: var(--bg-surface); border: 1.5px solid var(--border); border-radius: 10px;
+      padding: 9px 13px; cursor: pointer; transition: all 0.18s; line-height: 1.2;
+    }
+    .gv-chip:hover { border-color: var(--border-acc); color: var(--text); }
+    .gv-chip.sel { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .gv-chip:focus-visible { outline: none; box-shadow: 0 0 0 3px rgba(249,91,61,0.25); }
+    .gv-input {
+      width: 100%; background: var(--bg-surface); border: 1.5px solid var(--border); border-radius: 11px;
+      padding: 14px 15px; font-family: 'IBM Plex Sans', sans-serif; font-size: 16px; color: var(--text);
+      outline: none; transition: border-color 0.2s, box-shadow 0.2s; margin-bottom: 14px;
+    }
+    .gv-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(249,91,61,0.1); }
+    .gv-input.err { border-color: #e23; box-shadow: 0 0 0 3px rgba(238,34,34,0.1); }
+    .gv-submit {
+      width: 100%; background: var(--accent); color: #fff; border: none; border-radius: 12px;
+      padding: 15px; font-family: 'Unbounded', sans-serif; font-weight: 700; font-size: 14px;
+      cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 9px;
+      transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+      box-shadow: 0 8px 22px rgba(249,91,61,0.3);
+    }
+    .gv-submit:hover { background: var(--accent-dark); box-shadow: 0 12px 28px rgba(249,91,61,0.4); }
+    .gv-submit:active { transform: scale(0.98); }
+    .gv-submit:disabled { opacity: 0.55; cursor: not-allowed; box-shadow: none; }
+    .gv-fine { font-size: 10.5px; color: var(--text-muted); line-height: 1.5; margin-top: 13px; text-align: center; }
+    .gv-fine a { color: var(--accent); cursor: pointer; text-decoration: underline; }
+    .gv-success { text-align: center; padding: 20px 6px 8px; }
+    .gv-success-ring { width: 64px; height: 64px; margin: 0 auto 18px; border-radius: 50%;
+      background: rgba(249,91,61,0.1); border: 2px solid var(--border-acc); display: flex;
+      align-items: center; justify-content: center; font-size: 28px; color: var(--accent); }
+    .gv-success h3 { font-family: 'Unbounded', sans-serif; font-weight: 800; font-size: 22px; color: var(--text); margin-bottom: 10px; }
+    .gv-success p { font-size: 14px; color: var(--text-sec); line-height: 1.6; }
+    /* rules panel */
+    .gv-rules { display: none; font-size: 11px; color: var(--text-sec); line-height: 1.6; margin-top: 14px;
+      background: var(--bg-surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px; text-align: left; }
+    .gv-rules.show { display: block; }
+    @media(max-width:480px){
+      .gv-card { padding: 28px 22px 24px; border-radius: 18px; }
+      .gv-title { font-size: 21px; }
+    }
   </style>
 </head>
 <body>
+
+  <!-- ═══ GIVEAWAY POPUP ═══ -->
+  <div class="gv-overlay" id="gv-overlay" role="dialog" aria-modal="true" aria-labelledby="gv-title" onclick="if(event.target===this)gvClose()">
+    <div class="gv-card">
+      <button class="gv-close" onclick="gvClose()" aria-label="Close">&#10005;</button>
+
+      <div id="gv-form-view">
+        <span class="gv-badge"><span class="gv-dot"></span>Free Giveaway</span>
+        <h2 class="gv-title" id="gv-title">Win a Free Year of <em>Claude</em>.</h2>
+        <p class="gv-sub">Drop your email for a shot at a full year of Claude Pro — on us. Two quick taps and you&rsquo;re entered.</p>
+
+        <div class="gv-q">
+          <span class="gv-q-label">Where are you with AI right now?</span>
+          <div class="gv-chips" id="gv-q1">
+            <button type="button" class="gv-chip" data-v="Just curious">Just curious</button>
+            <button type="button" class="gv-chip" data-v="Using a few tools">Using a few tools</button>
+            <button type="button" class="gv-chip" data-v="Actively building/automating">Building &amp; automating</button>
+            <button type="button" class="gv-chip" data-v="Running AI across my business">Running it across my business</button>
+          </div>
+        </div>
+
+        <div class="gv-q">
+          <span class="gv-q-label">What do you most want AI to do for you?</span>
+          <div class="gv-chips" id="gv-q2">
+            <button type="button" class="gv-chip" data-v="Save time on busywork">Save time on busywork</button>
+            <button type="button" class="gv-chip" data-v="Get more leads/customers">Get more leads</button>
+            <button type="button" class="gv-chip" data-v="Make content & ads">Make content &amp; ads</button>
+            <button type="button" class="gv-chip" data-v="Build a website or system">Build a website/system</button>
+          </div>
+        </div>
+
+        <input type="email" class="gv-input" id="gv-email" placeholder="you@email.com" autocomplete="email" />
+        <button class="gv-submit" id="gv-submit" onclick="gvSubmit()">
+          Enter to Win
+          <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </button>
+        <p class="gv-fine">No spam — one winner drawn <strong id="gv-draw-date">Dec 1, 2026</strong>. <a onclick="gvToggleRules()">See rules</a></p>
+        <div class="gv-rules" id="gv-rules">
+          No purchase necessary. One entry per person. Open to entrants 18+. The prize is one year of Claude Pro provided by HyperImplement. Winner will be drawn at random on the date above and notified by email. By entering you agree to receive occasional emails from HyperImplement; you can unsubscribe anytime.
+        </div>
+      </div>
+
+      <div class="gv-success" id="gv-success-view" style="display:none;">
+        <div class="gv-success-ring">&#10003;</div>
+        <h3>You&rsquo;re in! 🎉</h3>
+        <p>Your entry is locked. The winner is drawn <strong>Dec 1, 2026</strong> — keep an eye on your inbox. Good luck!</p>
+      </div>
+    </div>
+  </div>
 
   <!-- ═══ NAV ═══ -->
   <nav class="nav" id="navbar">
@@ -2106,6 +2239,90 @@
   </footer>
 
   <script>
+    // ═══ GIVEAWAY POPUP ═══
+    // PASTE your GHL Inbound Webhook URL here to start capturing leads into GHL:
+    const GHL_WEBHOOK_URL = ''; // e.g. 'https://services.leadconnectorhq.com/hooks/.../webhook-trigger/...'
+    const GV_SEEN_KEY = 'hi_gv_seen_v1';
+    let gvQ1 = '', gvQ2 = '';
+
+    function gvChipSetup(groupId, setter) {
+      document.querySelectorAll('#' + groupId + ' .gv-chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+          document.querySelectorAll('#' + groupId + ' .gv-chip').forEach(c => c.classList.remove('sel'));
+          chip.classList.add('sel');
+          setter(chip.dataset.v);
+        });
+      });
+    }
+    gvChipSetup('gv-q1', v => gvQ1 = v);
+    gvChipSetup('gv-q2', v => gvQ2 = v);
+
+    function gvOpen() {
+      document.getElementById('gv-overlay').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+    function gvClose() {
+      document.getElementById('gv-overlay').classList.remove('open');
+      document.body.style.overflow = '';
+      try { localStorage.setItem(GV_SEEN_KEY, '1'); } catch(e) {}
+    }
+    function gvToggleRules() { document.getElementById('gv-rules').classList.toggle('show'); }
+
+    async function gvSubmit() {
+      const emailEl = document.getElementById('gv-email');
+      const email = emailEl.value.trim();
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        emailEl.classList.add('err'); emailEl.focus();
+        return;
+      }
+      emailEl.classList.remove('err');
+      const btn = document.getElementById('gv-submit');
+      btn.disabled = true; btn.textContent = 'Entering…';
+
+      const payload = {
+        email: email,
+        ai_stage: gvQ1 || 'Not answered',
+        ai_goal: gvQ2 || 'Not answered',
+        source: 'Website Giveaway Popup',
+        tags: ['giveaway-claude-2026', 'source-website-popup',
+               gvQ1 ? 'ai-stage: ' + gvQ1 : null,
+               gvQ2 ? 'ai-goal: ' + gvQ2 : null].filter(Boolean),
+        submitted_at: new Date().toISOString()
+      };
+
+      // Local backup so no entry is ever lost (exportable via console)
+      try {
+        const list = JSON.parse(localStorage.getItem('hi_gv_entries') || '[]');
+        list.push(payload); localStorage.setItem('hi_gv_entries', JSON.stringify(list));
+      } catch(e) {}
+
+      // Send to GHL via Inbound Webhook (fire-and-forget; no-cors so no read-back needed)
+      if (GHL_WEBHOOK_URL) {
+        try {
+          await fetch(GHL_WEBHOOK_URL, {
+            method: 'POST', mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+        } catch(e) { /* optimistic: entry is backed up locally */ }
+      }
+
+      try { localStorage.setItem(GV_SEEN_KEY, '1'); } catch(e) {}
+      document.getElementById('gv-form-view').style.display = 'none';
+      document.getElementById('gv-success-view').style.display = 'block';
+    }
+
+    // Fire once per visitor, 5s after load
+    (function gvInit() {
+      let seen = false;
+      try { seen = localStorage.getItem(GV_SEEN_KEY) === '1'; } catch(e) {}
+      if (seen) return;
+      setTimeout(gvOpen, 5000);
+    })();
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && document.getElementById('gv-overlay').classList.contains('open')) gvClose();
+    });
+
     // NAV
     // ─── HAMBURGER MENU ───
     const hamburger = document.getElementById('navHamburger');
