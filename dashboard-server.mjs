@@ -6,6 +6,20 @@ import { fileURLToPath } from 'url';
 import { scanNiche, scanTikTok, scanInstagram } from './youtube/scan-engine.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+// Lightweight .env loader (no dependency) — reads KEY=VALUE lines from .env
+(() => {
+  try {
+    const envPath = path.join(__dirname, '.env');
+    if (fs.existsSync(envPath)) {
+      for (const line of fs.readFileSync(envPath, 'utf8').split('\n')) {
+        const m = line.match(/^\s*([A-Z0-9_]+)\s*=\s*(.*)\s*$/i);
+        if (m && !process.env[m[1]]) process.env[m[1]] = m[2].replace(/^["']|["']$/g, '');
+      }
+    }
+  } catch {}
+})();
+
 const APIFY_TOKEN = process.env.APIFY_TOKEN || '';
 const WINNERS_FILE = path.join(__dirname, 'youtube', 'swipe-file', 'winners.json');
 

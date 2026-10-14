@@ -505,27 +505,6 @@
     <div class="card card-inner" style="animation-delay:140ms"><div class="card-hdr"><div><div class="card-title">Top Pages in Search</div><div class="card-sub">By organic clicks</div></div></div><table class="dt"><thead><tr><th>#</th><th>Page</th><th>Clicks</th><th>CTR</th><th>Pos.</th></tr></thead><tbody id="sc-pages"></tbody></table></div>
   </div>
 
-  <!-- REVENUE & PIPELINE -->
-  <div class="sl"><span class="sl-bracket">[</span><img class="sl-chip" src="ChipLogo.png" alt=""/><span>REVENUE & PIPELINE</span><span class="sl-bracket">]</span></div>
-  <div class="g4" style="margin-bottom:12px;">
-    <div class="card kpi-card" style="--kpi-c:var(--green);animation-delay:0ms" data-tip="Sum of all lead/proposal values that are still open (not won or lost). Represents potential revenue if all deals close."><div class="top-bar"></div><div class="kpi-label">Total Pipeline</div><div class="kpi-value" id="rev-pipeline">$0</div><div class="kpi-sub">open deals</div></div>
-    <div class="card kpi-card" style="--kpi-c:var(--red);animation-delay:60ms" data-tip="Total value of deals you've marked as Won. This is actual closed revenue tracked locally in your browser."><div class="top-bar"></div><div class="kpi-label">Won Revenue</div><div class="kpi-value" id="rev-won">$0</div><div class="kpi-sub">closed won</div></div>
-    <div class="card kpi-card" style="--kpi-c:var(--cyan);animation-delay:120ms" data-tip="Total number of leads/deals you've logged across all statuses (Lead, Proposal, Won, Lost)."><div class="top-bar"></div><div class="kpi-label">Total Leads</div><div class="kpi-value" id="rev-leads">0</div><div class="kpi-sub">all statuses</div></div>
-    <div class="card kpi-card" style="--kpi-c:var(--purple);animation-delay:180ms" data-tip="Won deals ÷ (Won + Lost). Excludes still-open leads. A 50%+ win rate is strong for consulting/services."><div class="top-bar"></div><div class="kpi-label">Win Rate</div><div class="kpi-value" id="rev-winrate">—</div><div class="kpi-sub">won ÷ closed</div></div>
-  </div>
-  <div class="card card-inner" style="margin-bottom:12px;animation-delay:100ms">
-    <div class="card-hdr"><div class="card-title">Add Lead / Deal</div></div>
-    <div class="rev-row">
-      <input class="rev-in" id="rev-name" placeholder="Client / company name" style="flex:2;"/>
-      <input class="rev-in" id="rev-value" placeholder="Value ($)" type="number" min="0" style="max-width:120px;"/>
-      <select class="rev-sel" id="rev-status"><option value="lead">Lead</option><option value="proposal">Proposal Sent</option><option value="won">Won</option><option value="lost">Lost</option></select>
-      <input class="rev-in" id="rev-service" placeholder="Service" style="flex:1.2;"/>
-      <button class="rev-add" onclick="addLead()">+ Add</button>
-    </div>
-    <table class="dt" id="leads-table" style="display:none;"><thead><tr><th>#</th><th>Client</th><th>Service</th><th>Value</th><th>Status</th><th>Date</th><th></th></tr></thead><tbody id="leads-body"></tbody></table>
-    <div id="leads-empty" style="text-align:center;padding:20px;font-size:10px;color:var(--text-m);font-family:'IBM Plex Mono',monospace;">No leads yet — add your first deal above.</div>
-  </div>
-
   <!-- REAL-TIME -->
   <div class="sl"><span class="sl-bracket">[</span><img class="sl-chip" src="ChipLogo.png" alt=""/><span>REAL-TIME</span><span class="sl-bracket">]</span></div>
   <div class="g2h">
@@ -642,7 +621,6 @@ function showDashboard() {
   document.getElementById('dashboard').style.display='block';
   document.getElementById('dash-footer').style.display='block';
   document.getElementById('rt-count-hdr').style.display='flex';
-  renderLeads();
 }
 
 // ══════════════════════════════════════════════
@@ -1241,41 +1219,6 @@ function renderSearchConsole({siteUrl,queries,pages}) {
   const pc=p=>p<=3?'sc-top':p<=10?'sc-mid':'sc-low';
   document.getElementById('sc-queries').innerHTML=(queries||[]).length?queries.map((q,i)=>`<tr><td><span class="rank">${i+1}</span></td><td style="font-family:'IBM Plex Mono',monospace;font-size:10px;max-width:170px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${q.keys?.[0]||'—'}</td><td><strong style="color:var(--red)">${fmt(q.clicks)}</strong></td><td style="color:var(--text-m)">${fmt(q.impressions)}</td><td style="color:var(--green);font-family:'IBM Plex Mono',monospace;font-size:9px;">${(q.ctr*100).toFixed(1)}%</td><td><span class="sc-pos ${pc(q.position)}">${q.position.toFixed(1)}</span></td></tr>`).join(''):`<tr><td colspan="6" class="empty">No search data yet</td></tr>`;
   document.getElementById('sc-pages').innerHTML=(pages||[]).length?pages.map((p,i)=>{const pg=(p.keys?.[0]||'').replace(/^https?:\/\/[^/]+/,'');return`<tr><td><span class="rank">${i+1}</span></td><td style="font-family:'IBM Plex Mono',monospace;font-size:10px;">${pg.length>30?pg.slice(0,30)+'…':pg||'/'}</td><td><strong style="color:var(--cyan)">${fmt(p.clicks)}</strong></td><td style="color:var(--green);font-family:'IBM Plex Mono',monospace;font-size:9px;">${(p.ctr*100).toFixed(1)}%</td><td><span class="sc-pos ${pc(p.position)}">${p.position.toFixed(1)}</span></td></tr>`;}).join(''):`<tr><td colspan="5" class="empty">No page data yet</td></tr>`;
-}
-
-// ══════════════════════════════════════════════
-//  REVENUE TRACKER
-// ══════════════════════════════════════════════
-function getLeads(){try{return JSON.parse(localStorage.getItem('hi_leads')||'[]');}catch{return[];}}
-function saveLeads(l){localStorage.setItem('hi_leads',JSON.stringify(l));}
-function addLead(){
-  const name=document.getElementById('rev-name').value.trim();
-  const value=parseFloat(document.getElementById('rev-value').value)||0;
-  const status=document.getElementById('rev-status').value;
-  const service=document.getElementById('rev-service').value.trim();
-  if(!name){document.getElementById('rev-name').focus();return;}
-  const leads=getLeads();
-  leads.unshift({id:Date.now(),name,value,status,service,date:new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})});
-  saveLeads(leads);
-  document.getElementById('rev-name').value='';document.getElementById('rev-value').value='';document.getElementById('rev-service').value='';
-  renderLeads();
-}
-function deleteLead(id){saveLeads(getLeads().filter(l=>l.id!==id));renderLeads();}
-function updateLeadStatus(id,status){saveLeads(getLeads().map(l=>l.id===id?{...l,status}:l));renderLeads();}
-function renderLeads(){
-  const leads=getLeads();
-  const pipeline=leads.filter(l=>l.status!=='won'&&l.status!=='lost').reduce((a,l)=>a+l.value,0);
-  const won=leads.filter(l=>l.status==='won').reduce((a,l)=>a+l.value,0);
-  const closed=leads.filter(l=>l.status==='won'||l.status==='lost').length;
-  const wonCount=leads.filter(l=>l.status==='won').length;
-  document.getElementById('rev-pipeline').textContent='$'+fmt(pipeline);
-  document.getElementById('rev-won').textContent='$'+fmt(won);
-  document.getElementById('rev-leads').textContent=fmt(leads.length);
-  document.getElementById('rev-winrate').textContent=closed>0?Math.round(wonCount/closed*100)+'%':'—';
-  const empty=document.getElementById('leads-empty'),table=document.getElementById('leads-table');
-  if(!leads.length){empty.style.display='block';table.style.display='none';return;}
-  empty.style.display='none';table.style.display='table';
-  document.getElementById('leads-body').innerHTML=leads.map((l,i)=>`<tr><td><span class="rank">${i+1}</span></td><td style="font-weight:500;color:var(--text);">${l.name}</td><td style="font-size:10px;color:var(--text-m);font-family:'IBM Plex Mono',monospace;">${l.service||'—'}</td><td><strong style="color:var(--green);">${l.value?'$'+fmt(l.value):'—'}</strong></td><td><select onchange="updateLeadStatus(${l.id},this.value)" style="background:transparent;border:none;cursor:pointer;font-size:10px;outline:none;color:var(--text-s);">${['lead','proposal','won','lost'].map(s=>`<option value="${s}"${l.status===s?' selected':''}>${s.charAt(0).toUpperCase()+s.slice(1)}</option>`).join('')}</select></td><td style="font-size:9px;color:var(--text-m);font-family:'IBM Plex Mono',monospace;">${l.date}</td><td><button class="del-btn" onclick="deleteLead(${l.id})">✕</button></td></tr>`).join('');
 }
 
 // ══════════════════════════════════════════════
