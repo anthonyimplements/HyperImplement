@@ -3,8 +3,11 @@ import http from 'http';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { scanNiche, scanTikTok, scanInstagram } from './youtube/scan-engine.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const APIFY_TOKEN = process.env.APIFY_TOKEN || '';
+const WINNERS_FILE = path.join(__dirname, 'youtube', 'swipe-file', 'winners.json');
 
 const CREDENTIALS = JSON.parse(fs.readFileSync(path.join(__dirname, 'client-secret.json'))).web;
 const TOKENS_FILE = path.join(__dirname, 'tokens.json');
@@ -335,6 +338,49 @@ const server = http.createServer(async (req, res) => {
     const authUrl = oauth2Client.generateAuthUrl({ access_type: 'offline', scope: SCOPES, prompt: 'consent' });
     res.writeHead(200, {'Content-Type':'application/json'});
     res.end(JSON.stringify({ url: authUrl }));
+    return;
+  }
+
+  // ── CONTENT ID PIPELINE: live niche scan (YouTube long + short) ──
+  if (url.pathname === '/api/scan-niche') {
+    try {
+      const days = Number(url.searchParams.get('days')) || 120;
+      const data = await scanNiche({ days, top: 60, polite: 400 });
+      try { fs.writeFileSync(WINNERS_FILE, JSON.stringify(data, null, 2)); } catch {}
+      res.writeHead(200, {'Content-Type':'application/json'});
+      res.end(JSON.stringify(data));
+    } catch (e) {
+      res.writeHead(500, {'Content-Type':'application/json'});
+      res.end(JSON.stringify({ error: e.message }));
+    }
+    return;
+  }
+
+  // ── Last saved snapshot (used by the hosted site, no live scan there) ──
+  if (url.pathname === '/api/niche-snapshot') {
+    try {
+      const data = JSON.parse(fs.readFileSync(WINNERS_FILE, 'utf8'));
+      res.writeHead(200, {'Content-Type':'application/json'});
+      res.end(JSON.stringify(data));
+    } catch {
+      res.writeHead(200, {'Content-Type':'application/json'});
+      res.end(JSON.stringify({ long: [], short: [], empty: true }));
+    }
+    return;
+  }
+
+  // ── Short-form scans via Apify (TikTok / Instagram) ──
+  if (url.pathname === '/api/scan-tiktok' || url.pathname === '/api/scan-ig') {
+    try {
+      const q = url.searchParams.get('q') || 'ai video';
+      const fn = url.pathname === '/api/scan-tiktok' ? scanTikTok : scanInstagram;
+      const data = await fn(q, APIFY_TOKEN, 36);
+      res.writeHead(200, {'Content-Type':'application/json'});
+      res.end(JSON.stringify(data));
+    } catch (e) {
+      res.writeHead(500, {'Content-Type':'application/json'});
+      res.end(JSON.stringify({ error: e.message }));
+    }
     return;
   }
 
