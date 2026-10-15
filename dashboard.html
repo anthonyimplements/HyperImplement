@@ -271,9 +271,34 @@
     @media(max-width:1200px){.kpi-grid{grid-template-columns:repeat(3,1fr);}.g2,.g3{grid-template-columns:1fr;}.g5{grid-template-columns:repeat(3,1fr);}}
     @media(max-width:768px){.main{padding:78px 14px 80px;}.header{padding:0 14px;}.kpi-grid{grid-template-columns:repeat(2,1fr);}.g2h,.g3,.g4,.g5{grid-template-columns:1fr;}.h-center,.h-title{display:none;}.ie-hero{flex-direction:column;align-items:flex-start;}}
 
+    /* ════════ v2 — Paper Shaders bg · glassmorphism · cursor glow · motion ════════ */
+    #shader-bg{position:fixed;inset:0;z-index:0;overflow:hidden;
+      background:linear-gradient(120deg,#ffffff 0%,#ffeee7 38%,#ffd7c8 68%,#ffbfa6 100%);}
+    #shader-bg canvas{display:block;width:100%!important;height:100%!important;}
+    body::after{display:none;}
+    #cursor-glow{position:fixed;top:0;left:0;width:520px;height:520px;border-radius:50%;pointer-events:none;z-index:0;
+      transform:translate(-50%,-50%);opacity:0;transition:opacity .4s ease;
+      background:radial-gradient(circle,rgba(249,91,61,.20) 0%,rgba(249,91,61,.07) 38%,transparent 66%);}
+    @media(hover:none){#cursor-glow{display:none;}}
+    .card{background:rgba(255,255,255,0.70);backdrop-filter:blur(22px) saturate(1.15);-webkit-backdrop-filter:blur(22px) saturate(1.15);
+      border:1px solid rgba(255,255,255,0.65);box-shadow:0 2px 14px rgba(180,80,40,.06);}
+    .card:hover{border-color:var(--border);box-shadow:0 20px 48px rgba(249,91,61,.16),0 4px 14px rgba(0,0,0,.05);transform:translateY(-3px);}
+    .header{background:rgba(255,255,255,0.62);backdrop-filter:blur(26px) saturate(1.1);-webkit-backdrop-filter:blur(26px) saturate(1.1);}
+    .ie-hero{background:linear-gradient(135deg,rgba(255,255,255,0.78),rgba(255,240,235,0.66));backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);border-color:rgba(249,91,61,0.3);}
+    .vid-card{background:rgba(255,255,255,0.80);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);}
+    .ana-card{background:rgba(255,255,255,0.55);}
+    .range-sel,.icon-btn,.settings-btn,.ie-chip,.ie-search,.ie-tab{background:rgba(255,255,255,0.72);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);}
+    .reveal-up{opacity:0;transform:translateY(22px);transition:opacity .6s cubic-bezier(.16,1,.3,1),transform .6s cubic-bezier(.16,1,.3,1);}
+    .reveal-up.in{opacity:1;transform:none;}
+    @media(prefers-reduced-motion:reduce){.reveal-up{opacity:1!important;transform:none!important;transition:none;}#cursor-glow{display:none;}}
+    .sl-chip{filter:drop-shadow(0 2px 4px rgba(249,91,61,.25));}
   </style>
 </head>
 <body>
+
+<!-- Animated Paper Shaders mesh-gradient background (orange) + cursor glow -->
+<div id="shader-bg" aria-hidden="true"></div>
+<div id="cursor-glow" aria-hidden="true"></div>
 
 <!-- SETUP OVERLAY -->
 <div id="setup-overlay">
@@ -902,16 +927,30 @@ function fmtPct(n){return(n*100).toFixed(1)+'%';}
 // ══════════════════════════════════════════════
 //  RENDERERS
 // ══════════════════════════════════════════════
+// Animated count-up that respects fmt output ("1.2K", "45.3%", "$0", "12,345"); skips non-numeric ("2:34")
+function countUp(el, finalText){
+  if(!el) return;
+  const m=String(finalText).match(/^([^\d-]*)(-?[\d,.]+)([KMB%]?)(.*)$/);
+  if(!m){ el.textContent=finalText; return; }
+  const prefix=m[1], numStr=m[2].replace(/,/g,''), suffix=m[3]+m[4];
+  const target=parseFloat(numStr); if(isNaN(target)){ el.textContent=finalText; return; }
+  const dec=(numStr.split('.')[1]||'').length, dur=900, start=performance.now();
+  function tick(t){ const p=Math.min(1,(t-start)/dur), e=1-Math.pow(1-p,3), v=target*e;
+    el.textContent=prefix+(dec?v.toFixed(dec):Math.round(v).toLocaleString())+suffix;
+    if(p<1) requestAnimationFrame(tick); else el.textContent=finalText; }
+  requestAnimationFrame(tick);
+}
+function setVal(id, txt){ countUp(document.getElementById(id), txt); }
 function renderKPIs(d) {
   const o=d.overview;
-  document.getElementById('kpi-sessions').textContent=fmt(o.sessions);
-  document.getElementById('kpi-users').textContent=fmt(o.users);
-  document.getElementById('kpi-new').textContent=fmt(o.newUsers);
-  document.getElementById('kpi-views').textContent=fmt(o.views);
+  setVal('kpi-sessions',fmt(o.sessions));
+  setVal('kpi-users',fmt(o.users));
+  setVal('kpi-new',fmt(o.newUsers));
+  setVal('kpi-views',fmt(o.views));
   document.getElementById('kpi-duration').textContent=fmtDur(o.duration);
-  document.getElementById('kpi-engagement').textContent=fmtPct(o.engagementRate||0);
-  document.getElementById('kpi-engaged-sessions').textContent=fmt(o.engagedSessions);
-  document.getElementById('kpi-realtime').textContent=d.realtime?.total??'0';
+  setVal('kpi-engagement',fmtPct(o.engagementRate||0));
+  setVal('kpi-engaged-sessions',fmt(o.engagedSessions));
+  setVal('kpi-realtime',String(d.realtime?.total??'0'));
   document.getElementById('rt-count-hdr').textContent=(d.realtime?.total??'0')+' active';
   [['kpi-sessions-d',o.dSessions],['kpi-users-d',o.dUsers],['kpi-new-d',o.dNewUsers],['kpi-views-d',o.dViews]].forEach(([id,val])=>{
     const el=document.getElementById(id);if(!el)return;
@@ -1234,6 +1273,30 @@ setInterval(async()=>{
   document.getElementById('kpi-realtime').textContent=parsed.total;
   document.getElementById('rt-count-hdr').textContent=parsed.total+' active';
 },30000);
+</script>
+
+<!-- v2: Paper Shaders animated orange mesh-gradient background -->
+<script type="module">
+  try {
+    const S = await import('https://esm.sh/@paper-design/shaders@0.0.81');
+    const { ShaderMount, meshGradientFragmentShader, getShaderColorFromString, ShaderFitOptions } = S;
+    const colors = ['#FFFFFF','#FFEDE6','#FFC9B6','#F95B3D','#FF8763'];
+    const uniforms = {
+      u_colors: colors.map(getShaderColorFromString), u_colorsCount: colors.length,
+      u_distortion: 0.85, u_swirl: 0.55, u_grainMixer: 0, u_grainOverlay: 0,
+      u_fit: ShaderFitOptions['cover'], u_rotation: 0, u_scale: 1.15,
+      u_offsetX: 0, u_offsetY: 0, u_originX: 0.5, u_originY: 0.5, u_worldWidth: 0, u_worldHeight: 0,
+    };
+    new ShaderMount(document.getElementById('shader-bg'), meshGradientFragmentShader, uniforms, undefined, 0.45, 0);
+  } catch (e) { console.warn('Paper Shaders unavailable, using CSS gradient fallback:', e); }
+
+  // Cursor glow (Cursify-inspired), desktop only, smoothed
+  const glow = document.getElementById('cursor-glow');
+  if (glow && window.matchMedia('(hover:hover)').matches) {
+    let x = innerWidth/2, y = innerHeight/2, tx = x, ty = y;
+    addEventListener('pointermove', e => { tx = e.clientX; ty = e.clientY; glow.style.opacity = '1'; }, { passive: true });
+    (function loop(){ x += (tx-x)*0.12; y += (ty-y)*0.12; glow.style.transform = `translate(${x}px,${y}px) translate(-50%,-50%)`; requestAnimationFrame(loop); })();
+  }
 </script>
 </body>
 </html>
