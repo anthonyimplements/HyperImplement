@@ -1610,9 +1610,71 @@
     .founder-link:hover{border-color:var(--accent);box-shadow:0 14px 34px rgba(249,91,61,.16);transform:translateY(-2px);}
     .founder-pop{position:absolute;bottom:calc(100% + 12px);left:50%;transform:translateX(-50%) translateY(6px);width:300px;background:#fff;border:1px solid var(--border);border-radius:14px;padding:14px 16px;font-size:12.5px;line-height:1.55;color:var(--text-sec);box-shadow:0 18px 40px rgba(0,0,0,.12);opacity:0;pointer-events:none;transition:all .25s;}
     .founder-link:hover .founder-pop{opacity:1;transform:translateX(-50%) translateY(0);}
-    .hero h1{font-size:clamp(34px,4.4vw,62px)!important;max-width:1000px!important;margin-bottom:20px!important;line-height:1.04;}
     .hero{min-height:auto!important;padding-top:120px!important;}
     .hero-sub{margin-bottom:28px!important;}
+
+    /* ── Hero v3: two sides + brand film + ad reel ── */
+    .hero{min-height:auto;flex-direction:column;align-items:stretch;padding:104px 48px 32px;padding-top:max(104px,calc(84px + env(safe-area-inset-top)));}
+    .hero-grid{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:56px;align-items:center;}
+    .hero .hero-grid h1{font-size:clamp(28px,2.6vw,40px);margin-bottom:16px;}
+    .hero-grid .hl{display:block;}@media(min-width:961px){.hero-grid .hl{white-space:nowrap;}}
+    .hero-grid .hero-sub{font-size:16px;margin-bottom:22px;max-width:560px;}
+    .hero-grid .hero-eyebrow{margin-bottom:18px;}
+    .hero-film{align-self:start;margin-top:64px;}
+    .sides{display:flex;flex-direction:column;gap:10px;margin:0 0 24px;max-width:600px;}
+    .side{background:rgba(255,255,255,.8);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border:1px solid var(--border);border-radius:18px;box-shadow:0 10px 30px rgba(20,20,20,.04);transition:box-shadow .3s,transform .3s cubic-bezier(.16,1,.3,1);}
+    .side:hover,.side[open]{box-shadow:0 22px 50px rgba(249,91,61,.14);transform:translateY(-2px);}
+    .side summary{list-style:none;display:flex;align-items:center;gap:16px;padding:12px 18px;cursor:pointer;border-radius:18px;}
+    .side summary::-webkit-details-marker{display:none;}
+    .side summary:focus-visible{outline:2px solid var(--accent);outline-offset:3px;}
+    .side summary:active{transform:scale(.995);}
+    .side-ic{width:44px;height:44px;border-radius:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#fff;background:var(--accent);box-shadow:0 8px 20px rgba(249,91,61,.3);}
+    .side-sys .side-ic{background:#141414;box-shadow:0 8px 20px rgba(20,20,20,.22);}
+    .side-ic svg{width:22px;height:22px;}
+    .side-txt{display:flex;flex-direction:column;flex:1;min-width:0;}
+    .side-k{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent-dark);}
+    .side-title{font-family:'Unbounded',sans-serif;font-weight:800;font-size:16px;color:var(--text);letter-spacing:-.01em;margin:2px 0 3px;}
+    .side-line{font-size:13.5px;color:var(--text-sec);line-height:1.5;}
+    .side-more{display:inline-flex;align-items:center;gap:5px;font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--text-muted);white-space:nowrap;transition:color .2s;}
+    .side-more svg{width:13px;height:13px;transition:transform .3s cubic-bezier(.16,1,.3,1);}
+    .side:hover .side-more,.side[open] .side-more{color:var(--accent);}
+    .side[open] .side-more svg{transform:rotate(180deg);}
+    .side-list{list-style:none;margin:0;padding:0 18px 14px 78px;display:grid;gap:10px;animation:engIn .35s cubic-bezier(.16,1,.3,1);}
+    .side-list li{display:flex;flex-direction:column;border-top:1px solid var(--border);padding-top:10px;}
+    .side-list strong{font-size:13.5px;color:var(--text);font-weight:600;}
+    .side-list span{font-size:13px;color:var(--text-sec);line-height:1.55;}
+    .hero-film{position:relative;}
+    .film-chip{position:absolute;width:150px;right:-46px;top:-58px;transform:rotate(-12deg);z-index:0;opacity:.95;pointer-events:none;filter:drop-shadow(0 20px 40px rgba(249,91,61,.25));animation:filmChip 8s ease-in-out infinite;}
+    @keyframes filmChip{0%,100%{transform:rotate(-12deg) translateY(0)}50%{transform:rotate(-4deg) translateY(-10px)}}
+    .film-card{position:relative;z-index:1;display:block;width:100%;aspect-ratio:16/9;border:0;padding:0;border-radius:22px;overflow:hidden;cursor:pointer;background:#141414;box-shadow:0 2px 6px rgba(20,20,20,.08),0 30px 70px rgba(249,91,61,.22),0 60px 120px rgba(20,20,20,.12);transition:transform .45s cubic-bezier(.16,1,.3,1),box-shadow .45s;}
+    .film-card:hover{transform:translateY(-4px) scale(1.01);}
+    .film-card:focus-visible{outline:3px solid var(--accent);outline-offset:4px;}
+    .film-card:active{transform:scale(.99);}
+    .film-loop{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+    .film-shade{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,.6),transparent 45%);}
+    .film-play{position:absolute;left:50%;top:50%;width:76px;height:76px;margin:-38px 0 0 -38px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 10px rgba(249,91,61,.25);transition:transform .4s cubic-bezier(.16,1,.3,1);}
+    .film-play svg{width:28px;height:28px;margin-left:4px;}
+    .film-card:hover .film-play{transform:scale(1.1);}
+    .film-meta{position:absolute;left:20px;top:16px;display:flex;flex-direction:column;align-items:flex-start;text-align:left;}
+    .film-k{font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:#FFB3A3;}
+    .film-t{font-family:'Unbounded',sans-serif;font-weight:700;font-size:15px;color:#fff;margin-top:4px;}
+    .reel{position:relative;z-index:2;max-width:1440px;margin:28px auto 0;width:100%;}
+    .reel-label{display:flex;justify-content:space-between;align-items:baseline;max-width:1240px;margin:0 auto 12px;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--text);}
+    .reel-label small{font-size:10px;color:var(--text-muted);letter-spacing:.06em;}
+    .reel-mask{overflow:hidden;margin:0 -48px;-webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);}
+    .reel-track{display:flex;gap:14px;width:max-content;animation:reelMove 60s linear infinite;padding:8px 0 18px;}
+    .reel:hover .reel-track{animation-play-state:paused;}
+    @keyframes reelMove{to{transform:translateX(-50%)}}
+    .reel-card{position:relative;height:170px;border:0;padding:0;border-radius:14px;overflow:hidden;cursor:pointer;background:#1a1a1a;flex-shrink:0;box-shadow:0 12px 30px rgba(20,20,20,.12);transition:transform .35s cubic-bezier(.16,1,.3,1);}
+    .reel-card:hover{transform:translateY(-5px) scale(1.03);}
+    .reel-card:focus-visible{outline:3px solid var(--accent);outline-offset:3px;}
+    .reel-card:active{transform:scale(.98);}
+    .reel-card video{width:100%;height:100%;object-fit:cover;display:block;}
+    .reel-card::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.6),transparent 50%);}
+    .reel-card span{position:absolute;left:10px;bottom:8px;z-index:1;font-size:11px;font-weight:600;color:#fff;text-align:left;}
+    @media(prefers-reduced-motion:reduce){.reel-track{animation:none;}.reel-mask{overflow-x:auto;}}
+    @media(max-width:960px){.hero-grid{grid-template-columns:1fr;gap:28px;}.hero-film{order:-1;max-width:640px;margin-top:8px;}.film-chip{width:100px;right:-20px;top:-36px;}}
+    @media(max-width:768px){.hero{padding:96px 20px 32px;}.hero .hero-grid h1{font-size:clamp(28px,8vw,40px);}.reel-mask{margin:0 -20px;}.reel-card{height:150px;}.side-more{font-size:0;}.side-list{padding-left:18px;}.reel-label small{display:none;}}
   </style>
 </head>
 <body>
@@ -1738,44 +1800,55 @@
   <section class="hero" id="home">
     <div class="hero-bg-shape"></div>
     <div class="hero-bg-shape-2"></div>
-    <img src="ChipLogo.png" alt="" class="hero-chip" aria-hidden="true" />
-    <div class="hero-inner">
-      <div class="hero-eyebrow reveal">
-        <span class="hero-eyebrow-dot"></span>
-        AI Creative Marketing &amp; Ad Studio
-      </div>
-      <h1 class="reveal d1">
-        We Grow Brands With<br/>
-        <em>AI Content &amp; Ads.</em>
-      </h1>
-      <p class="hero-sub reveal d2">
-        Two engines, one studio. We build the organic content machine that grows your audience every week &mdash; and the paid ad system that turns that attention into customers.
-      </p>
-      <div class="engines reveal d3">
-        <div class="engine">
-          <div class="engine-head"><span class="engine-num">01</span><div><div class="engine-title">Organic Content Engine</div><div class="engine-tag">Grow your audience on autopilot</div></div></div>
-          <details class="eng-item"><summary><span class="eng-dot"></span><span class="eng-t">Long-form editing strategy</span><span class="eng-more">What does this mean? <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span></summary><p class="eng-d">We plan and edit your long-form videos &mdash; YouTube, podcasts, webinars &mdash; with AI-assisted workflows, so your best ideas get published consistently without you living inside an editor.</p></details>
-          <details class="eng-item"><summary><span class="eng-dot"></span><span class="eng-t">Clipping systems</span><span class="eng-more">What does this mean? <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span></summary><p class="eng-d">Every long-form video is automatically cut into 10&ndash;20 short-form clips with captions and scroll-stopping hooks, formatted for TikTok, Reels and Shorts.</p></details>
-          <details class="eng-item"><summary><span class="eng-dot"></span><span class="eng-t">AI avatar swarms</span><span class="eng-more">What does this mean? <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span></summary><p class="eng-d">We build AI avatars of you or your team that post on personal accounts every week, fully automated. Your organic reach multiplies across many accounts &mdash; without you filming more.</p></details>
-          <details class="eng-item"><summary><span class="eng-dot"></span><span class="eng-t">Content engine brains</span><span class="eng-more">What does this mean? <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span></summary><p class="eng-d">A system trained on your brand voice, offers and audience. It plans topics, writes hooks and captions, and schedules posts every single week.</p></details>
+    <div class="hero-inner hero-grid">
+      <div class="hero-copy">
+        <div class="hero-eyebrow reveal">
+          <span class="hero-eyebrow-dot"></span>
+          AI Creative Marketing &amp; Ad Studio
         </div>
-        <div class="engine">
-          <div class="engine-head"><span class="engine-num">02</span><div><div class="engine-title">Paid Ads Engine</div><div class="engine-tag">Turn attention into revenue</div></div></div>
-          <details class="eng-item"><summary><span class="eng-dot"></span><span class="eng-t">Niche &amp; competitor research</span><span class="eng-more">What does this mean? <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span></summary><p class="eng-d">We study your market and your competitors&rsquo; winning ads, so every creative starts from angles already proven to perform &mdash; not guesses.</p></details>
-          <details class="eng-item"><summary><span class="eng-dot"></span><span class="eng-t">AI ad creative</span><span class="eng-more">What does this mean? <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span></summary><p class="eng-d">Scroll-stopping AI video and image ads &mdash; UGC, cinematic, product and avatar &mdash; produced at a fraction of traditional studio cost.</p></details>
-          <details class="eng-item"><summary><span class="eng-dot"></span><span class="eng-t">Ad strategy</span><span class="eng-more">What does this mean? <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span></summary><p class="eng-d">Offers, angles, funnels and a testing plan built around your numbers, so spend goes where it actually returns.</p></details>
-          <details class="eng-item"><summary><span class="eng-dot"></span><span class="eng-t">Meta &amp; Google campaigns</span><span class="eng-more">What does this mean? <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span></summary><p class="eng-d">We launch, manage and optimize your campaigns &mdash; cutting losers fast and scaling the winners.</p></details>
+        <h1 class="reveal d1">
+          <span class="hl">Ads that stop the scroll.</span>
+          <em class="hl">A system that grows you.</em>
+        </h1>
+        <p class="hero-sub reveal d2">
+          We make AI ads for brands &mdash; and we install the AI marketing system that keeps your social accounts growing every week.
+        </p>
+        <div class="sides reveal d3">
+          <details class="side side-ads">
+            <summary>
+              <span class="side-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M10 9.5v5l4.5-2.5z" fill="currentColor"/></svg></span>
+              <span class="side-txt"><span class="side-k">What we make</span><span class="side-title">The Ad Studio</span><span class="side-line">Scroll-stopping AI video &amp; image ads, made for your brand.</span></span>
+              <span class="side-more">What does this mean? <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg></span>
+            </summary>
+            <ul class="side-list"><li><strong>We study what already works.</strong><span>Your niche and your competitors&rsquo; best ads, so we start from proven angles.</span></li><li><strong>We make the ads.</strong><span>Cinematic, UGC, product and avatar ads &mdash; studio quality, without the studio bill.</span></li><li><strong>We plan where they run.</strong><span>Offers, hooks and a testing plan built around your numbers.</span></li><li><strong>We launch &amp; scale them.</strong><span>Meta and Google campaigns &mdash; we cut what flops and scale what wins.</span></li></ul>
+          </details>
+          <details class="side side-sys">
+            <summary>
+              <span class="side-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12a8 8 0 0 1 13.7-5.7L20 8.6M20 4v4.6h-4.6M20 12a8 8 0 0 1-13.7 5.7L4 15.4M4 20v-4.6h4.6"/></svg></span>
+              <span class="side-txt"><span class="side-k">What we install</span><span class="side-title">The Growth System</span><span class="side-line">An AI content machine that grows your socials on autopilot.</span></span>
+              <span class="side-more">What does this mean? <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg></span>
+            </summary>
+            <ul class="side-list"><li><strong>One video becomes twenty.</strong><span>We edit your long-form and auto-clip it into captioned Shorts, Reels &amp; TikToks.</span></li><li><strong>AI versions of you post daily.</strong><span>Avatar swarms publish on many accounts, so your reach multiplies without more filming.</span></li><li><strong>A brain that knows your brand.</strong><span>It plans topics, writes hooks and captions, and schedules every week.</span></li><li><strong>You just watch it grow.</strong><span>Posting runs itself; we tune it to what your audience actually watches.</span></li></ul>
+          </details>
+        </div>
+        <div class="hero-cta-group reveal d4">
+          <a href="#book" class="btn-primary">Book a Free Growth Strategy Call <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+          <a href="#work" class="btn-ghost-link">See all the work &rarr;</a>
         </div>
       </div>
-      <div class="hero-cta-group reveal d4">
-        <a href="#book" class="btn-primary">
-          Book a Free Growth Strategy Call
-          <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        </a>
-        <a href="#work" class="btn-ghost-link">See the work &rarr;</a>
+      <div class="hero-film reveal d2">
+        <img src="ChipLogo.png" alt="" class="film-chip" aria-hidden="true" />
+        <button type="button" class="film-card" onclick="openFilm()" aria-label="Play the HyperImplement brand film">
+          <video class="film-loop" src="work/film-v2-loop.mp4" poster="work/film-v2.jpg" autoplay muted loop playsinline></video>
+          <span class="film-shade"></span>
+          <span class="film-play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5z"/></svg></span>
+          <span class="film-meta"><span class="film-k">&#9679; The HyperImplement Film</span><span class="film-t">Watch what we build &middot; 0:32</span></span>
+        </button>
       </div>
-      <p class="hero-note reveal d4" style="margin-top:14px;">Free 30-min call &middot; Custom growth plan for your brand &middot; Your first AI ad is on us</p>
     </div>
+    <div class="reel reveal d4" aria-label="Ads we've made">
+      <div class="reel-label"><span>Ads we&rsquo;ve made</span><small>hover to pause &middot; tap to watch</small></div>
+      <div class="reel-mask"><div class="reel-track" id="reel-track"></div></div>
     </div>
   </section>
 
@@ -2651,6 +2724,27 @@
         poster:'work/sho-july-2.jpg', src:'work/sho-july-2.mp4' },
     ];
 
+
+    // ═══ HERO REEL + FILM ═══
+    function renderReel(){
+      const t=document.getElementById('reel-track'); if(!t) return;
+      const ratio=r=>{const [a,b]=r.split('/').map(Number);return a/b;};
+      const one=WORK.map((w,i)=>`<button class="reel-card" style="width:${Math.round(170*ratio(w.ratio))}px" onclick="openWork(${i})" aria-label="Watch ${w.label}"><video src="${w.src.replace('work/','work/prev-')}" poster="${w.poster}" muted loop playsinline preload="none"></video><span>${w.label.replace(' Advertisement','')}</span></button>`).join('');
+      t.innerHTML=one+one;
+      t.querySelectorAll('.reel-card').forEach((c,i)=>{ if(i>=WORK.length) c.tabIndex=-1, c.setAttribute('aria-hidden','true'); });
+      const vids=t.querySelectorAll('video');
+      const io=new IntersectionObserver(es=>es.forEach(e=>{const v=e.target; if(e.isIntersecting){v.preload='auto';v.play().catch(()=>{});} else v.pause();}),{root:t.parentElement,rootMargin:'0px 200px'});
+      vids.forEach(v=>io.observe(v));
+    }
+    function openFilm(){
+      const lb=document.getElementById('work-lb'), v=document.getElementById('work-video');
+      document.getElementById('work-lb-title').textContent='The HyperImplement Film';
+      document.getElementById('work-lb-client').textContent='';
+      v.poster='work/film-v2.jpg'; v.src='work/film-v2.mp4'; v.muted=false; v.play().catch(()=>{});
+      lb.classList.add('open'); document.body.style.overflow='hidden';
+    }
+    if(matchMedia('(hover:hover)').matches){document.querySelectorAll('.side').forEach(d=>{d.addEventListener('mouseenter',()=>d.open=true);d.addEventListener('mouseleave',()=>d.open=false);});}
+
     let workIdx = 0;
     function renderWork() {
       const grid = document.getElementById('work-rail');
@@ -2709,7 +2803,7 @@
       prev.disabled = rail.scrollLeft <= 2;
       next.disabled = rail.scrollLeft >= max;
     }
-    renderWork();
+    renderWork(); renderReel();
     const railEl = document.getElementById('work-rail');
     if (railEl) {
       railEl.addEventListener('scroll', updateArrows, { passive: true });
