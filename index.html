@@ -1569,6 +1569,50 @@
       .ap-grid { grid-template-columns: 1fr; }
       .ap-title { font-size: 21px; }
     }
+
+    /* ── Two-engine offer ── */
+    .engines{display:grid;align-items:start;grid-template-columns:1fr 1fr;gap:16px;max-width:980px;margin:0 0 34px;}
+    .engine{background:rgba(255,255,255,.78);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border:1px solid var(--border);border-radius:18px;padding:22px 22px 12px;box-shadow:0 10px 30px rgba(0,0,0,.04);transition:box-shadow .3s,transform .3s cubic-bezier(.16,1,.3,1);}
+    .engine:hover{box-shadow:0 22px 50px rgba(249,91,61,.14);transform:translateY(-3px);}
+    .engine-head{display:flex;gap:14px;align-items:center;margin-bottom:14px;}
+    .engine-num{font-family:'Unbounded',sans-serif;font-weight:800;font-size:13px;color:#fff;background:var(--accent);border-radius:10px;width:38px;height:38px;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 6px 16px rgba(249,91,61,.3);}
+    .engine-title{font-family:'Unbounded',sans-serif;font-weight:800;font-size:17px;color:var(--text);letter-spacing:-.01em;}
+    .engine-tag{font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent-dark);margin-top:3px;}
+    .eng-item{border-top:1px solid var(--border);}
+    .eng-item summary{list-style:none;display:flex;align-items:center;gap:10px;padding:12px 2px;cursor:pointer;}
+    .eng-item summary::-webkit-details-marker{display:none;}
+    .eng-dot{width:7px;height:7px;border-radius:50%;background:var(--accent);flex-shrink:0;}
+    .eng-t{font-weight:600;font-size:14.5px;color:var(--text);flex:1;}
+    .eng-more{display:inline-flex;align-items:center;gap:5px;font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--text-muted);white-space:nowrap;transition:color .2s;}
+    .eng-more svg{width:12px;height:12px;transition:transform .3s cubic-bezier(.16,1,.3,1);}
+    .eng-item:hover .eng-more,.eng-item[open] .eng-more{color:var(--accent);}
+    .eng-item[open] .eng-more svg{transform:rotate(90deg);}
+    .eng-d{font-size:13.5px;line-height:1.65;color:var(--text-sec);padding:0 2px 14px 17px;animation:engIn .35s cubic-bezier(.16,1,.3,1);}
+    @keyframes engIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+    @media(max-width:860px){.engines{grid-template-columns:1fr;}.eng-more{font-size:0;}.eng-more svg{width:14px;height:14px;}}
+    /* ── Livelier chip motion ── */
+    .hero-chip{animation:chipDrift 9s ease-in-out infinite !important;transition:translate .25s ease-out;}
+    @keyframes chipDrift{
+      0%,100%{transform:translateY(-54%) rotate(-12deg) scale(1);}
+      25%{transform:translateY(-64%) translateX(-14px) rotate(-5deg) scale(1.03);}
+      50%{transform:translateY(-48%) translateX(8px) rotate(-15deg) scale(.99);}
+      75%{transform:translateY(-60%) translateX(-6px) rotate(-8deg) scale(1.02);}
+    }
+    @media(max-width:768px){.hero-chip{animation:chipDriftM 8s ease-in-out infinite !important;}}
+    @keyframes chipDriftM{0%,100%{transform:rotate(-12deg) translateY(0)}33%{transform:rotate(-5deg) translateY(-22px) translateX(-8px)}66%{transform:rotate(-15deg) translateY(-6px) translateX(6px)}}
+    @media(prefers-reduced-motion:reduce){.hero-chip{animation:none !important;}}
+    /* ── Founder link strip ── */
+    .founder-strip{max-width:1240px;margin:0 auto;padding:22px 48px;display:flex;justify-content:center;}
+    .founder-link{display:inline-flex;align-items:center;gap:14px;text-decoration:none;color:var(--text);border:1px solid var(--border);border-radius:60px;padding:8px 22px 8px 8px;background:#fff;transition:all .3s cubic-bezier(.16,1,.3,1);position:relative;}
+    .founder-link img{width:42px;height:42px;border-radius:50%;object-fit:cover;}
+    .founder-link b{font-family:'Unbounded',sans-serif;font-size:13px;}
+    .founder-link span{font-size:12.5px;color:var(--text-sec);}
+    .founder-link:hover{border-color:var(--accent);box-shadow:0 14px 34px rgba(249,91,61,.16);transform:translateY(-2px);}
+    .founder-pop{position:absolute;bottom:calc(100% + 12px);left:50%;transform:translateX(-50%) translateY(6px);width:300px;background:#fff;border:1px solid var(--border);border-radius:14px;padding:14px 16px;font-size:12.5px;line-height:1.55;color:var(--text-sec);box-shadow:0 18px 40px rgba(0,0,0,.12);opacity:0;pointer-events:none;transition:all .25s;}
+    .founder-link:hover .founder-pop{opacity:1;transform:translateX(-50%) translateY(0);}
+    .hero h1{font-size:clamp(34px,4.4vw,62px)!important;max-width:1000px!important;margin-bottom:20px!important;line-height:1.04;}
+    .hero{min-height:auto!important;padding-top:120px!important;}
+    .hero-sub{margin-bottom:28px!important;}
   </style>
 </head>
 <body>
@@ -1677,8 +1721,8 @@
     <div class="nav-links">
       <a href="#services">Services</a>
       <a href="#work">Real Work</a>
-      <a href="#about">About</a>
-      <a href="#book" class="nav-cta" onclick="event.preventDefault();openAdPicker();">Claim My Free AI Ad</a>
+      <a href="about.html">About</a>
+      <a href="#book" class="nav-cta">Book a Strategy Call</a>
     </div>
     <!-- Mobile hamburger -->
     <button class="nav-hamburger" id="navHamburger" aria-label="Open menu" aria-expanded="false">
@@ -1689,8 +1733,8 @@
   <div class="nav-mobile-menu" id="navMobileMenu">
     <a href="#services" class="nav-mobile-link" onclick="closeMobileMenu()">Services</a>
     <a href="#work" class="nav-mobile-link" onclick="closeMobileMenu()">Real Work</a>
-    <a href="#about" class="nav-mobile-link" onclick="closeMobileMenu()">About</a>
-    <a href="#book" class="nav-mobile-link nav-mobile-cta" onclick="event.preventDefault();closeMobileMenu();openAdPicker();">Claim My Free AI Ad</a>
+    <a href="about.html" class="nav-mobile-link" onclick="closeMobileMenu()">About</a>
+    <a href="#book" class="nav-mobile-link nav-mobile-cta" onclick="closeMobileMenu()">Book a Strategy Call</a>
   </div>
 
   <!-- ═══ HERO ═══ -->
@@ -1701,58 +1745,40 @@
     <div class="hero-inner">
       <div class="hero-eyebrow reveal">
         <span class="hero-eyebrow-dot"></span>
-        AI Marketing &amp; Ad Studio
+        AI Creative Marketing &amp; Ad Studio
       </div>
       <h1 class="reveal d1">
-        See What AI Can Do for Your Brand.<br/>
-        <em>Your First Ad&rsquo;s on Us.</em>
+        We Grow Brands With<br/>
+        <em>AI Content &amp; Ads.</em>
       </h1>
       <p class="hero-sub reveal d2">
-        We help brands implement real AI marketing &mdash; automating editing and short-form content, using AI to go viral, and driving more engagement to your brand. Pick the ad style you want, book a quick call, and we&rsquo;ll make you one free AI ad so you see exactly what&rsquo;s possible before you spend a dollar.
+        Two engines, one studio. We build the organic content machine that grows your audience every week &mdash; and the paid ad system that turns that attention into customers.
       </p>
-      <div class="hero-services reveal d3">
-        <div class="hero-service">
-          <span class="hero-service-icon" aria-hidden="true">
-            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 010 18M12 3a15 15 0 000 18"/></svg>
-          </span>
-          <div class="hero-service-title">AI Smart Websites</div>
-          <p class="hero-service-desc">The second someone shows interest, our system follows up instantly &mdash; by text, email, or call &mdash; so no lead ever goes cold.</p>
-          <span class="hero-service-tag">
-            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-            Increase Speed-to-Lead
-          </span>
+      <div class="engines reveal d3">
+        <div class="engine">
+          <div class="engine-head"><span class="engine-num">01</span><div><div class="engine-title">Organic Content Engine</div><div class="engine-tag">Grow your audience on autopilot</div></div></div>
+          <details class="eng-item"><summary><span class="eng-dot"></span><span class="eng-t">Long-form editing strategy</span><span class="eng-more">What does this mean? <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span></summary><p class="eng-d">We plan and edit your long-form videos &mdash; YouTube, podcasts, webinars &mdash; with AI-assisted workflows, so your best ideas get published consistently without you living inside an editor.</p></details>
+          <details class="eng-item"><summary><span class="eng-dot"></span><span class="eng-t">Clipping systems</span><span class="eng-more">What does this mean? <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span></summary><p class="eng-d">Every long-form video is automatically cut into 10&ndash;20 short-form clips with captions and scroll-stopping hooks, formatted for TikTok, Reels and Shorts.</p></details>
+          <details class="eng-item"><summary><span class="eng-dot"></span><span class="eng-t">AI avatar swarms</span><span class="eng-more">What does this mean? <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span></summary><p class="eng-d">We build AI avatars of you or your team that post on personal accounts every week, fully automated. Your organic reach multiplies across many accounts &mdash; without you filming more.</p></details>
+          <details class="eng-item"><summary><span class="eng-dot"></span><span class="eng-t">Content engine brains</span><span class="eng-more">What does this mean? <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span></summary><p class="eng-d">A system trained on your brand voice, offers and audience. It plans topics, writes hooks and captions, and schedules posts every single week.</p></details>
         </div>
-        <div class="hero-service">
-          <span class="hero-service-icon" aria-hidden="true">
-            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 10.5V7a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h12a1 1 0 001-1v-3.5l4 3v-9l-4 3z"/></svg>
-          </span>
-          <div class="hero-service-title">AI Video Ads &amp; Social</div>
-          <p class="hero-service-desc">Going viral has never been easier &mdash; hyper-realistic, cinematic AI content of your brand, products, and services.</p>
-          <span class="hero-service-tag">
-            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
-            Built to Go Viral
-          </span>
-        </div>
-        <div class="hero-service">
-          <span class="hero-service-icon" aria-hidden="true">
-            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
-          </span>
-          <div class="hero-service-title">Workflow Automation</div>
-          <p class="hero-service-desc">If it&rsquo;s a manual, repetitive task, we can automate it &mdash; and hand your time back to you.</p>
-          <span class="hero-service-tag">
-            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
-            Save Hours Every Week
-          </span>
+        <div class="engine">
+          <div class="engine-head"><span class="engine-num">02</span><div><div class="engine-title">Paid Ads Engine</div><div class="engine-tag">Turn attention into revenue</div></div></div>
+          <details class="eng-item"><summary><span class="eng-dot"></span><span class="eng-t">Niche &amp; competitor research</span><span class="eng-more">What does this mean? <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span></summary><p class="eng-d">We study your market and your competitors&rsquo; winning ads, so every creative starts from angles already proven to perform &mdash; not guesses.</p></details>
+          <details class="eng-item"><summary><span class="eng-dot"></span><span class="eng-t">AI ad creative</span><span class="eng-more">What does this mean? <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span></summary><p class="eng-d">Scroll-stopping AI video and image ads &mdash; UGC, cinematic, product and avatar &mdash; produced at a fraction of traditional studio cost.</p></details>
+          <details class="eng-item"><summary><span class="eng-dot"></span><span class="eng-t">Ad strategy</span><span class="eng-more">What does this mean? <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span></summary><p class="eng-d">Offers, angles, funnels and a testing plan built around your numbers, so spend goes where it actually returns.</p></details>
+          <details class="eng-item"><summary><span class="eng-dot"></span><span class="eng-t">Meta &amp; Google campaigns</span><span class="eng-more">What does this mean? <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span></summary><p class="eng-d">We launch, manage and optimize your campaigns &mdash; cutting losers fast and scaling the winners.</p></details>
         </div>
       </div>
       <div class="hero-cta-group reveal d4">
-        <button type="button" class="btn-primary" onclick="openAdPicker()" style="border:none;cursor:pointer;font-family:inherit;">
-          Claim My Free AI Ad
+        <a href="#book" class="btn-primary">
+          Book a Free Growth Strategy Call
           <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        </button>
-        <a href="#problem" class="btn-ghost-link">See where AI fits &rarr;</a>
-        <span class="hero-note">Free 30-min call &middot; Pick your ad style &middot; No cost, no catch.</span>
+        </a>
+        <a href="#work" class="btn-ghost-link">See the work &rarr;</a>
       </div>
+      <p class="hero-note reveal d4" style="margin-top:14px;">Free 30-min call &middot; Custom growth plan for your brand &middot; Your first AI ad is on us</p>
+    </div>
     </div>
   </section>
 
@@ -1959,8 +1985,8 @@
   <section class="pipeline-section" id="services">
     <div class="pipeline-head reveal">
       <div class="label">What We Do</div>
-      <h2 class="section-title">We Build the AI That Runs Your Day.</h2>
-      <p class="section-sub">Separate services that often get wired together into one system. Here&rsquo;s everything flowing through the pipeline — grouped where they're usually bundled.</p>
+      <h2 class="section-title">Two Engines. One Growth Studio.</h2>
+      <p class="section-sub">Organic content that builds your audience, paid ads that convert it &mdash; researched, created and run by one team.</p>
     </div>
 
     <div class="pipe-stage reveal">
@@ -1969,51 +1995,52 @@
       <div class="pipe-track" id="pipe-track">
         <!-- half A -->
         <div class="pipe-cluster">
-          <span class="pipe-cluster-label">Strategy &amp; Setup</span>
-          <div class="pipe-chip"><div class="pc-tag">Strategy</div><div class="pc-name">AI Strategy &amp; Tool Selection</div></div>
-          <div class="pipe-chip"><div class="pc-tag">Setup &amp; Training</div><div class="pc-name">Claude Code &amp; OpenClaw Installs</div></div>
+          <span class="pipe-cluster-label">Research</span>
+          <div class="pipe-chip"><div class="pc-tag">Market</div><div class="pc-name">Niche &amp; Competitor Research</div></div>
+          <div class="pipe-chip"><div class="pc-tag">Strategy</div><div class="pc-name">Ad &amp; Offer Strategy</div></div>
         </div>
         <div class="pipe-gap"><span class="pn"></span></div>
         <div class="pipe-cluster">
-          <span class="pipe-cluster-label">Build &amp; Launch</span>
-          <div class="pipe-chip"><div class="pc-tag">Development</div><div class="pc-name">AI-Powered Websites</div></div>
-          <div class="pipe-chip"><div class="pc-tag">Creative</div><div class="pc-name">AI Video Advertisements</div></div>
+          <span class="pipe-cluster-label">Create</span>
+          <div class="pipe-chip"><div class="pc-tag">Creative</div><div class="pc-name">AI Video &amp; Image Ads</div></div>
+          <div class="pipe-chip"><div class="pc-tag">Organic</div><div class="pc-name">AI Avatar Swarms</div></div>
         </div>
         <div class="pipe-gap"><span class="pn"></span></div>
         <div class="pipe-cluster">
-          <span class="pipe-cluster-label">Automate</span>
-          <div class="pipe-chip"><div class="pc-tag">Automation</div><div class="pc-name">AI Employees &amp; Agents</div></div>
-          <div class="pipe-chip"><div class="pc-tag">Automation</div><div class="pc-name">Workflow Automation</div></div>
+          <span class="pipe-cluster-label">Content Engine</span>
+          <div class="pipe-chip"><div class="pc-tag">Long-form</div><div class="pc-name">Video Editing Strategy</div></div>
+          <div class="pipe-chip"><div class="pc-tag">Short-form</div><div class="pc-name">Automated Clipping Systems</div></div>
         </div>
         <div class="pipe-gap"><span class="pn"></span></div>
         <div class="pipe-cluster">
-          <span class="pipe-cluster-label">Coaching</span>
-          <div class="pipe-chip"><div class="pc-tag">1-on-1</div><div class="pc-name">AI Coaching for Founders</div></div>
-          <div class="pipe-chip"><div class="pc-tag">Team</div><div class="pc-name">AI Training &amp; Workshops</div></div>
+          <span class="pipe-cluster-label">Scale</span>
+          <div class="pipe-chip"><div class="pc-tag">Paid</div><div class="pc-name">Meta Ad Campaigns</div></div>
+          <div class="pipe-chip"><div class="pc-tag">Paid</div><div class="pc-name">Google Ad Campaigns</div></div>
         </div>
         <div class="pipe-gap"><span class="pn"></span></div>
-        <!-- half B (duplicate for seamless loop) -->
+        <!-- half B -->
         <div class="pipe-cluster">
-          <span class="pipe-cluster-label">Strategy &amp; Setup</span>
-          <div class="pipe-chip"><div class="pc-tag">Strategy</div><div class="pc-name">AI Strategy &amp; Tool Selection</div></div>
-          <div class="pipe-chip"><div class="pc-tag">Setup &amp; Training</div><div class="pc-name">Claude Code &amp; OpenClaw Installs</div></div>
-        </div>
-        <div class="pipe-gap"><span class="pn"></span></div>
-        <div class="pipe-cluster">
-          <span class="pipe-cluster-label">Build &amp; Launch</span>
-          <div class="pipe-chip"><div class="pc-tag">Development</div><div class="pc-name">AI-Powered Websites</div></div>
-          <div class="pipe-chip"><div class="pc-tag">Creative</div><div class="pc-name">AI Video Advertisements</div></div>
+          <span class="pipe-cluster-label">Research</span>
+          <div class="pipe-chip"><div class="pc-tag">Market</div><div class="pc-name">Niche &amp; Competitor Research</div></div>
+          <div class="pipe-chip"><div class="pc-tag">Strategy</div><div class="pc-name">Ad &amp; Offer Strategy</div></div>
         </div>
         <div class="pipe-gap"><span class="pn"></span></div>
         <div class="pipe-cluster">
-          <span class="pipe-cluster-label">Automate</span>
-          <div class="pipe-chip"><div class="pc-tag">Automation</div><div class="pc-name">AI Employees &amp; Agents</div></div>
-          <div class="pipe-chip"><div class="pc-tag">Automation</div><div class="pc-name">Workflow Automation</div></div>
+          <span class="pipe-cluster-label">Create</span>
+          <div class="pipe-chip"><div class="pc-tag">Creative</div><div class="pc-name">AI Video &amp; Image Ads</div></div>
+          <div class="pipe-chip"><div class="pc-tag">Organic</div><div class="pc-name">AI Avatar Swarms</div></div>
         </div>
+        <div class="pipe-gap"><span class="pn"></span></div>
         <div class="pipe-cluster">
-          <span class="pipe-cluster-label">Coaching</span>
-          <div class="pipe-chip"><div class="pc-tag">1-on-1</div><div class="pc-name">AI Coaching for Founders</div></div>
-          <div class="pipe-chip"><div class="pc-tag">Team</div><div class="pc-name">AI Training &amp; Workshops</div></div>
+          <span class="pipe-cluster-label">Content Engine</span>
+          <div class="pipe-chip"><div class="pc-tag">Long-form</div><div class="pc-name">Video Editing Strategy</div></div>
+          <div class="pipe-chip"><div class="pc-tag">Short-form</div><div class="pc-name">Automated Clipping Systems</div></div>
+        </div>
+        <div class="pipe-gap"><span class="pn"></span></div>
+        <div class="pipe-cluster">
+          <span class="pipe-cluster-label">Scale</span>
+          <div class="pipe-chip"><div class="pc-tag">Paid</div><div class="pc-name">Meta Ad Campaigns</div></div>
+          <div class="pipe-chip"><div class="pc-tag">Paid</div><div class="pc-name">Google Ad Campaigns</div></div>
         </div>
         <div class="pipe-gap"><span class="pn"></span></div>
       </div>
@@ -2198,50 +2225,14 @@
     </div>
   </section>
 
-  <!-- ═══ ABOUT / FOUNDER ═══ -->
-  <section class="about-section" id="about">
-    <div class="inner">
-      <div class="reveal" style="margin-bottom:40px;">
-        <div class="label">The Person Behind It</div>
-        <h2 class="section-title">Why This Exists.</h2>
-      </div>
-      <div class="about-card reveal d1">
-
-        <!-- Header: avatar + name -->
-        <div class="about-header">
-          <div class="about-avatar">
-            <img src="Headshot.png" alt="Anthony Collins — Founder, HyperImplement" />
-          </div>
-          <div class="about-header-text">
-            <div class="about-name">Anthony Collins</div>
-            <div class="about-role">Founder, HyperImplement</div>
-            <div class="about-prev">
-              <span class="about-prev-badge">ex</span>
-              <img src="SalesforceUSE.png" alt="Salesforce" style="height:20px;width:auto;display:inline-block;vertical-align:middle;opacity:0.9;" />
-              Salesforce
-            </div>
-          </div>
-        </div>
-
-        <!-- Body -->
-        <div class="about-body">
-          <p class="about-bio">
-            I take real passion in helping people and businesses escape the noise — the endless wave of new AI tools, features, and hype that never seems to translate into actual results. My focus is on cutting through the overload and implementing digital employees and AI workflows that genuinely move the needle for a business.
-            <br/><br/>
-            Every client I work with leaves with something deployed. Not a strategy doc. Not a roadmap. An actual system running for them.
-          </p>
-          <div class="about-edu">
-            <div class="about-edu-icon" aria-hidden="true"><svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="#F95B3D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M8 17v-5M13 17V8M18 17v-3"/></svg></div>
-            <div class="about-edu-text">
-              <strong>Expert in Business Analytics &amp; Information Systems</strong><br/>
-              Specialized in AI Implementation — I turn how organizations adopt, deploy, and scale AI into real systems that run in the real world.
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </section>
+  <!-- ═══ FOUNDER LINK (full story on about.html) ═══ -->
+  <div class="founder-strip reveal">
+    <a class="founder-link" href="about.html">
+      <img src="Headshot.png" alt="Anthony Collins"/>
+      <span><b>Who started HyperImplement?</b><br/>Meet the founder &rarr;</span>
+      <span class="founder-pop"><b style="color:var(--text);font-size:12px;">Anthony Collins</b> &mdash; ex-Salesforce, Business Analytics &amp; Information Systems. Built HyperImplement to help brands grow with AI content and ads that actually perform.</span>
+    </a>
+  </div>
 
   <div class="rule"></div>
 
@@ -2427,7 +2418,7 @@
         </div>
         <div class="footer-col">
           <h5>Company</h5>
-          <a href="#about">About</a>
+          <a href="about.html">About</a>
           <a href="#implemented">Real Work</a>
           <a href="#contact">Contact</a>
         </div>
@@ -2595,6 +2586,11 @@
       if (e.key === 'Escape' && document.getElementById('gv-overlay').classList.contains('open')) gvClose();
     });
 
+    // Chip parallax on mouse move
+    (function(){const c=document.querySelector('.hero-chip');if(!c||!matchMedia('(hover:hover)').matches)return;
+      addEventListener('pointermove',e=>{const x=(e.clientX/innerWidth-.5)*-30,y=(e.clientY/innerHeight-.5)*-24;c.style.translate=x+'px '+y+'px';},{passive:true});})();
+    // "What does this mean?" — open on hover (desktop), tap toggles everywhere
+    if(matchMedia('(hover:hover)').matches){document.querySelectorAll('.eng-item').forEach(d=>{d.addEventListener('mouseenter',()=>d.open=true);d.addEventListener('mouseleave',()=>d.open=false);});}
     // NAV
     // ─── HAMBURGER MENU ───
     const hamburger = document.getElementById('navHamburger');
