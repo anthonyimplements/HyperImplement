@@ -1664,6 +1664,8 @@
     .reel-mask{overflow:hidden;margin:0 -48px;-webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);}
     .reel-track{display:flex;gap:14px;width:max-content;animation:reelMove 60s linear infinite;padding:8px 0 18px;}
     .reel:hover .reel-track{animation-play-state:paused;}
+    .reel-films{margin-top:14px;}
+    .reel-rev{animation-direction:reverse;animation-duration:45s;}
     @keyframes reelMove{to{transform:translateX(-50%)}}
     .reel-card{position:relative;height:170px;border:0;padding:0;border-radius:14px;overflow:hidden;cursor:pointer;background:#1a1a1a;flex-shrink:0;box-shadow:0 12px 30px rgba(20,20,20,.12);transition:transform .35s cubic-bezier(.16,1,.3,1);}
     .reel-card:hover{transform:translateY(-5px) scale(1.03);}
@@ -1675,6 +1677,7 @@
     .reel-play svg{width:18px;height:18px;margin-left:3px;}
     .reel-film:hover .reel-play{transform:scale(1.12);}
     .reel-card video{width:100%;height:100%;object-fit:cover;display:block;}
+    .reel-card:not(.reel-film)::after{display:none;}
     .reel-card::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.6),transparent 50%);}
     .reel-card span{position:absolute;left:10px;bottom:8px;z-index:1;font-size:11px;font-weight:600;color:#fff;text-align:left;}
     @media(prefers-reduced-motion:reduce){.reel-track{animation:none;}.reel-mask{overflow-x:auto;}}
@@ -1856,6 +1859,10 @@
     <div class="reel reveal d4" aria-label="Ads we've made">
       <div class="reel-label"><span>Ads we&rsquo;ve made</span><small>hover to pause &middot; tap to watch</small></div>
       <div class="reel-mask"><div class="reel-track" id="reel-track"></div></div>
+    </div>
+    <div class="reel reel-films reveal d4" aria-label="Films we've made">
+      <div class="reel-label"><span>Films we&rsquo;ve made</span></div>
+      <div class="reel-mask"><div class="reel-track reel-rev" id="films-track"></div></div>
     </div>
   </section>
 
@@ -2618,7 +2625,7 @@
     function renderReel(){
       const t=document.getElementById('reel-track'); if(!t) return;
       const ratio=r=>{const [a,b]=r.split('/').map(Number);return a/b;};
-      const one=WORK.map((w,i)=>`<button class="reel-card" style="width:${Math.round(170*ratio(w.ratio))}px" onclick="openWork(${i})" aria-label="Watch ${w.label}"><video src="${w.src.replace('work/','work/prev-')}" poster="${w.poster}" muted loop playsinline preload="none"></video><span>${w.label.replace(' Advertisement','')}</span></button>`).join('');
+      const one=WORK.map((w,i)=>`<button class="reel-card" style="width:${Math.round(170*ratio(w.ratio))}px" onclick="openWork(${i})" aria-label="Watch ${w.label}"><video src="${w.src.replace('work/','work/prev-')}" poster="${w.poster}" muted loop playsinline preload="none"></video></button>`).join('');
       const film=`<button class="reel-card reel-film" style="width:${Math.round(170*16/9)}px" onclick="openFilm()" aria-label="Watch the HyperImplement film"><video src="work/prev-film-v2.mp4" poster="work/film-v2.jpg" muted loop playsinline preload="none"></video><i class="reel-play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5z"/></svg></i><span>&#9679; Our Film &middot; 0:32</span></button>`;
       t.innerHTML=film+one+film+one;
       t.querySelectorAll('.reel-card').forEach((c,i)=>{ if(i>WORK.length) c.tabIndex=-1, c.setAttribute('aria-hidden','true'); });
@@ -2626,11 +2633,26 @@
       const io=new IntersectionObserver(es=>es.forEach(e=>{const v=e.target; if(e.isIntersecting){v.preload='auto';v.play().catch(()=>{});} else v.pause();}),{root:t.parentElement,rootMargin:'0px 200px'});
       vids.forEach(v=>io.observe(v));
     }
+    function renderFilms(){
+      const t=document.getElementById('films-track'); if(!t) return;
+      const one=[1,2,3,4,5,6,7,8].map(n=>`<button class="reel-card" style="width:${Math.round(170*16/9)}px" onclick="openClip('work/films/musky-${n}.mp4','work/films/musky-${n}.jpg')" aria-label="Watch film clip"><video src="work/films/musky-${n}.mp4" poster="work/films/musky-${n}.jpg" muted loop playsinline preload="none"></video></button>`).join('');
+      t.innerHTML=one+one;
+      t.querySelectorAll('.reel-card').forEach((c,i)=>{ if(i>=8){c.tabIndex=-1;c.setAttribute('aria-hidden','true');} });
+      const io=new IntersectionObserver(es=>es.forEach(e=>{const v=e.target; if(e.isIntersecting){v.preload='auto';v.play().catch(()=>{});} else v.pause();}),{root:t.parentElement,rootMargin:'0px 200px'});
+      t.querySelectorAll('video').forEach(v=>io.observe(v));
+    }
+    function openClip(src,poster){
+      const lb=document.getElementById('work-lb'), v=document.getElementById('work-video');
+      document.getElementById('work-lb-title').textContent='Musky Fest \u2014 AI Short Film';
+      document.getElementById('work-lb-client').textContent='';
+      v.poster=poster; v.src=src; v.loop=true; v.play().catch(()=>{});
+      lb.classList.add('open'); document.body.style.overflow='hidden';
+    }
     function openFilm(){
       const lb=document.getElementById('work-lb'), v=document.getElementById('work-video');
       document.getElementById('work-lb-title').textContent='The HyperImplement Film';
       document.getElementById('work-lb-client').textContent='';
-      v.poster='work/film-v2.jpg'; v.src='work/film-v2.mp4'; v.muted=false; v.play().catch(()=>{});
+      v.loop=false; v.poster='work/film-v2.jpg'; v.src='work/film-v2.mp4'; v.muted=false; v.play().catch(()=>{});
       lb.classList.add('open'); document.body.style.overflow='hidden';
     }
     if(matchMedia('(hover:hover)').matches){document.querySelectorAll('.side').forEach(d=>{d.addEventListener('mouseenter',()=>d.open=true);d.addEventListener('mouseleave',()=>d.open=false);});}
@@ -2658,7 +2680,7 @@
       const w = WORK[i], lb = document.getElementById('work-lb'), v = document.getElementById('work-video');
       document.getElementById('work-lb-title').textContent = w.label;
       document.getElementById('work-lb-client').textContent = '';
-      v.poster = w.poster;
+      v.loop = false; v.poster = w.poster;
       if (w.src) { v.src = w.src; v.play().catch(()=>{}); }
       else { v.removeAttribute('src'); v.load(); }   // no file yet → shows poster
       lb.classList.add('open');
@@ -2693,7 +2715,7 @@
       prev.disabled = rail.scrollLeft <= 2;
       next.disabled = rail.scrollLeft >= max;
     }
-    renderWork(); renderReel();
+    renderWork(); renderReel(); renderFilms();
     const railEl = document.getElementById('work-rail');
     if (railEl) {
       railEl.addEventListener('scroll', updateArrows, { passive: true });
