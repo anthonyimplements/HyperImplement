@@ -330,7 +330,7 @@
     }
     .hero-service-icon svg { width: 21px; height: 21px; }
     .hero-service-title {
-      font-weight: 600; font-size: 15.5px; color: var(--text);
+      font-weight: 800; font-size: 15.5px; color: var(--text);
       letter-spacing: -0.01em;
     }
     .hero-service-desc {
@@ -939,13 +939,13 @@
     .contact-form-wrap, .contact-book-wrap {
       background: var(--bg-surface);
       border: 1px solid var(--border);
-      border-radius: 12px; padding: 40px; overflow: hidden;
+      border-radius: 12px; padding: 40px;
     }
-    .contact-form-wrap { position: relative; }
-    .contact-book-wrap { display: flex; flex-direction: column; }
+    .contact-form-wrap { position: relative; overflow: hidden; }
+    .contact-book-wrap { display: flex; flex-direction: column; overflow: visible; }
     .contact-pane-label {
-      font-family: 'IBM Plex Mono', monospace; font-size: 10px;
-      letter-spacing: 0.12em; text-transform: uppercase;
+      font-family: 'IBM Plex Sans', sans-serif; font-size: 13px; font-weight: 600;
+      letter-spacing: 0.04em; text-transform: uppercase;
       color: var(--text-muted); margin-bottom: 16px;
     }
     .contact-pane-title {
@@ -989,7 +989,7 @@
     button.btn-primary:disabled { opacity: 0.65; cursor: progress; transform: none; }
     .hp { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
     .contact-alt { margin-top: 28px; padding-top: 18px; border-top: 1px solid var(--border); }
-    .contact-alt summary { cursor: pointer; font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.04em; color: var(--text-sec); }
+    .contact-alt summary { cursor: pointer; font-family: 'IBM Plex Sans', sans-serif; font-size: 15px; font-weight: 500; letter-spacing: 0; color: var(--text); }
     .contact-alt[open] summary { margin-bottom: 16px; }
     #claim, #book, #contact, section[id] { scroll-margin-top: 88px; }
     /* Book pane */
@@ -1014,8 +1014,23 @@
       flex-direction: column; gap: 10px; text-align: center; padding: 32px;
     }
     .calendly-embed-live {
-      width: 100%; min-height: 500px; border-radius: 8px;
-      overflow: hidden; border: 1px solid var(--border);
+      position: relative;
+      width: 100%;
+      height: 740px;
+      min-height: 740px;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      background: #fff;
+    }
+    .calendly-embed-live iframe {
+      display: block;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+    @media(max-width:768px){
+      .calendly-embed-live { height: 1120px; min-height: 1120px; }
     }
 
     /* ─── FOOTER ─── */
@@ -1655,7 +1670,7 @@
     .side-ic svg{width:22px;height:22px;}
     .side-txt{display:flex;flex-direction:column;flex:1;min-width:0;}
     .side-k{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent-dark);}
-    .side-title{font-family:'Unbounded',sans-serif;font-weight:900;font-size:16px;color:var(--text);letter-spacing:-.01em;margin:2px 0 3px;}
+    .side-title{font-family:'Unbounded',sans-serif;font-weight:800;font-size:16px;color:var(--text);letter-spacing:-.01em;margin:2px 0 3px;}
     .side-line{font-size:13.5px;color:var(--text-sec);line-height:1.5;}
     .side-more{display:inline-flex;align-items:center;gap:5px;font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--text-muted);white-space:nowrap;transition:color .2s;}
     .side-more svg{width:13px;height:13px;transition:transform .3s cubic-bezier(.16,1,.3,1);}
@@ -1704,7 +1719,7 @@
     .reel-card span{position:absolute;left:10px;bottom:8px;z-index:1;font-size:11px;font-weight:600;color:#fff;text-align:left;}
     @media(prefers-reduced-motion:reduce){.reel-track{animation:none;}.reel-mask{overflow-x:auto;}}
     @media(max-width:960px){.hero-grid{grid-template-columns:1fr;gap:28px;}.hero-film{order:-1;max-width:640px;margin-top:8px;}.film-chip{width:100px;right:-20px;top:-36px;}}
-    @media(max-width:768px){.hero{padding:96px 20px 32px;}.hero-chip{width:76px!important;top:100px!important;bottom:auto!important;right:0!important;z-index:1;}.hero-eyebrow{max-width:calc(100% - 96px);position:relative;z-index:2;}.hero .hero-grid h1{font-size:clamp(28px,8vw,40px);}.reel-mask{margin:0 -20px;}.reel-card{height:150px;}.side-more{font-size:0;}.side-list{padding-left:18px;}.reel-label small{display:none;}}
+    @media(max-width:768px){.hero{padding:96px 20px 32px;}.hero-chip{width:110px!important;top:78px!important;bottom:auto!important;right:-18px!important;}.hero .hero-grid h1{font-size:clamp(28px,8vw,40px);}.reel-mask{margin:0 -20px;}.reel-card{height:150px;}.side-more{font-size:0;}.side-list{padding-left:18px;}.reel-label small{display:none;}}
     .proof-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
     .proof-card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:22px;box-shadow:0 10px 30px rgba(20,20,20,.04);transition:transform .3s cubic-bezier(.16,1,.3,1),box-shadow .3s;}
     .proof-card:hover{transform:translateY(-3px);box-shadow:0 20px 44px rgba(249,91,61,.12);}
@@ -1722,13 +1737,13 @@
   <!-- ═══ NAV ═══ -->
   <nav class="nav" id="navbar">
     <a href="#home" class="nav-logo">
-      <img src="assets/logo-nav.png" alt="HyperImplement" width="900" height="171" />
+      <img src="MainLogoTransparent.png" alt="HyperImplement" />
     </a>
     <div class="nav-links">
       <a href="#services">Services</a>
       <a href="#work">Real Work</a>
       <a href="about.html">About</a>
-      <a href="#claim" class="nav-cta">Claim 3 Free Photos</a>
+      <a href="#book" class="nav-cta">Book a Strategy Call</a>
     </div>
     <!-- Mobile hamburger -->
     <button class="nav-hamburger" id="navHamburger" aria-label="Open menu" aria-expanded="false">
@@ -1740,44 +1755,43 @@
     <a href="#services" class="nav-mobile-link" onclick="closeMobileMenu()">Services</a>
     <a href="#work" class="nav-mobile-link" onclick="closeMobileMenu()">Real Work</a>
     <a href="about.html" class="nav-mobile-link" onclick="closeMobileMenu()">About</a>
-    <a href="#book" class="nav-mobile-link" onclick="closeMobileMenu()">Book a Discovery Call</a>
-    <a href="#claim" class="nav-mobile-link nav-mobile-cta" onclick="closeMobileMenu()">Claim 3 Free Photos</a>
+    <a href="#book" class="nav-mobile-link nav-mobile-cta" onclick="closeMobileMenu()">Book a Strategy Call</a>
   </div>
 
   <!-- ═══ HERO ═══ -->
   <section class="hero" id="home">
     <div class="hero-bg-shape"></div>
     <div class="hero-bg-shape-2"></div>
-    <img src="assets/chip-hero.webp" alt="" class="hero-chip" width="800" height="800" aria-hidden="true" />
+    <img src="ChipLogo.png" alt="" class="hero-chip" aria-hidden="true" />
     <div class="hero-inner hero-grid">
       <div class="hero-copy">
         <div class="hero-eyebrow reveal">
           <span class="hero-eyebrow-dot"></span>
-          AI photos, ads &amp; UGC
+          AI Creative Marketing &amp; Ad Studio
         </div>
         <h1 class="reveal d1">
-          <span class="hl">Product photos and ads</span>
-          <em class="hl">for e-com brands.</em>
+          <span class="hl">Ads that stop the scroll.</span>
+          <em class="hl">A system that grows you.</em>
         </h1>
         <p class="hero-sub reveal d2">
-          We make AI product photos, ads, and UGC for e-com brands. Claim 3 free product photos of yours &mdash; we make them after you send the store.
+          We make AI ads for brands &mdash; and we install the AI marketing system that keeps your social accounts growing every week.
         </p>
         <div class="sides reveal d3">
           <details class="side side-ads">
             <summary>
               <span class="side-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M10 9.5v5l4.5-2.5z" fill="currentColor"/></svg></span>
-              <span class="side-txt"><span class="side-k">What we make</span><span class="side-title">Product photos</span><span class="side-line">Still photos of your product, for the listing and the ad.</span></span>
+              <span class="side-txt"><span class="side-k">What we make</span><span class="side-title">The Ad Studio</span><span class="side-line">Scroll-stopping AI video &amp; image ads, made for your brand.</span></span>
               <span class="side-more">What does this mean? <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg></span>
             </summary>
-            <ul class="side-list"><li><strong>Your real product.</strong><span>We start from your store photos or a product link. Not a stand-in.</span></li><li><strong>Made to be used.</strong><span>For the product page, the ad, and the marketplace listing.</span></li><li><strong>Three are free.</strong><span>So you can judge the work on your own brand before you buy anything.</span></li></ul>
+            <ul class="side-list"><li><strong>We study what already works.</strong><span>Your niche and your competitors&rsquo; best ads, so we start from proven angles.</span></li><li><strong>We make the ads.</strong><span>Cinematic, UGC, product and avatar ads &mdash; studio quality, without the studio bill.</span></li><li><strong>We plan where they run.</strong><span>Offers, hooks and a testing plan built around your numbers.</span></li><li><strong>We launch &amp; scale them.</strong><span>Meta and Google campaigns &mdash; we cut what flops and scale what wins.</span></li></ul>
           </details>
           <details class="side side-sys">
             <summary>
               <span class="side-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12a8 8 0 0 1 13.7-5.7L20 8.6M20 4v4.6h-4.6M20 12a8 8 0 0 1-13.7 5.7L4 15.4M4 20v-4.6h4.6"/></svg></span>
-              <span class="side-txt"><span class="side-k">What we make</span><span class="side-title">Ads and UGC</span><span class="side-line">Video ads and UGC-style clips built around the same product.</span></span>
+              <span class="side-txt"><span class="side-k">What we install</span><span class="side-title">The Growth System</span><span class="side-line">An AI content machine that grows your socials on autopilot.</span></span>
               <span class="side-more">What does this mean? <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg></span>
             </summary>
-            <ul class="side-list"><li><strong>A few ways to show it.</strong><span>UGC, product, and cinematic styles.</span></li><li><strong>Cut for where it runs.</strong><span>Vertical, square, and wide, from the same idea.</span></li><li><strong>The work below is the range.</strong><span>Product brands, and other pieces so you can see what the tools can do.</span></li></ul>
+            <ul class="side-list"><li><strong>One video becomes twenty.</strong><span>We edit your long-form and auto-clip it into captioned Shorts, Reels &amp; TikToks.</span></li><li><strong>AI versions of you post daily.</strong><span>Avatar swarms publish on many accounts, so your reach multiplies without more filming.</span></li><li><strong>A brain that knows your brand.</strong><span>It plans topics, writes hooks and captions, and schedules every week.</span></li><li><strong>You just watch it grow.</strong><span>Posting runs itself; we tune it to what your audience actually watches.</span></li></ul>
           </details>
         </div>
         <div class="hero-cta-group reveal d4">
@@ -1791,7 +1805,7 @@
       <div class="reel-mask"><div class="reel-track" id="reel-track"></div></div>
     </div>
     <div class="reel reel-films reveal d4" aria-label="Films we've made">
-      <div class="reel-label"><span>Films we&rsquo;ve made</span><small>Musky Fest</small></div>
+      <div class="reel-label"><span>Films we&rsquo;ve made</span></div>
       <div class="reel-mask"><div class="reel-track reel-rev" id="films-track"></div></div>
     </div>
   </section>
@@ -2526,13 +2540,28 @@
     }
 
     let scheduleTracked = false;
+    function sizeCalendly(height) {
+      var c = document.getElementById('calendly-container');
+      if (!c || !c.classList.contains('calendly-embed-live')) return;
+      var n = parseInt(height, 10);
+      if (!n || n < 480) return;
+      // Calendly's reported height can sit a few pixels short of the last time slot.
+      var px = (n + 28) + 'px';
+      c.style.height = px;
+      c.style.minHeight = px;
+    }
     window.addEventListener('message', function (e) {
       if (!e || e.origin !== 'https://calendly.com') return;
       var data = e.data;
       if (typeof data === 'string') {
         try { data = JSON.parse(data); } catch (err) { return; }
       }
-      if (!data || data.event !== 'calendly.event_scheduled' || scheduleTracked) return;
+      if (!data || !data.event) return;
+      if (data.event === 'calendly.page_height') {
+        sizeCalendly(data.payload && data.payload.height);
+        return;
+      }
+      if (data.event !== 'calendly.event_scheduled' || scheduleTracked) return;
       scheduleTracked = true;
       track('schedule', { method: 'calendly' }, 'Schedule', { content_name: 'discovery_call' });
     });
