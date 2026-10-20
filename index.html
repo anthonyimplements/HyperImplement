@@ -7,7 +7,21 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="format-detection" content="telephone=no" />
   <meta name="theme-color" content="#ffffff" />
-  <title>HyperImplement — AI Implementation for People & Businesses</title>
+  <title>HyperImplement — AI Product Photos & Ads for E-com Brands</title>
+  <meta name="description" content="We make AI product photos, ads, and UGC for e-com brands. Claim 3 free product photos of your products. Chicago creative studio." />
+  <link rel="canonical" href="https://hyperimplement.com/" />
+  <meta property="og:title" content="HyperImplement — AI Product Photos & Ads for E-com Brands" />
+  <meta property="og:description" content="We make AI product photos, ads, and UGC for e-com brands. Claim 3 free product photos of your products. Chicago creative studio." />
+  <meta property="og:image" content="https://hyperimplement.com/og-image.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:url" content="https://hyperimplement.com/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="HyperImplement" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="HyperImplement — AI Product Photos & Ads for E-com Brands" />
+  <meta name="twitter:description" content="We make AI product photos, ads, and UGC for e-com brands. Claim 3 free product photos of your products. Chicago creative studio." />
+  <meta name="twitter:image" content="https://hyperimplement.com/og-image.png" />
   <!-- Google Analytics 4 -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-DW4LEG1DV7"></script>
   <script>
@@ -34,13 +48,14 @@
   /></noscript>
   <!-- End Meta Pixel Code -->
   <!-- Favicon — desktop browsers -->
-  <link rel="icon" type="image/png" href="ChipLogo.png" />
-  <!-- Apple touch icon — iOS home screen & tab -->
-  <link rel="apple-touch-icon" href="ChipLogo.png" />
+  <link rel="icon" href="favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700;900&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;700;900&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <style>
     :root {
       --bg:           #FFFFFF;
@@ -193,7 +208,7 @@
     }
     .howfree-step:hover { transform: translateY(-4px); border-color: var(--border-acc); box-shadow: 0 14px 32px rgba(249,91,61,0.1); }
     .howfree-num {
-      font-family: 'Unbounded', sans-serif; font-weight: 800; font-size: 15px; color: #fff;
+      font-family: 'Unbounded', sans-serif; font-weight: 900; font-size: 15px; color: #fff;
       background: var(--accent); width: 36px; height: 36px; border-radius: 50%;
       display: flex; align-items: center; justify-content: center; margin-bottom: 18px;
       box-shadow: 0 6px 16px rgba(249,91,61,0.3);
@@ -315,7 +330,7 @@
     }
     .hero-service-icon svg { width: 21px; height: 21px; }
     .hero-service-title {
-      font-weight: 800; font-size: 15.5px; color: var(--text);
+      font-weight: 600; font-size: 15.5px; color: var(--text);
       letter-spacing: -0.01em;
     }
     .hero-service-desc {
@@ -677,6 +692,7 @@
       justify-content: space-between; gap: 20px; flex-wrap: wrap; }
     .pipeline-cta p { font-size: 14px; color: var(--text-sec); line-height: 1.6; max-width: 540px; }
     .pipeline-cta strong { color: var(--text); }
+    .pipeline-cta p a { color: var(--accent-dark); font-weight: 600; }
     @media (prefers-reduced-motion: reduce) {
       .pipe-track, .pipe-flow, .pipe-gap .pn { animation: none; }
     }
@@ -919,12 +935,7 @@
       display: grid; grid-template-columns: 1fr 1fr;
       gap: 60px; align-items: end; margin-bottom: 56px;
     }
-    .contact-body { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
-    /* Message form temporarily disabled — booking only for now.
-       To restore the form: delete this one rule block. The form markup
-       below (#lead-form / "Send a Message" pane) is left fully intact. */
-    .contact-form-wrap { display: none; }
-    .contact-body { grid-template-columns: 1fr; max-width: 680px; margin: 0 auto; }
+    .contact-body { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: start; }
     .contact-form-wrap, .contact-book-wrap {
       background: var(--bg-surface);
       border: 1px solid var(--border);
@@ -970,6 +981,17 @@
     }
     .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
     .form-note { font-size: 11px; color: var(--text-muted); margin-top: 12px; line-height: 1.5; }
+    .form-note a { color: var(--accent-dark); }
+    .form-error { display: none; margin: 0 0 14px; padding: 12px 14px; border-radius: 8px; border: 1px solid var(--border-acc); background: #fff4f1; color: var(--accent-deep); font-size: 14px; line-height: 1.5; }
+    .form-error.show { display: block; }
+    .form-success-panel { display: none; text-align: center; padding: 28px 8px 8px; }
+    .form-success-panel a { color: var(--accent-dark); font-weight: 600; }
+    button.btn-primary:disabled { opacity: 0.65; cursor: progress; transform: none; }
+    .hp { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
+    .contact-alt { margin-top: 28px; padding-top: 18px; border-top: 1px solid var(--border); }
+    .contact-alt summary { cursor: pointer; font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.04em; color: var(--text-sec); }
+    .contact-alt[open] summary { margin-bottom: 16px; }
+    #claim, #book, #contact, section[id] { scroll-margin-top: 88px; }
     /* Book pane */
     .book-perks { display: flex; flex-direction: column; gap: 14px; margin-bottom: 28px; }
     .book-perk {
@@ -1434,7 +1456,7 @@
       padding: 5px 11px; border-radius: 20px; margin-bottom: 16px;
     }
     .gv-badge .gv-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); animation: blink 1.6s infinite; }
-    .gv-title { font-family: 'Unbounded', sans-serif; font-weight: 800; font-size: clamp(22px, 3.4vw, 28px);
+    .gv-title { font-family: 'Unbounded', sans-serif; font-weight: 900; font-size: clamp(22px, 3.4vw, 28px);
       line-height: 1.12; letter-spacing: -0.02em; color: var(--text); margin-bottom: 10px; }
     .gv-title em { color: var(--accent); font-style: normal; }
     .gv-sub { font-size: 14px; line-height: 1.6; color: var(--text-sec); margin-bottom: 22px; font-weight: 300; }
@@ -1473,7 +1495,7 @@
     .gv-success-ring { width: 64px; height: 64px; margin: 0 auto 18px; border-radius: 50%;
       background: rgba(249,91,61,0.1); border: 2px solid var(--border-acc); display: flex;
       align-items: center; justify-content: center; font-size: 28px; color: var(--accent); }
-    .gv-success h3 { font-family: 'Unbounded', sans-serif; font-weight: 800; font-size: 22px; color: var(--text); margin-bottom: 10px; }
+    .gv-success h3 { font-family: 'Unbounded', sans-serif; font-weight: 900; font-size: 22px; color: var(--text); margin-bottom: 10px; }
     .gv-success p { font-size: 14px; color: var(--text-sec); line-height: 1.6; }
     /* rules panel */
     .gv-rules { display: none; font-size: 11px; color: var(--text-sec); line-height: 1.6; margin-top: 14px;
@@ -1523,7 +1545,7 @@
       padding: 5px 11px; border-radius: 20px; margin-bottom: 15px;
     }
     .ap-badge .gv-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); animation: blink 1.6s infinite; }
-    .ap-title { font-family: 'Unbounded', sans-serif; font-weight: 800; font-size: clamp(22px,3.4vw,30px);
+    .ap-title { font-family: 'Unbounded', sans-serif; font-weight: 900; font-size: clamp(22px,3.4vw,30px);
       line-height: 1.12; letter-spacing: -0.02em; color: var(--text); margin-bottom: 8px; }
     .ap-title em { color: var(--accent); font-style: normal; }
     .ap-sub { font-size: 14px; line-height: 1.6; color: var(--text-sec); margin-bottom: 22px; font-weight: 300; }
@@ -1544,7 +1566,7 @@
     .ap-step2-ring { width: 68px; height: 68px; margin: 6px auto 18px; border-radius: 50%;
       background: rgba(249,91,61,0.1); border: 2px solid var(--border-acc); display: flex;
       align-items: center; justify-content: center; font-size: 34px; }
-    .ap-step2 h3 { font-family: 'Unbounded', sans-serif; font-weight: 800; font-size: 23px; color: var(--text); margin-bottom: 10px; letter-spacing: -0.01em; }
+    .ap-step2 h3 { font-family: 'Unbounded', sans-serif; font-weight: 900; font-size: 23px; color: var(--text); margin-bottom: 10px; letter-spacing: -0.01em; }
     .ap-step2 h3 em { color: var(--accent); font-style: normal; }
     .ap-step2 p { font-size: 14px; color: var(--text-sec); line-height: 1.6; margin-bottom: 22px; max-width: 440px; margin-left: auto; margin-right: auto; }
     .ap-book-btn {
@@ -1575,8 +1597,8 @@
     .engine{background:rgba(255,255,255,.78);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border:1px solid var(--border);border-radius:18px;padding:22px 22px 12px;box-shadow:0 10px 30px rgba(0,0,0,.04);transition:box-shadow .3s,transform .3s cubic-bezier(.16,1,.3,1);}
     .engine:hover{box-shadow:0 22px 50px rgba(249,91,61,.14);transform:translateY(-3px);}
     .engine-head{display:flex;gap:14px;align-items:center;margin-bottom:14px;}
-    .engine-num{font-family:'Unbounded',sans-serif;font-weight:800;font-size:13px;color:#fff;background:var(--accent);border-radius:10px;width:38px;height:38px;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 6px 16px rgba(249,91,61,.3);}
-    .engine-title{font-family:'Unbounded',sans-serif;font-weight:800;font-size:17px;color:var(--text);letter-spacing:-.01em;}
+    .engine-num{font-family:'Unbounded',sans-serif;font-weight:900;font-size:13px;color:#fff;background:var(--accent);border-radius:10px;width:38px;height:38px;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 6px 16px rgba(249,91,61,.3);}
+    .engine-title{font-family:'Unbounded',sans-serif;font-weight:900;font-size:17px;color:var(--text);letter-spacing:-.01em;}
     .engine-tag{font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent-dark);margin-top:3px;}
     .eng-item{border-top:1px solid var(--border);}
     .eng-item summary{list-style:none;display:flex;align-items:center;gap:10px;padding:12px 2px;cursor:pointer;}
@@ -1633,7 +1655,7 @@
     .side-ic svg{width:22px;height:22px;}
     .side-txt{display:flex;flex-direction:column;flex:1;min-width:0;}
     .side-k{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent-dark);}
-    .side-title{font-family:'Unbounded',sans-serif;font-weight:800;font-size:16px;color:var(--text);letter-spacing:-.01em;margin:2px 0 3px;}
+    .side-title{font-family:'Unbounded',sans-serif;font-weight:900;font-size:16px;color:var(--text);letter-spacing:-.01em;margin:2px 0 3px;}
     .side-line{font-size:13.5px;color:var(--text-sec);line-height:1.5;}
     .side-more{display:inline-flex;align-items:center;gap:5px;font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--text-muted);white-space:nowrap;transition:color .2s;}
     .side-more svg{width:13px;height:13px;transition:transform .3s cubic-bezier(.16,1,.3,1);}
@@ -1682,12 +1704,12 @@
     .reel-card span{position:absolute;left:10px;bottom:8px;z-index:1;font-size:11px;font-weight:600;color:#fff;text-align:left;}
     @media(prefers-reduced-motion:reduce){.reel-track{animation:none;}.reel-mask{overflow-x:auto;}}
     @media(max-width:960px){.hero-grid{grid-template-columns:1fr;gap:28px;}.hero-film{order:-1;max-width:640px;margin-top:8px;}.film-chip{width:100px;right:-20px;top:-36px;}}
-    @media(max-width:768px){.hero{padding:96px 20px 32px;}.hero-chip{width:110px!important;top:78px!important;bottom:auto!important;right:-18px!important;}.hero .hero-grid h1{font-size:clamp(28px,8vw,40px);}.reel-mask{margin:0 -20px;}.reel-card{height:150px;}.side-more{font-size:0;}.side-list{padding-left:18px;}.reel-label small{display:none;}}
+    @media(max-width:768px){.hero{padding:96px 20px 32px;}.hero-chip{width:76px!important;top:100px!important;bottom:auto!important;right:0!important;z-index:1;}.hero-eyebrow{max-width:calc(100% - 96px);position:relative;z-index:2;}.hero .hero-grid h1{font-size:clamp(28px,8vw,40px);}.reel-mask{margin:0 -20px;}.reel-card{height:150px;}.side-more{font-size:0;}.side-list{padding-left:18px;}.reel-label small{display:none;}}
     .proof-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
     .proof-card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:22px;box-shadow:0 10px 30px rgba(20,20,20,.04);transition:transform .3s cubic-bezier(.16,1,.3,1),box-shadow .3s;}
     .proof-card:hover{transform:translateY(-3px);box-shadow:0 20px 44px rgba(249,91,61,.12);}
     .proof-tag{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent-dark);}
-    .proof-client{font-family:'Unbounded',sans-serif;font-weight:800;font-size:16px;color:var(--text);margin:8px 0 2px;letter-spacing:-.01em;}
+    .proof-client{font-family:'Unbounded',sans-serif;font-weight:900;font-size:16px;color:var(--text);margin:8px 0 2px;letter-spacing:-.01em;}
     .proof-what{font-size:12.5px;font-weight:600;color:var(--text-muted);margin-bottom:10px;}
     .proof-did{font-size:13.5px;line-height:1.6;color:var(--text-sec);margin:0;}
     @media(max-width:960px){.proof-grid{grid-template-columns:1fr 1fr;}}
@@ -1697,109 +1719,16 @@
 </head>
 <body>
 
-  <!-- ═══ GIVEAWAY POPUP ═══ -->
-  <div class="gv-overlay" id="gv-overlay" role="dialog" aria-modal="true" aria-labelledby="gv-title" onclick="if(event.target===this)gvClose()">
-    <div class="gv-card">
-      <button class="gv-close" onclick="gvClose()" aria-label="Close">&#10005;</button>
-
-      <div id="gv-form-view">
-        <span class="gv-badge"><span class="gv-dot"></span>Free Growth Audit</span>
-        <h2 class="gv-title" id="gv-title">Get a Free <em>AI Growth Audit</em>.</h2>
-        <p class="gv-sub">We&rsquo;ll review your content and ads, scan what&rsquo;s working for competitors in your niche, and send back 3 AI-powered moves to grow faster. Two quick taps.</p>
-
-        <div class="gv-q">
-          <span class="gv-q-label">What&rsquo;s your #1 growth goal?</span>
-          <div class="gv-chips" id="gv-q1">
-            <button type="button" class="gv-chip" data-v="Grow organic audience">Grow my audience</button>
-            <button type="button" class="gv-chip" data-v="More leads & customers">More leads &amp; customers</button>
-            <button type="button" class="gv-chip" data-v="Lower ad costs">Lower ad costs</button>
-            <button type="button" class="gv-chip" data-v="Scale what's working">Scale what&rsquo;s working</button>
-          </div>
-        </div>
-
-        <div class="gv-q">
-          <span class="gv-q-label">What are you running today?</span>
-          <div class="gv-chips" id="gv-q2">
-            <button type="button" class="gv-chip" data-v="Nothing yet">Nothing yet</button>
-            <button type="button" class="gv-chip" data-v="Organic content only">Organic content only</button>
-            <button type="button" class="gv-chip" data-v="Paid ads only">Paid ads only</button>
-            <button type="button" class="gv-chip" data-v="Both organic & paid">Both</button>
-          </div>
-        </div>
-
-        <input type="email" class="gv-input" id="gv-email" placeholder="you@email.com" autocomplete="email" />
-        <button class="gv-submit" id="gv-submit" onclick="gvSubmit()">
-          Send My Free Audit
-          <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        </button>
-        <p class="gv-fine">No spam. Delivered by a real strategist within 48 hours.</p>
-      </div>
-
-      <div class="gv-success" id="gv-success-view" style="display:none;">
-        <div class="gv-success-ring">&#10003;</div>
-        <h3>Audit requested ✓</h3>
-        <p>We&rsquo;re on it. Expect your personalized AI growth audit in your inbox within <strong>48 hours</strong>. Want to move faster? <a href="#book" onclick="gvClose()" style="color:var(--accent);font-weight:600;">Book a strategy call &rarr;</a></p>
-      </div>
-    </div>
-  </div>
-
-  <!-- ═══ AD PICKER (free-ad gamified flow) ═══ -->
-  <div class="ap-overlay" id="ap-overlay" role="dialog" aria-modal="true" aria-labelledby="ap-title" onclick="if(event.target===this)closeAdPicker()">
-    <div class="ap-card">
-      <button class="ap-close" onclick="closeAdPicker()" aria-label="Close">&#10005;</button>
-
-      <div id="ap-step1-view">
-        <span class="ap-badge"><span class="gv-dot"></span>Free AI Ad &mdash; On Us</span>
-        <h2 class="ap-title" id="ap-title">Pick the ad you want us to <em>make you free.</em></h2>
-        <p class="ap-sub">Choose a style below. On your free call we&rsquo;ll create one real AI ad for your brand in that style &mdash; so you see exactly what we can do before spending anything.</p>
-        <div class="ap-grid">
-          <button type="button" class="ap-opt" onclick="pickAd('Cartoon Ad')">
-            <span class="ap-opt-emoji">🎨</span>
-            <span class="ap-opt-name">Cartoon Ad</span>
-            <span class="ap-opt-desc">Playful animated style that stops the scroll and makes your brand memorable.</span>
-          </button>
-          <button type="button" class="ap-opt" onclick="pickAd('UGC Ad')">
-            <span class="ap-opt-emoji">🤳</span>
-            <span class="ap-opt-name">UGC Ad</span>
-            <span class="ap-opt-desc">Authentic creator-style content that feels native to social feeds.</span>
-          </button>
-          <button type="button" class="ap-opt" onclick="pickAd('Storytelling AI Ad')">
-            <span class="ap-opt-emoji">📖</span>
-            <span class="ap-opt-name">Storytelling AI</span>
-            <span class="ap-opt-desc">A short narrative spot that builds emotion and sells without feeling salesy.</span>
-          </button>
-          <button type="button" class="ap-opt" onclick="pickAd('Movie-Scene Ad')">
-            <span class="ap-opt-emoji">🎬</span>
-            <span class="ap-opt-name">Movie-Scene Ad</span>
-            <span class="ap-opt-desc">Cinematic, hyper-realistic footage that makes your brand look blockbuster.</span>
-          </button>
-        </div>
-        <p class="ap-fine">No cost, no catch. One free ad per brand, delivered after a quick 30-minute call.</p>
-      </div>
-
-      <div class="ap-step2 ap-step2-view" id="ap-step2-view" style="display:none;">
-        <div class="ap-step2-ring">🎬</div>
-        <h3>Nice pick — <em id="ap-choice-label">your ad</em>.</h3>
-        <p>Book your free 30-minute call and we&rsquo;ll create your <strong id="ap-choice-inline">ad</strong>. Come with your brand, leave with a real example of what AI can do for your marketing.</p>
-        <button type="button" class="ap-book-btn" onclick="proceedToBook()">
-          Book My Free Call &amp; Claim It
-          <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        </button>
-        <button type="button" class="ap-back" onclick="apBack()">&larr; Pick a different style</button>
-      </div>
-    </div>
-  </div>
-
   <!-- ═══ NAV ═══ -->
   <nav class="nav" id="navbar">
     <a href="#home" class="nav-logo">
-      <img src="MainLogoTransparent.png" alt="HyperImplement" />
+      <img src="assets/logo-nav.png" alt="HyperImplement" width="900" height="171" />
     </a>
     <div class="nav-links">
       <a href="#services">Services</a>
       <a href="#work">Real Work</a>
       <a href="about.html">About</a>
-      <a href="#book" class="nav-cta">Book a Strategy Call</a>
+      <a href="#claim" class="nav-cta">Claim 3 Free Photos</a>
     </div>
     <!-- Mobile hamburger -->
     <button class="nav-hamburger" id="navHamburger" aria-label="Open menu" aria-expanded="false">
@@ -1811,48 +1740,49 @@
     <a href="#services" class="nav-mobile-link" onclick="closeMobileMenu()">Services</a>
     <a href="#work" class="nav-mobile-link" onclick="closeMobileMenu()">Real Work</a>
     <a href="about.html" class="nav-mobile-link" onclick="closeMobileMenu()">About</a>
-    <a href="#book" class="nav-mobile-link nav-mobile-cta" onclick="closeMobileMenu()">Book a Strategy Call</a>
+    <a href="#book" class="nav-mobile-link" onclick="closeMobileMenu()">Book a Discovery Call</a>
+    <a href="#claim" class="nav-mobile-link nav-mobile-cta" onclick="closeMobileMenu()">Claim 3 Free Photos</a>
   </div>
 
   <!-- ═══ HERO ═══ -->
   <section class="hero" id="home">
     <div class="hero-bg-shape"></div>
     <div class="hero-bg-shape-2"></div>
-    <img src="ChipLogo.png" alt="" class="hero-chip" aria-hidden="true" />
+    <img src="assets/chip-hero.webp" alt="" class="hero-chip" width="800" height="800" aria-hidden="true" />
     <div class="hero-inner hero-grid">
       <div class="hero-copy">
         <div class="hero-eyebrow reveal">
           <span class="hero-eyebrow-dot"></span>
-          AI Creative Marketing &amp; Ad Studio
+          AI photos, ads &amp; UGC
         </div>
         <h1 class="reveal d1">
-          <span class="hl">Ads that stop the scroll.</span>
-          <em class="hl">A system that grows you.</em>
+          <span class="hl">Product photos and ads</span>
+          <em class="hl">for e-com brands.</em>
         </h1>
         <p class="hero-sub reveal d2">
-          We make AI ads for brands &mdash; and we install the AI marketing system that keeps your social accounts growing every week.
+          We make AI product photos, ads, and UGC for e-com brands. Claim 3 free product photos of yours &mdash; we make them after you send the store.
         </p>
         <div class="sides reveal d3">
           <details class="side side-ads">
             <summary>
               <span class="side-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M10 9.5v5l4.5-2.5z" fill="currentColor"/></svg></span>
-              <span class="side-txt"><span class="side-k">What we make</span><span class="side-title">The Ad Studio</span><span class="side-line">Scroll-stopping AI video &amp; image ads, made for your brand.</span></span>
+              <span class="side-txt"><span class="side-k">What we make</span><span class="side-title">Product photos</span><span class="side-line">Still photos of your product, for the listing and the ad.</span></span>
               <span class="side-more">What does this mean? <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg></span>
             </summary>
-            <ul class="side-list"><li><strong>We study what already works.</strong><span>Your niche and your competitors&rsquo; best ads, so we start from proven angles.</span></li><li><strong>We make the ads.</strong><span>Cinematic, UGC, product and avatar ads &mdash; studio quality, without the studio bill.</span></li><li><strong>We plan where they run.</strong><span>Offers, hooks and a testing plan built around your numbers.</span></li><li><strong>We launch &amp; scale them.</strong><span>Meta and Google campaigns &mdash; we cut what flops and scale what wins.</span></li></ul>
+            <ul class="side-list"><li><strong>Your real product.</strong><span>We start from your store photos or a product link. Not a stand-in.</span></li><li><strong>Made to be used.</strong><span>For the product page, the ad, and the marketplace listing.</span></li><li><strong>Three are free.</strong><span>So you can judge the work on your own brand before you buy anything.</span></li></ul>
           </details>
           <details class="side side-sys">
             <summary>
               <span class="side-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12a8 8 0 0 1 13.7-5.7L20 8.6M20 4v4.6h-4.6M20 12a8 8 0 0 1-13.7 5.7L4 15.4M4 20v-4.6h4.6"/></svg></span>
-              <span class="side-txt"><span class="side-k">What we install</span><span class="side-title">The Growth System</span><span class="side-line">An AI content machine that grows your socials on autopilot.</span></span>
+              <span class="side-txt"><span class="side-k">What we make</span><span class="side-title">Ads and UGC</span><span class="side-line">Video ads and UGC-style clips built around the same product.</span></span>
               <span class="side-more">What does this mean? <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg></span>
             </summary>
-            <ul class="side-list"><li><strong>One video becomes twenty.</strong><span>We edit your long-form and auto-clip it into captioned Shorts, Reels &amp; TikToks.</span></li><li><strong>AI versions of you post daily.</strong><span>Avatar swarms publish on many accounts, so your reach multiplies without more filming.</span></li><li><strong>A brain that knows your brand.</strong><span>It plans topics, writes hooks and captions, and schedules every week.</span></li><li><strong>You just watch it grow.</strong><span>Posting runs itself; we tune it to what your audience actually watches.</span></li></ul>
+            <ul class="side-list"><li><strong>A few ways to show it.</strong><span>UGC, product, and cinematic styles.</span></li><li><strong>Cut for where it runs.</strong><span>Vertical, square, and wide, from the same idea.</span></li><li><strong>The work below is the range.</strong><span>Product brands, and other pieces so you can see what the tools can do.</span></li></ul>
           </details>
         </div>
         <div class="hero-cta-group reveal d4">
-          <a href="#book" class="btn-primary">Book a Free Growth Strategy Call <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
-          <a href="#work" class="btn-ghost-link">See all the work &rarr;</a>
+          <a href="#claim" class="btn-primary">Claim 3 Free Photos <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+          <a href="#book" class="btn-ghost-link">Book a Discovery Call</a>
         </div>
       </div>
     </div>
@@ -1861,7 +1791,7 @@
       <div class="reel-mask"><div class="reel-track" id="reel-track"></div></div>
     </div>
     <div class="reel reel-films reveal d4" aria-label="Films we've made">
-      <div class="reel-label"><span>Films we&rsquo;ve made</span></div>
+      <div class="reel-label"><span>Films we&rsquo;ve made</span><small>Musky Fest</small></div>
       <div class="reel-mask"><div class="reel-track reel-rev" id="films-track"></div></div>
     </div>
   </section>
@@ -1871,27 +1801,27 @@
     <div class="howfree-inner">
       <div class="howfree-head reveal">
         <div class="label">How We Work</div>
-        <h2 class="section-title">Research. Create. <em>Scale.</em></h2>
+        <h2 class="section-title">Research. Create. <em>Use.</em></h2>
       </div>
       <div class="howfree-steps reveal">
         <div class="howfree-step">
           <div class="howfree-num">1</div>
-          <h4>We research your market</h4>
-          <p>We study your niche, your competitors&rsquo; winning ads and the content already performing for your audience &mdash; so nothing starts from a guess.</p>
+          <h4>Send the store</h4>
+          <p>We look at your product, your listing, and the ads already running around it. Nothing starts from a blank prompt.</p>
         </div>
         <div class="howfree-step">
           <div class="howfree-num">2</div>
-          <h4>We build both engines</h4>
-          <p>Your organic engine (editing, clipping, AI avatars, content brain) and your ad creative &mdash; produced with AI, on brand, at a fraction of studio cost.</p>
+          <h4>We make the photos</h4>
+          <p>Three free product photos of your brand first. Ads and UGC come from the same product, at a fraction of a studio shoot.</p>
         </div>
         <div class="howfree-step">
           <div class="howfree-num">3</div>
-          <h4>We launch, learn &amp; improve</h4>
-          <p>We keep creating fresh creatives and learn from every view, click and comment &mdash; so each round performs better than the last. For high-growth clients, we also manage your Meta &amp; Google campaigns.</p>
+          <h4>You put them to work</h4>
+          <p>The files are yours to use on the store and in ads. If you want a monthly set, or someone to run the campaigns, we map that on a call.</p>
         </div>
       </div>
       <div style="text-align:center;margin-top:36px;" class="reveal">
-        <a href="#book" class="btn-primary">Book a Free Growth Strategy Call <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+        <a href="#claim" class="btn-primary">Claim 3 Free Photos <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
       </div>
     </div>
   </section>
@@ -1925,39 +1855,21 @@
   <!-- ═══ TICKER ═══ -->
   <div class="ticker-wrap">
     <div class="ticker-inner">
-      <span class="ticker-item">ChatGPT<span class="tdot"></span></span>
-      <span class="ticker-item">Claude AI<span class="tdot"></span></span>
-      <span class="ticker-item">Google Gemini<span class="tdot"></span></span>
-      <span class="ticker-item">Perplexity AI<span class="tdot"></span></span>
-      <span class="ticker-item">n8n Workflows<span class="tdot"></span></span>
-      <span class="ticker-item">Zapier Automations<span class="tdot"></span></span>
-      <span class="ticker-item">Make.com Pipelines<span class="tdot"></span></span>
-      <span class="ticker-item">Social Media Scheduling<span class="tdot"></span></span>
-      <span class="ticker-item">AI Content Creation<span class="tdot"></span></span>
-      <span class="ticker-item">ElevenLabs Voice AI<span class="tdot"></span></span>
+      <span class="ticker-item">Higgsfield<span class="tdot"></span></span>
       <span class="ticker-item">Midjourney<span class="tdot"></span></span>
-      <span class="ticker-item">Sora Video AI<span class="tdot"></span></span>
-      <span class="ticker-item">AI Lead Qualification<span class="tdot"></span></span>
-      <span class="ticker-item">Email Automation<span class="tdot"></span></span>
-      <span class="ticker-item">AI Agents &amp; Employees<span class="tdot"></span></span>
-      <span class="ticker-item">Auto-Posting Workflows<span class="tdot"></span></span>
+      <span class="ticker-item">Sora<span class="tdot"></span></span>
+      <span class="ticker-item">ElevenLabs<span class="tdot"></span></span>
+      <span class="ticker-item">Claude<span class="tdot"></span></span>
+      <span class="ticker-item">ChatGPT<span class="tdot"></span></span>
+      <span class="ticker-item">Google Gemini<span class="tdot"></span></span>
       <!-- duplicate for seamless loop -->
-      <span class="ticker-item">ChatGPT<span class="tdot"></span></span>
-      <span class="ticker-item">Claude AI<span class="tdot"></span></span>
-      <span class="ticker-item">Google Gemini<span class="tdot"></span></span>
-      <span class="ticker-item">Perplexity AI<span class="tdot"></span></span>
-      <span class="ticker-item">n8n Workflows<span class="tdot"></span></span>
-      <span class="ticker-item">Zapier Automations<span class="tdot"></span></span>
-      <span class="ticker-item">Make.com Pipelines<span class="tdot"></span></span>
-      <span class="ticker-item">Social Media Scheduling<span class="tdot"></span></span>
-      <span class="ticker-item">AI Content Creation<span class="tdot"></span></span>
-      <span class="ticker-item">ElevenLabs Voice AI<span class="tdot"></span></span>
+      <span class="ticker-item">Higgsfield<span class="tdot"></span></span>
       <span class="ticker-item">Midjourney<span class="tdot"></span></span>
-      <span class="ticker-item">Sora Video AI<span class="tdot"></span></span>
-      <span class="ticker-item">AI Lead Qualification<span class="tdot"></span></span>
-      <span class="ticker-item">Email Automation<span class="tdot"></span></span>
-      <span class="ticker-item">AI Agents &amp; Employees<span class="tdot"></span></span>
-      <span class="ticker-item">Auto-Posting Workflows<span class="tdot"></span></span>
+      <span class="ticker-item">Sora<span class="tdot"></span></span>
+      <span class="ticker-item">ElevenLabs<span class="tdot"></span></span>
+      <span class="ticker-item">Claude<span class="tdot"></span></span>
+      <span class="ticker-item">ChatGPT<span class="tdot"></span></span>
+      <span class="ticker-item">Google Gemini<span class="tdot"></span></span>
     </div>
   </div>
 
@@ -1967,7 +1879,7 @@
       <div class="work-head reveal">
         <div class="label">Previous Work</div>
         <h2 class="section-title">See It in Motion.</h2>
-        <p class="work-sub">We at HyperImplement use next-generation AI tools to produce high-quality advertisements at a fraction of what they used to cost. Below is real work we&rsquo;ve made for other businesses — scroll through and tap any one to watch. Whatever kind of ad you need, we can build it.</p>
+        <p class="work-sub">Real ads and films we&rsquo;ve made &mdash; product brands, and other work that shows the range. Scroll through and tap any one to watch.</p>
       </div>
       <div class="work-rail-wrap reveal">
         <button class="work-arrow prev" id="work-prev" onclick="railScroll(-1)" aria-label="Previous work">
@@ -1986,7 +1898,7 @@
   <div class="work-lb" id="work-lb" role="dialog" aria-modal="true" aria-label="Video player" onclick="if(event.target===this)closeWork()">
     <div class="work-lb-inner">
       <button class="work-lb-close" onclick="closeWork()" aria-label="Close video">&#10005;</button>
-      <video id="work-video" controls playsinline preload="metadata"></video>
+      <video id="work-video" controls playsinline preload="none"></video>
       <div class="work-lb-bar">
         <div>
           <div class="work-lb-title" id="work-lb-title"></div>
@@ -2006,10 +1918,10 @@
 
       <!-- Intro -->
       <div class="gap-node-intro reveal">
-        <div class="label" style="text-align:center;">The Implementation Gap</div>
+        <div class="label" style="text-align:center;">The Creative Gap</div>
         <div class="gap-headline" style="text-align:center;">
-          Everyone's heard about AI.<br/>
-          Almost <em>nobody</em> has actually implemented it.
+          The same product photo.<br/>
+          The same <em>ads</em>.
         </div>
       </div>
 
@@ -2026,22 +1938,22 @@
         </svg>
 
         <div class="cycle-node n1">
-          <img class="cycle-img" src="NoiseBGremoved.png" alt="" />
+          <img class="cycle-img" src="assets/gap-noise.webp" alt="" width="480" height="480" />
           <div class="cycle-step">01</div>
-          <div class="cycle-title">Buried in the Noise</div>
-          <p class="cycle-text">New tools every week. None of it implemented.</p>
+          <div class="cycle-title">The Same Still</div>
+          <p class="cycle-text">One photo, used on the listing, the ad, and the post.</p>
         </div>
         <div class="cycle-node n2">
-          <img class="cycle-img" src="AwarenessBGremoved.png" alt="" />
+          <img class="cycle-img" src="assets/gap-awareness.webp" alt="" width="480" height="480" />
           <div class="cycle-step">02</div>
-          <div class="cycle-title">Awareness Without Action</div>
-          <p class="cycle-text">You know you need AI — but never start.</p>
+          <div class="cycle-title">Nothing New Goes Live</div>
+          <p class="cycle-text">The creative sits. Months pass. The product doesn't.</p>
         </div>
         <div class="cycle-node n3">
-          <img class="cycle-img" src="OldWorkflowBGremoved.png" alt="" />
+          <img class="cycle-img" src="assets/gap-workflow.webp" alt="" width="480" height="480" />
           <div class="cycle-step">03</div>
-          <div class="cycle-title">Back to the Old Workflow</div>
-          <p class="cycle-text">Nothing changes. Then the cycle repeats.</p>
+          <div class="cycle-title">Back to the Old Shoot</div>
+          <p class="cycle-text">Another quote. Another wait. Then the cycle repeats.</p>
         </div>
 
         <div class="cycle-center" aria-hidden="true"><span class="spin">&#8635;</span></div>
@@ -2049,9 +1961,9 @@
 
       <!-- Conclusion card -->
       <div class="gap-conclusion reveal">
-        <div class="gap-conclusion-title">Break the loop. <em>Put growth on autopilot.</em></div>
-        <p class="gap-conclusion-sub">Stop watching AI from the sidelines. We build the content engine that keeps you visible every week and the ad system that turns that attention into customers &mdash; then we run it for you.</p>
-        <a href="#book" class="btn-primary" style="font-size:12px;">Book a Free Growth Strategy Call <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+        <div class="gap-conclusion-title">Break the loop. <em>Make new creative.</em></div>
+        <p class="gap-conclusion-sub">We make product photos, UGC, and video ads from your products. Start with 3 free photos of your brand.</p>
+        <a href="#claim" class="btn-primary" style="font-size:12px;">Claim 3 Free Photos <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
       </div>
 
     </div>
@@ -2063,8 +1975,8 @@
   <section class="pipeline-section" id="services">
     <div class="pipeline-head reveal">
       <div class="label">What We Do</div>
-      <h2 class="section-title">Two Engines. One Growth Studio.</h2>
-      <p class="section-sub">Organic content that builds your audience, paid ads that convert it &mdash; researched, created and run by one team.</p>
+      <h2 class="section-title">Photos, Ads, and UGC.</h2>
+      <p class="section-sub">Researched from your product and your market, then made to run.</p>
     </div>
 
     <div class="pipe-stage reveal">
@@ -2074,59 +1986,59 @@
         <!-- half A -->
         <div class="pipe-cluster">
           <span class="pipe-cluster-label">Research</span>
-          <div class="pipe-chip"><div class="pc-tag">Market</div><div class="pc-name">Niche &amp; Competitor Research</div></div>
-          <div class="pipe-chip"><div class="pc-tag">Strategy</div><div class="pc-name">Ad &amp; Offer Strategy</div></div>
+          <div class="pipe-chip"><div class="pc-tag">Product</div><div class="pc-name">Your Product &amp; Listing</div></div>
+          <div class="pipe-chip"><div class="pc-tag">Market</div><div class="pc-name">Competitor Ad Research</div></div>
         </div>
         <div class="pipe-gap"><span class="pn"></span></div>
         <div class="pipe-cluster">
           <span class="pipe-cluster-label">Create</span>
-          <div class="pipe-chip"><div class="pc-tag">Creative</div><div class="pc-name">AI Video &amp; Image Ads</div></div>
-          <div class="pipe-chip"><div class="pc-tag">Organic</div><div class="pc-name">AI Avatar Swarms</div></div>
+          <div class="pipe-chip"><div class="pc-tag">Photos</div><div class="pc-name">AI Product Photos</div></div>
+          <div class="pipe-chip"><div class="pc-tag">Video</div><div class="pc-name">UGC &amp; Video Ads</div></div>
         </div>
         <div class="pipe-gap"><span class="pn"></span></div>
         <div class="pipe-cluster">
-          <span class="pipe-cluster-label">Content Engine</span>
-          <div class="pipe-chip"><div class="pc-tag">Long-form</div><div class="pc-name">Video Editing Strategy</div></div>
-          <div class="pipe-chip"><div class="pc-tag">Short-form</div><div class="pc-name">Automated Clipping Systems</div></div>
+          <span class="pipe-cluster-label">Formats</span>
+          <div class="pipe-chip"><div class="pc-tag">Vertical</div><div class="pc-name">9:16 for Reels &amp; Stories</div></div>
+          <div class="pipe-chip"><div class="pc-tag">Square &amp; Wide</div><div class="pc-name">1:1 and 16:9 Cuts</div></div>
         </div>
         <div class="pipe-gap"><span class="pn"></span></div>
         <div class="pipe-cluster">
-          <span class="pipe-cluster-label">Scale</span>
-          <div class="pipe-chip"><div class="pc-tag">Paid</div><div class="pc-name">Meta Ad Campaigns</div></div>
-          <div class="pipe-chip"><div class="pc-tag">Paid</div><div class="pc-name">Google Ad Campaigns</div></div>
+          <span class="pipe-cluster-label">Refresh</span>
+          <div class="pipe-chip"><div class="pc-tag">New</div><div class="pc-name">More Angles of the Product</div></div>
+          <div class="pipe-chip"><div class="pc-tag">Next</div><div class="pc-name">The Next Round of Creative</div></div>
         </div>
         <div class="pipe-gap"><span class="pn"></span></div>
         <!-- half B -->
         <div class="pipe-cluster">
           <span class="pipe-cluster-label">Research</span>
-          <div class="pipe-chip"><div class="pc-tag">Market</div><div class="pc-name">Niche &amp; Competitor Research</div></div>
-          <div class="pipe-chip"><div class="pc-tag">Strategy</div><div class="pc-name">Ad &amp; Offer Strategy</div></div>
+          <div class="pipe-chip"><div class="pc-tag">Product</div><div class="pc-name">Your Product &amp; Listing</div></div>
+          <div class="pipe-chip"><div class="pc-tag">Market</div><div class="pc-name">Competitor Ad Research</div></div>
         </div>
         <div class="pipe-gap"><span class="pn"></span></div>
         <div class="pipe-cluster">
           <span class="pipe-cluster-label">Create</span>
-          <div class="pipe-chip"><div class="pc-tag">Creative</div><div class="pc-name">AI Video &amp; Image Ads</div></div>
-          <div class="pipe-chip"><div class="pc-tag">Organic</div><div class="pc-name">AI Avatar Swarms</div></div>
+          <div class="pipe-chip"><div class="pc-tag">Photos</div><div class="pc-name">AI Product Photos</div></div>
+          <div class="pipe-chip"><div class="pc-tag">Video</div><div class="pc-name">UGC &amp; Video Ads</div></div>
         </div>
         <div class="pipe-gap"><span class="pn"></span></div>
         <div class="pipe-cluster">
-          <span class="pipe-cluster-label">Content Engine</span>
-          <div class="pipe-chip"><div class="pc-tag">Long-form</div><div class="pc-name">Video Editing Strategy</div></div>
-          <div class="pipe-chip"><div class="pc-tag">Short-form</div><div class="pc-name">Automated Clipping Systems</div></div>
+          <span class="pipe-cluster-label">Formats</span>
+          <div class="pipe-chip"><div class="pc-tag">Vertical</div><div class="pc-name">9:16 for Reels &amp; Stories</div></div>
+          <div class="pipe-chip"><div class="pc-tag">Square &amp; Wide</div><div class="pc-name">1:1 and 16:9 Cuts</div></div>
         </div>
         <div class="pipe-gap"><span class="pn"></span></div>
         <div class="pipe-cluster">
-          <span class="pipe-cluster-label">Scale</span>
-          <div class="pipe-chip"><div class="pc-tag">Paid</div><div class="pc-name">Meta Ad Campaigns</div></div>
-          <div class="pipe-chip"><div class="pc-tag">Paid</div><div class="pc-name">Google Ad Campaigns</div></div>
+          <span class="pipe-cluster-label">Refresh</span>
+          <div class="pipe-chip"><div class="pc-tag">New</div><div class="pc-name">More Angles of the Product</div></div>
+          <div class="pipe-chip"><div class="pc-tag">Next</div><div class="pc-name">The Next Round of Creative</div></div>
         </div>
         <div class="pipe-gap"><span class="pn"></span></div>
       </div>
     </div>
 
     <div class="pipeline-cta reveal">
-      <p><strong>Not sure where to start?</strong> Book a free strategy call. We&rsquo;ll audit your content and ads and map exactly which engine moves the needle first.</p>
-      <a href="#book" class="btn-dark">Book a Free Growth Strategy Call
+      <p><strong>Not sure where to start?</strong> Claim 3 free photos of your product. Or <a href="#book">book a discovery call</a> and we&rsquo;ll look at the store together.</p>
+      <a href="#claim" class="btn-dark">Claim 3 Free Photos
         <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
       </a>
     </div>
@@ -2176,7 +2088,7 @@
     <div class="inner">
       <div style="text-align:center;margin-top:48px;" class="reveal">
         <p style="font-size:14px;color:var(--text-muted);margin-bottom:18px;font-family:'IBM Plex Mono',monospace;letter-spacing:0.05em;">Want this for your brand?</p>
-        <a href="#book" class="btn-primary">Book a Free Growth Strategy Call
+        <a href="#claim" class="btn-primary">Claim 3 Free Photos
           <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </a>
       </div>
@@ -2186,9 +2098,9 @@
   <!-- ═══ FOUNDER LINK (full story on about.html) ═══ -->
   <div class="founder-strip reveal">
     <a class="founder-link" href="about.html">
-      <img src="Headshot.png" alt="Anthony Collins"/>
+      <img src="assets/headshot.webp" alt="Anthony Collins" width="400" height="400"/>
       <span><b>Who started HyperImplement?</b><br/>Meet the founder &rarr;</span>
-      <span class="founder-pop"><b style="color:var(--text);font-size:12px;">Anthony Collins</b> &mdash; ex-Salesforce, Business Analytics &amp; Information Systems. Built HyperImplement to help brands grow with AI content and ads that actually perform.</span>
+      <span class="founder-pop"><b style="color:var(--text);font-size:12px;">Anthony Collins</b> &mdash; ex-Salesforce, background in Business Analytics &amp; Information Systems. HyperImplement makes AI product photos, ads, and UGC for e-com brands.</span>
     </a>
   </div>
 
@@ -2204,12 +2116,12 @@
       <div class="why-grid">
         <div class="reveal d1">
           <p class="why-statement">
-            People and businesses spend months hearing about AI — watching demos, reading articles — and still have <strong>nothing working for them.</strong>
+            E-com brands don&rsquo;t need another demo of a tool. They need photos and ads of <strong>their products</strong>, done.
             <br/><br/>
-            We skip straight to the part where <strong>AI is actually running your life and business</strong> — not just living in a browser tab.
+            We make that work. You see it on your own brand before you pay for a bigger set.
           </p>
           <div style="margin-top:32px;">
-            <a href="#book" class="btn-primary">Book a Free Growth Strategy Call
+            <a href="#claim" class="btn-primary">Claim 3 Free Photos
               <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
             </a>
           </div>
@@ -2218,22 +2130,22 @@
           <div class="diff-item">
             <div class="diff-num">01</div>
             <div class="diff-content">
-              <h4>We implement — not just advise</h4>
-              <p>No 90-day roadmaps. No strategy decks you file away. We sit down and build. You see something working before we're done.</p>
+              <h4>We make the work</h4>
+              <p>Product photos, UGC, and video ads. Not a roadmap you file away. The first three photos are free, and we make them after you send the store.</p>
             </div>
           </div>
           <div class="diff-item">
             <div class="diff-num">02</div>
             <div class="diff-content">
-              <h4>For people, not just companies</h4>
-              <p>Solo professional, small business, or individual wanting AI in their daily routine — we build for real life, not just enterprise rollouts.</p>
+              <h4>Built for stores</h4>
+              <p>Shopify, Amazon, and other product brands that need fresh creative. The files are made for listings and ads.</p>
             </div>
           </div>
           <div class="diff-item">
             <div class="diff-num">03</div>
             <div class="diff-content">
-              <h4>We use every tool we build with</h4>
-              <p>Claude Code, Make, n8n, Higgsfield, OpenClaw — we run these ourselves. You're getting genuine expertise, not resold knowledge.</p>
+              <h4>The same tools you see here</h4>
+              <p>The ads and films on this page are made the same way we make client work. Chicago studio. Anthony reads what you send.</p>
             </div>
           </div>
         </div>
@@ -2242,112 +2154,135 @@
   </section>
 
 
-  <!-- ═══ CONTACT + BOOK ═══ -->
+  <!-- ═══ CLAIM + BOOK ═══ -->
   <section class="contact-section" id="contact">
     <div class="inner">
-      <div class="contact-header reveal">
+      <div class="contact-header reveal" id="claim">
         <div>
-          <div class="label">Claim Your Free Ad</div>
-          <h2 class="section-title">Book the Call.<br/>Get Your<br/><em>Growth Plan.</em></h2>
+          <div class="label">3 free product photos</div>
+          <h2 class="section-title">Send your store.<br/>Get 3 photos<br/><em>of your product.</em></h2>
         </div>
         <div>
           <p style="font-size:16px;color:var(--text-sec);line-height:1.75;font-weight:300;">
-            Pick a time below. On the call we&rsquo;ll review your content, your ads and your competitors &mdash; and you&rsquo;ll leave with a clear plan for your organic and paid growth engines.
+            Name, email, and the store URL. A product link helps us start from the right item. We make the photos after you send this &mdash; the same offer as the email.
           </p>
         </div>
       </div>
       <div class="contact-body">
 
-        <!-- FORM -->
         <div class="contact-form-wrap reveal">
-          <div class="contact-pane-label">Write First</div>
-          <div class="contact-pane-title">Send a Message</div>
-          <p class="contact-pane-sub">Tell us about your situation. We'll come prepared with ideas specific to you.</p>
-          <form id="lead-form" onsubmit="handleSubmit(event)">
-            <div class="form-row">
-              <div class="form-group">
-                <label class="form-label">First Name</label>
-                <input type="text" class="form-input" placeholder="Anthony" required />
-              </div>
-              <div class="form-group">
-                <label class="form-label">Last Name</label>
-                <input type="text" class="form-input" placeholder="Collins" required />
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label class="form-label">Email</label>
-                <input type="email" class="form-input" placeholder="you@yourbusiness.com" required />
-              </div>
-              <div class="form-group">
-                <label class="form-label">Phone <span style="color:var(--text-muted);font-size:10px;text-transform:none;letter-spacing:0;">(optional — faster follow-up)</span></label>
-                <input type="tel" class="form-input" placeholder="+1 (555) 000-0000" />
-              </div>
+          <div class="contact-pane-label">Free photos</div>
+          <div class="contact-pane-title">Claim 3 Free Photos</div>
+          <p class="contact-pane-sub">For your brand. We make them from your store. No newsletter.</p>
+          <form id="claim-form" onsubmit="claimSubmit(event)" novalidate>
+            <div class="hp" aria-hidden="true">
+              <label for="claim-hp">Company</label>
+              <input id="claim-hp" name="hp_company" type="text" tabindex="-1" autocomplete="off" />
             </div>
             <div class="form-group">
-              <label class="form-label">Business / Organization</label>
-              <input type="text" class="form-input" placeholder="Your company or 'Personal'" />
+              <label class="form-label" for="claim-name">Name</label>
+              <input id="claim-name" name="name" type="text" class="form-input" autocomplete="name" required placeholder="Your name" />
             </div>
             <div class="form-group">
-              <label class="form-label">What do you need implemented?</label>
-              <select class="form-select">
-                <option value="">Select a service...</option>
-                <option>AI Strategy &amp; Tool Selection</option>
-                <option>Claude Code / OpenClaw Install</option>
-                <option>AI Employee or Agent</option>
-                <option>AI Video Advertisements</option>
-                <option>AI Website Design</option>
-                <option>Workflow Automation</option>
-                <option>Personal AI Assistant Setup</option>
-                <option>Not sure — I need guidance</option>
-              </select>
+              <label class="form-label" for="claim-email">Email</label>
+              <input id="claim-email" name="email" type="email" class="form-input" autocomplete="email" required placeholder="you@yourstore.com" />
             </div>
             <div class="form-group">
-              <label class="form-label">What's eating your time right now?</label>
-              <textarea class="form-textarea" placeholder="Describe what you'd automate or hand off to AI if you could..."></textarea>
+              <label class="form-label" for="claim-store">Store or brand URL</label>
+              <input id="claim-store" name="store_url" type="text" class="form-input" inputmode="url" autocomplete="url" required placeholder="yourstore.com" />
             </div>
+            <div class="form-group">
+              <label class="form-label" for="claim-product">Product link <span style="color:var(--text-muted);font-size:10px;text-transform:none;letter-spacing:0;">(optional)</span></label>
+              <input id="claim-product" name="product_url" type="text" class="form-input" inputmode="url" placeholder="yourstore.com/products/item" />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="claim-note">Note <span style="color:var(--text-muted);font-size:10px;text-transform:none;letter-spacing:0;">(optional)</span></label>
+              <textarea id="claim-note" name="note" class="form-textarea" placeholder="Which product, or anything we should know."></textarea>
+            </div>
+            <div id="claim-error" class="form-error" role="alert"></div>
             <button type="submit" class="btn-primary" style="width:100%;justify-content:center;font-size:13px;">
-              Send Message
+              Claim 3 Free Photos
               <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
             </button>
-            <p class="form-note">No spam. We'll only reach out about your inquiry. Response within 24 hours.</p>
+            <p class="form-note">We use this to make your three photos. No newsletter.</p>
           </form>
-          <div id="form-success" style="display:none;text-align:center;padding:48px 24px;">
-            <div style="width:56px;height:56px;background:rgba(249,91,61,0.1);border:2px solid var(--border-acc);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:22px;">✓</div>
-            <div style="font-family:'Unbounded',sans-serif;font-size:20px;font-weight:700;margin-bottom:8px;">Message Received.</div>
-            <p style="font-size:14px;color:var(--text-sec);">We'll be in touch within 24 hours. You can also pick a time directly on the calendar.</p>
+          <div id="claim-success" class="form-success-panel" role="status">
+            <div style="width:56px;height:56px;background:rgba(249,91,61,0.1);border:2px solid var(--border-acc);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:22px;">&#10003;</div>
+            <div style="font-family:'Unbounded',sans-serif;font-size:20px;font-weight:700;margin-bottom:8px;">Request received.</div>
+            <p style="font-size:14px;color:var(--text-sec);">We&rsquo;ll make 3 product photos for your brand and email them to you. Want to talk it through? <a href="#book">Book a Discovery Call</a>.</p>
           </div>
+          <noscript><p class="form-note">This form needs JavaScript. Email <a href="mailto:anthonyscollins21@gmail.com">anthonyscollins21@gmail.com</a> with your store URL, or book a time below.</p></noscript>
+
+          <details class="contact-alt">
+            <summary>Or send a message</summary>
+            <form id="contact-form" onsubmit="contactSubmit(event)" novalidate>
+              <div class="hp" aria-hidden="true">
+                <label for="contact-hp">Company</label>
+                <input id="contact-hp" name="hp_company" type="text" tabindex="-1" autocomplete="off" />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="contact-name">Name</label>
+                <input id="contact-name" name="name" type="text" class="form-input" autocomplete="name" required placeholder="Your name" />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="contact-email">Email</label>
+                <input id="contact-email" name="email" type="email" class="form-input" autocomplete="email" required placeholder="you@yourstore.com" />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="contact-store">Store or brand URL <span style="color:var(--text-muted);font-size:10px;text-transform:none;letter-spacing:0;">(optional)</span></label>
+                <input id="contact-store" name="store_url" type="text" class="form-input" inputmode="url" autocomplete="url" placeholder="yourstore.com" />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="contact-service">What do you need?</label>
+                <select id="contact-service" name="service" class="form-select">
+                  <option value="">Select one</option>
+                  <option>AI product photos</option>
+                  <option>UGC</option>
+                  <option>Video ads</option>
+                  <option>Not sure yet</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="contact-message">Message</label>
+                <textarea id="contact-message" name="message" class="form-textarea" placeholder="What you sell, and what you want made."></textarea>
+              </div>
+              <div id="contact-error" class="form-error" role="alert"></div>
+              <button type="submit" class="btn-primary" style="width:100%;justify-content:center;font-size:13px;">
+                Send Message
+                <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </button>
+            </form>
+            <div id="contact-success" class="form-success-panel" role="status">
+              <div style="font-family:'Unbounded',sans-serif;font-size:20px;font-weight:700;margin-bottom:8px;">Message received.</div>
+              <p style="font-size:14px;color:var(--text-sec);">We&rsquo;ll reply at the email you gave.</p>
+            </div>
+          </details>
         </div>
 
-        <!-- BOOK -->
         <div class="contact-book-wrap reveal d1" id="book">
-          <div class="freead-banner" id="freead-banner">
-            <span class="fb-emoji">🎁</span>
-            <span class="fb-text">Your free <strong id="fb-choice">AI ad</strong> is reserved. Book your call below and we&rsquo;ll create it for you.</span>
-          </div>
-          <div class="contact-pane-label">Jump Straight In</div>
-          <div class="contact-pane-title">Book Your Free Growth Strategy Call</div>
-          <p class="contact-pane-sub">30 minutes. Free. Leave with a clear growth plan for your brand.</p>
+          <div class="contact-pane-label">Or talk first</div>
+          <div class="contact-pane-title">Book a Discovery Call</div>
+          <p class="contact-pane-sub">30 minutes. Free. Bring a product and we&rsquo;ll talk through the photos, the ads, and the UGC.</p>
           <div class="book-perks">
             <div class="book-perk">
               <div class="book-perk-bar"></div>
               <div class="book-perk-content">
-                <h5>We respond within 24 hours</h5>
-                <p>A real answer from Anthony — not an automated sequence or assistant.</p>
+                <h5>3 free product photos</h5>
+                <p>Send the store on the form, or bring it to the call. We make them for your brand.</p>
               </div>
             </div>
             <div class="book-perk">
               <div class="book-perk-bar"></div>
               <div class="book-perk-content">
-                <h5>Come with a problem, leave with a plan</h5>
-                <p>30 minutes. We do the thinking upfront. You walk away knowing exactly what to build and how.</p>
+                <h5>A real conversation</h5>
+                <p>30 minutes with Anthony. You leave knowing what we&rsquo;d make next.</p>
               </div>
             </div>
           </div>
           <div class="calendly-wrap" id="calendly-container">
-            <div style="width:44px;height:44px;background:var(--bg);border:1px solid var(--border);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:8px;">📅</div>
-            <div style="font-family:'Unbounded',sans-serif;font-size:14px;font-weight:700;color:var(--text);margin-bottom:6px;">Calendly Booking</div>
-            <p style="font-size:12px;color:var(--text-muted);max-width:240px;line-height:1.6;">Add your Calendly URL in the script at the bottom of this file to activate live scheduling.</p>
+            <div style="font-family:'Unbounded',sans-serif;font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px;">Book a Discovery Call</div>
+            <p style="font-size:13px;color:var(--text-sec);max-width:280px;line-height:1.6;margin-bottom:14px;">30 minutes, free. The calendar loads here. You can also open it on Calendly.</p>
+            <a class="btn-primary" href="https://calendly.com/anthonyscollins21/30min?hide_gdpr_banner=1&amp;utm_source=website&amp;utm_campaign=3-free-product-photos">Book a Discovery Call</a>
           </div>
         </div>
 
@@ -2361,17 +2296,15 @@
       <div class="footer-top">
         <div>
           <div class="footer-logo-pill">
-            <img src="MainLogoTransparent.png" alt="HyperImplement" />
+            <img src="assets/logo-nav.png" alt="HyperImplement" width="900" height="171" />
           </div>
-          <p class="footer-desc">AI implementation agency. We help people and businesses stop hearing about AI and start using it — every single day.</p>
+          <p class="footer-desc">AI creative studio in Chicago. We make product photos, ads, and UGC for e-com brands.</p>
         </div>
         <div class="footer-col">
           <h5>Services</h5>
-          <a href="#services">AI Strategy</a>
-          <a href="#services">Claude Code Installs</a>
-          <a href="#services">AI Employees &amp; Agents</a>
-          <a href="#services">AI Video Ads</a>
-          <a href="#services">Workflow Automation</a>
+          <a href="#services">Product Photos</a>
+          <a href="#services">UGC</a>
+          <a href="#services">Video Ads</a>
         </div>
         <div class="footer-col">
           <h5>Company</h5>
@@ -2382,7 +2315,8 @@
         <div class="footer-col">
           <h5>Connect</h5>
           <a href="https://www.youtube.com/@AnthonyImplements" target="_blank" rel="noopener">@anthonyimplements</a>
-          <a href="#book">Book a Strategy Call</a>
+          <a href="#claim">Claim 3 Free Photos</a>
+          <a href="#book">Book a Discovery Call</a>
           <a href="mailto:anthonyscollins21@gmail.com">Email Anthony</a>
         </div>
       </div>
@@ -2394,155 +2328,6 @@
   </footer>
 
   <script>
-    // ═══ GIVEAWAY POPUP ═══
-    // PASTE your GHL Inbound Webhook URL here to start capturing leads into GHL:
-    const GHL_WEBHOOK_URL = 'https://services.leadconnectorhq.com/hooks/alEN2jCxcJXw4HV12875/webhook-trigger/076693fc-5182-451e-a94d-05766b4fae44';
-    const GV_SEEN_KEY = 'hi_gv_seen_v1';
-    let gvQ1 = '', gvQ2 = '';
-
-    // ═══ AD PICKER (free-ad gamified flow) ═══
-    let adChoice = '';
-    function openAdPicker() {
-      // always start on step 1
-      document.getElementById('ap-step1-view').style.display = 'block';
-      document.getElementById('ap-step2-view').style.display = 'none';
-      document.getElementById('ap-overlay').classList.add('open');
-      document.body.style.overflow = 'hidden';
-    }
-    function closeAdPicker() {
-      document.getElementById('ap-overlay').classList.remove('open');
-      document.body.style.overflow = '';
-    }
-    function apBack() {
-      document.getElementById('ap-step2-view').style.display = 'none';
-      document.getElementById('ap-step1-view').style.display = 'block';
-    }
-    function pickAd(style) {
-      adChoice = style;
-      try { localStorage.setItem('hi_ad_choice', style); } catch(e) {}
-      document.getElementById('ap-choice-label').textContent = style;
-      document.getElementById('ap-choice-inline').textContent = style;
-      document.getElementById('ap-step1-view').style.display = 'none';
-      document.getElementById('ap-step2-view').style.display = 'block';
-    }
-    function proceedToBook() {
-      // reveal the free-ad banner with the chosen style, close modal, scroll to booking
-      const banner = document.getElementById('freead-banner');
-      if (adChoice) {
-        document.getElementById('fb-choice').textContent = adChoice;
-        banner.classList.add('show');
-      }
-      closeAdPicker();
-      // re-render the calendar so the chosen ad style rides along on the booking
-      if (typeof renderCalendly === 'function') renderCalendly(adChoice);
-      const book = document.getElementById('book');
-      if (book) book.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-    // Restore a previously chosen ad style on load (e.g. returning visitor)
-    (function apRestore(){
-      try {
-        const saved = localStorage.getItem('hi_ad_choice');
-        if (saved) {
-          adChoice = saved;
-          const fb = document.getElementById('fb-choice');
-          if (fb) { fb.textContent = saved; document.getElementById('freead-banner').classList.add('show'); }
-        }
-      } catch(e) {}
-    })();
-    document.addEventListener('keydown', e => {
-      if (e.key === 'Escape' && document.getElementById('ap-overlay').classList.contains('open')) closeAdPicker();
-    });
-
-    function gvChipSetup(groupId, setter) {
-      document.querySelectorAll('#' + groupId + ' .gv-chip').forEach(chip => {
-        chip.addEventListener('click', () => {
-          document.querySelectorAll('#' + groupId + ' .gv-chip').forEach(c => c.classList.remove('sel'));
-          chip.classList.add('sel');
-          setter(chip.dataset.v);
-        });
-      });
-    }
-    gvChipSetup('gv-q1', v => gvQ1 = v);
-    gvChipSetup('gv-q2', v => gvQ2 = v);
-
-    function gvOpen() {
-      document.getElementById('gv-overlay').classList.add('open');
-      document.body.style.overflow = 'hidden';
-    }
-    function gvClose() {
-      document.getElementById('gv-overlay').classList.remove('open');
-      document.body.style.overflow = '';
-      try { localStorage.setItem(GV_SEEN_KEY, '1'); } catch(e) {}
-    }
-    function gvToggleRules() { document.getElementById('gv-rules').classList.toggle('show'); }
-
-    async function gvSubmit() {
-      const emailEl = document.getElementById('gv-email');
-      const email = emailEl.value.trim();
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        emailEl.classList.add('err'); emailEl.focus();
-        return;
-      }
-      emailEl.classList.remove('err');
-      const btn = document.getElementById('gv-submit');
-      btn.disabled = true; btn.textContent = 'Entering…';
-
-      const payload = {
-        email: email,
-        ai_stage: gvQ1 || 'Not answered',
-        ai_goal: gvQ2 || 'Not answered',
-        source: 'Website Growth Audit Popup',
-        tags: ['growth-audit-request', 'source-website-popup',
-               gvQ1 ? 'goal: ' + gvQ1 : null,
-               gvQ2 ? 'running: ' + gvQ2 : null].filter(Boolean),
-        submitted_at: new Date().toISOString()
-      };
-
-      // Local backup so no entry is ever lost (exportable via console)
-      try {
-        const list = JSON.parse(localStorage.getItem('hi_gv_entries') || '[]');
-        list.push(payload); localStorage.setItem('hi_gv_entries', JSON.stringify(list));
-      } catch(e) {}
-
-      // Send to GHL via Inbound Webhook (fire-and-forget; no-cors so no read-back needed)
-      if (GHL_WEBHOOK_URL) {
-        try {
-          await fetch(GHL_WEBHOOK_URL, {
-            method: 'POST', mode: 'no-cors',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-          });
-        } catch(e) { /* optimistic: entry is backed up locally */ }
-      }
-
-      try { localStorage.setItem(GV_SEEN_KEY, '1'); } catch(e) {}
-      document.getElementById('gv-form-view').style.display = 'none';
-      document.getElementById('gv-success-view').style.display = 'block';
-    }
-
-    // Fire once per visitor, only after ~15s of ACTIVE time on the page
-    // (timer pauses when the tab is hidden) — so it only reaches engaged visitors,
-    // not quick bounces or background tabs. Adjust GV_DELAY_MS to taste.
-    const GV_DELAY_MS = 15000;
-    (function gvInit() {
-      let seen = false;
-      try { seen = localStorage.getItem(GV_SEEN_KEY) === '1'; } catch(e) {}
-      if (seen) return;
-      let elapsed = 0, last = Date.now(), fired = false;
-      document.addEventListener('visibilitychange', () => { last = Date.now(); });
-      (function tick() {
-        if (fired) return;
-        const now = Date.now();
-        if (document.visibilityState === 'visible') elapsed += now - last;
-        last = now;
-        if (elapsed >= GV_DELAY_MS) { fired = true; gvOpen(); return; }
-        setTimeout(tick, 1000);
-      })();
-    })();
-    document.addEventListener('keydown', e => {
-      if (e.key === 'Escape' && document.getElementById('gv-overlay').classList.contains('open')) gvClose();
-    });
-
     // Chip parallax on mouse move
     (function(){const c=document.querySelector('.hero-chip');if(!c||!matchMedia('(hover:hover)').matches)return;
       addEventListener('pointermove',e=>{const x=(e.clientX/innerWidth-.5)*-30,y=(e.clientY/innerHeight-.5)*-24;c.style.translate=x+'px '+y+'px';},{passive:true});})();
@@ -2626,19 +2411,19 @@
       const t=document.getElementById('reel-track'); if(!t) return;
       const ratio=r=>{const [a,b]=r.split('/').map(Number);return a/b;};
       const one=WORK.map((w,i)=>`<button class="reel-card" style="width:${Math.round(170*ratio(w.ratio))}px" onclick="openWork(${i})" aria-label="Watch ${w.label}"><video src="${w.src.replace('work/','work/prev-')}" poster="${w.poster}" muted loop playsinline preload="none"></video></button>`).join('');
-      const film=`<button class="reel-card reel-film" style="width:${Math.round(170*16/9)}px" onclick="openFilm()" aria-label="Watch the HyperImplement film"><video src="work/prev-film-v2.mp4" poster="work/film-v2.jpg" muted loop playsinline preload="none"></video><i class="reel-play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5z"/></svg></i><span>&#9679; Our Film &middot; 0:32</span></button>`;
+      const film=`<button class="reel-card reel-film" style="width:${Math.round(170*16/9)}px" onclick="openFilm()" aria-label="Watch the HyperImplement film"><video src="work/prev-film-reel.mp4" poster="work/film-v2.jpg" muted loop playsinline preload="none"></video><i class="reel-play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5z"/></svg></i><span>&#9679; Our Film &middot; 0:32</span></button>`;
       t.innerHTML=film+one+film+one;
       t.querySelectorAll('.reel-card').forEach((c,i)=>{ if(i>WORK.length) c.tabIndex=-1, c.setAttribute('aria-hidden','true'); });
       const vids=t.querySelectorAll('video');
-      const io=new IntersectionObserver(es=>es.forEach(e=>{const v=e.target; if(e.isIntersecting){v.preload='auto';v.play().catch(()=>{});} else v.pause();}),{root:t.parentElement,rootMargin:'0px 200px'});
+      const io=new IntersectionObserver(es=>es.forEach(e=>{const v=e.target; if(e.isIntersecting && !matchMedia('(prefers-reduced-motion: reduce)').matches){v.play().catch(()=>{});} else v.pause();}),{root:t.parentElement,rootMargin:'0px 200px'});
       vids.forEach(v=>io.observe(v));
     }
     function renderFilms(){
       const t=document.getElementById('films-track'); if(!t) return;
-      const one=[1,2,3,4,5,6,7,8].map(n=>`<button class="reel-card" style="width:${Math.round(170*16/9)}px" onclick="openClip('work/films/musky-${n}.mp4','work/films/musky-${n}.jpg')" aria-label="Watch film clip"><video src="work/films/musky-${n}.mp4" poster="work/films/musky-${n}.jpg" muted loop playsinline preload="none"></video></button>`).join('');
+      const one=[1,2,3,4,5,6,7,8].map(n=>`<button class="reel-card" style="width:${Math.round(170*16/9)}px" onclick="openClip('work/films/musky-${n}.mp4','work/films/musky-${n}.jpg')" aria-label="Watch Musky Fest clip ${n}"><video src="work/films/prev-musky-${n}.mp4" poster="work/films/musky-${n}.jpg" muted loop playsinline preload="none"></video></button>`).join('');
       t.innerHTML=one+one;
       t.querySelectorAll('.reel-card').forEach((c,i)=>{ if(i>=8){c.tabIndex=-1;c.setAttribute('aria-hidden','true');} });
-      const io=new IntersectionObserver(es=>es.forEach(e=>{const v=e.target; if(e.isIntersecting){v.preload='auto';v.play().catch(()=>{});} else v.pause();}),{root:t.parentElement,rootMargin:'0px 200px'});
+      const io=new IntersectionObserver(es=>es.forEach(e=>{const v=e.target; if(e.isIntersecting && !matchMedia('(prefers-reduced-motion: reduce)').matches){v.play().catch(()=>{});} else v.pause();}),{root:t.parentElement,rootMargin:'0px 200px'});
       t.querySelectorAll('video').forEach(v=>io.observe(v));
     }
     function openClip(src,poster){
@@ -2675,11 +2460,18 @@
           </span>
         </button>`).join('');
     }
+    function workClient(src) {
+      if (/lincoln|gracie|eva/.test(src)) return 'OSOS Home & Patio';
+      if (/sho-/.test(src)) return 'SHO Wagyu';
+      if (/artist/.test(src)) return 'The Artist Barbershop';
+      if (/golf/.test(src)) return 'Golf Cart Company';
+      return '';
+    }
     function openWork(i) {
       workIdx = i;
       const w = WORK[i], lb = document.getElementById('work-lb'), v = document.getElementById('work-video');
       document.getElementById('work-lb-title').textContent = w.label;
-      document.getElementById('work-lb-client').textContent = '';
+      document.getElementById('work-lb-client').textContent = workClient(w.src);
       v.loop = false; v.poster = w.poster;
       if (w.src) { v.src = w.src; v.play().catch(()=>{}); }
       else { v.removeAttribute('src'); v.load(); }   // no file yet → shows poster
@@ -2723,48 +2515,191 @@
       updateArrows();
     }
 
-    // FORM → n8n webhook
-    async function handleSubmit(e) {
-      e.preventDefault();
-      const form = document.getElementById('lead-form');
-      const btn = form.querySelector('button[type="submit"]');
-      const fields = form.querySelectorAll('input, select, textarea');
+    // Leads → existing GoHighLevel inbound webhook. Success only after a real 2xx
+    // response whose body is not an error. Honeypot hits are dropped and not tracked.
+    const GHL_WEBHOOK_URL = 'https://services.leadconnectorhq.com/hooks/alEN2jCxcJXw4HV12875/webhook-trigger/076693fc-5182-451e-a94d-05766b4fae44';
+    const FORM_ERROR = "We couldn't send that. Nothing was saved. Check your connection and try again, or email anthonyscollins21@gmail.com.";
 
-      // Collect all field values
-      const data = {
-        firstName:  form.querySelectorAll('input[type="text"]')[0]?.value || '',
-        lastName:   form.querySelectorAll('input[type="text"]')[1]?.value || '',
-        email:      form.querySelector('input[type="email"]')?.value || '',
-        phone:      form.querySelector('input[type="tel"]')?.value || '',
-        business:   form.querySelectorAll('input[type="text"]')[2]?.value || '',
-        service:    form.querySelector('select')?.value || '',
-        message:    form.querySelector('textarea')?.value || '',
-        submittedAt: new Date().toISOString(),
-        source: 'hyperimplement.com'
-      };
-
-      // Loading state
-      btn.textContent = 'Sending…';
-      btn.disabled = true;
-      fields.forEach(f => f.disabled = true);
-
-      try {
-        await fetch('https://anthonyautomations.app.n8n.cloud/webhook/Hyperimplement-contact', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(data)
-        });
-      } catch (err) {
-        // Still show success to user even if network blips
-        console.warn('Webhook error:', err);
-      }
-
-      // Show success
-      form.style.display = 'none';
-      document.getElementById('form-success').style.display = 'block';
+    function track(gaName, gaParams, pixelName, pixelParams) {
+      try { if (typeof window.gtag === 'function') window.gtag('event', gaName, gaParams || {}); } catch (err) {}
+      try { if (typeof window.fbq === 'function') window.fbq('track', pixelName, pixelParams || {}); } catch (err) {}
     }
 
-    // CALENDLY
+    let scheduleTracked = false;
+    window.addEventListener('message', function (e) {
+      if (!e || e.origin !== 'https://calendly.com') return;
+      var data = e.data;
+      if (typeof data === 'string') {
+        try { data = JSON.parse(data); } catch (err) { return; }
+      }
+      if (!data || data.event !== 'calendly.event_scheduled' || scheduleTracked) return;
+      scheduleTracked = true;
+      track('schedule', { method: 'calendly' }, 'Schedule', { content_name: 'discovery_call' });
+    });
+
+    function splitName(full) {
+      const parts = String(full || '').trim().split(/\s+/).filter(Boolean);
+      return { firstName: parts[0] || '', lastName: parts.slice(1).join(' ') };
+    }
+    function normalizeUrl(value) {
+      const v = String(value || '').trim();
+      if (!v) return '';
+      if (/^https?:\/\//i.test(v)) return v;
+      return 'https://' + v;
+    }
+    function looksLikeUrl(value) {
+      const v = String(value || '').trim();
+      if (!v) return false;
+      return /^(https?:\/\/)?[^\s]+\.[^\s]{2,}([\/?#].*)?$/i.test(v);
+    }
+    function showFormError(id, message) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.textContent = message;
+      el.classList.add('show');
+    }
+    function clearFormError(id) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.classList.remove('show');
+      el.textContent = '';
+    }
+    async function postLead(payload) {
+      const res = await fetch(GHL_WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (!res.ok) throw new Error('Request failed (' + res.status + ')');
+      const bodyText = await res.text();
+      if (!bodyText) return;
+      try {
+        const data = JSON.parse(bodyText);
+        const status = String((data && (data.status || data.message)) || '');
+        if (/^error\b/i.test(status)) throw new Error(status);
+      } catch (err) {
+        if (err instanceof SyntaxError) return;
+        throw err;
+      }
+    }
+    function field(form, name) {
+      return form.elements.namedItem(name);
+    }
+    function setSending(btn, on) {
+      if (on) {
+        btn.dataset.label = btn.innerHTML;
+        btn.disabled = true;
+        btn.textContent = 'Sending…';
+      } else {
+        btn.disabled = false;
+        if (btn.dataset.label) btn.innerHTML = btn.dataset.label;
+      }
+    }
+
+    async function claimSubmit(e) {
+      e.preventDefault();
+      const form = document.getElementById('claim-form');
+      const btn = form.querySelector('button[type="submit"]');
+      clearFormError('claim-error');
+      if (field(form, 'hp_company').value) {
+        form.style.display = 'none';
+        document.getElementById('claim-success').style.display = 'block';
+        return;
+      }
+      const nameEl = field(form, 'name');
+      const emailEl = field(form, 'email');
+      const storeEl = field(form, 'store_url');
+      const productEl = field(form, 'product_url');
+      const noteEl = field(form, 'note');
+      const name = nameEl.value.trim();
+      const email = emailEl.value.trim();
+      const store = storeEl.value.trim();
+      const product = productEl.value.trim();
+      const note = noteEl.value.trim();
+      if (!name) { showFormError('claim-error', 'Add your name so we know who the photos are for.'); nameEl.focus(); return; }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showFormError('claim-error', 'That email does not look complete. Use the one you check.'); emailEl.focus(); return; }
+      if (!looksLikeUrl(store)) { showFormError('claim-error', 'Add the store or brand URL, like yourstore.com.'); storeEl.focus(); return; }
+      if (product && !looksLikeUrl(product)) { showFormError('claim-error', 'The product link needs a full address, like yourstore.com/products/item.'); productEl.focus(); return; }
+      const names = splitName(name);
+      const payload = {
+        name: name,
+        firstName: names.firstName,
+        lastName: names.lastName,
+        email: email,
+        website: normalizeUrl(store),
+        store_url: normalizeUrl(store),
+        product_url: product ? normalizeUrl(product) : '',
+        note: note,
+        offer: '3 free AI product photos',
+        form: 'free-product-photos',
+        source: 'Website — 3 Free AI Product Photos',
+        tags: ['free-product-photos', 'source-website'],
+        submitted_at: new Date().toISOString()
+      };
+      setSending(btn, true);
+      try {
+        await postLead(payload);
+        track('generate_lead', { method: 'free_photos', lead_source: '3_free_ai_product_photos' }, 'Lead', { content_name: '3 free AI product photos', content_category: 'free_photos' });
+        form.style.display = 'none';
+        document.getElementById('claim-success').style.display = 'block';
+      } catch (err) {
+        setSending(btn, false);
+        showFormError('claim-error', FORM_ERROR);
+      }
+    }
+
+    async function contactSubmit(e) {
+      e.preventDefault();
+      const form = document.getElementById('contact-form');
+      const btn = form.querySelector('button[type="submit"]');
+      clearFormError('contact-error');
+      if (field(form, 'hp_company').value) {
+        form.style.display = 'none';
+        document.getElementById('contact-success').style.display = 'block';
+        return;
+      }
+      const nameEl = field(form, 'name');
+      const emailEl = field(form, 'email');
+      const storeEl = field(form, 'store_url');
+      const serviceEl = field(form, 'service');
+      const messageEl = field(form, 'message');
+      const name = nameEl.value.trim();
+      const email = emailEl.value.trim();
+      const store = storeEl.value.trim();
+      const service = serviceEl.value;
+      const message = messageEl.value.trim();
+      if (!name) { showFormError('contact-error', 'Add your name.'); nameEl.focus(); return; }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showFormError('contact-error', 'That email does not look complete.'); emailEl.focus(); return; }
+      if (store && !looksLikeUrl(store)) { showFormError('contact-error', 'The store URL needs a full address, like yourstore.com.'); storeEl.focus(); return; }
+      const names = splitName(name);
+      const payload = {
+        name: name,
+        firstName: names.firstName,
+        lastName: names.lastName,
+        email: email,
+        website: store ? normalizeUrl(store) : '',
+        store_url: store ? normalizeUrl(store) : '',
+        service: service,
+        message: message,
+        form: 'contact',
+        source: 'Website — Contact',
+        tags: ['contact-form', 'source-website'],
+        submitted_at: new Date().toISOString()
+      };
+      setSending(btn, true);
+      try {
+        await postLead(payload);
+        track('contact_form_submit', { method: 'contact_form', lead_source: 'contact_form' }, 'Contact', { content_name: 'contact_form' });
+        form.style.display = 'none';
+        document.getElementById('contact-success').style.display = 'block';
+      } catch (err) {
+        setSending(btn, false);
+        showFormError('contact-error', FORM_ERROR);
+      }
+    }
+
+    // CALENDLY — inline embed. Fallback link in the HTML stays until the widget loads,
+    // including when JavaScript is off. A saved ad style still rides along as utm_content.
     const CALENDLY_URL = 'https://calendly.com/anthonyscollins21/30min?hide_gdpr_banner=1';
     let calendlyReady = false;
     function renderCalendly(adStyle) {
@@ -2772,21 +2707,27 @@
       const c = document.getElementById('calendly-container');
       if (!c) return;
       let url = CALENDLY_URL;
-      // pass the chosen ad style into the booking via UTM so it shows on the event
       if (adStyle) url += '&utm_campaign=free-ai-ad&utm_source=website&utm_content=' + encodeURIComponent(adStyle);
+      else url += '&utm_source=website&utm_campaign=3-free-product-photos';
       c.innerHTML = '';
-      Calendly.initInlineWidget({ url, parentElement: c });
+      c.className = 'calendly-embed-live';
+      Calendly.initInlineWidget({ url: url, parentElement: c });
     }
     (function loadCalendly(){
       const c = document.getElementById('calendly-container');
       if (!c) return;
-      c.innerHTML = ''; c.className = 'calendly-embed-live';
       const link = document.createElement('link');
-      link.rel='stylesheet'; link.href='https://assets.calendly.com/assets/external/widget.css';
+      link.rel = 'stylesheet';
+      link.href = 'https://assets.calendly.com/assets/external/widget.css';
       document.head.appendChild(link);
       const s = document.createElement('script');
-      s.src='https://assets.calendly.com/assets/external/widget.js';
-      s.onload=()=>{ calendlyReady = true; renderCalendly(localStorage.getItem('hi_ad_choice')); };
+      s.src = 'https://assets.calendly.com/assets/external/widget.js';
+      s.onload = function () {
+        calendlyReady = true;
+        var saved = '';
+        try { saved = localStorage.getItem('hi_ad_choice') || ''; } catch (err) {}
+        renderCalendly(saved);
+      };
       document.body.appendChild(s);
     })();
 
