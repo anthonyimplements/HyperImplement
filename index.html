@@ -127,7 +127,7 @@
       padding-right: max(48px, env(safe-area-inset-right));
       box-shadow: 0 1px 0 var(--border), 0 4px 24px rgba(0,0,0,0.06);
     }
-    .nav-logo img { height: 34px; display: block; }
+    .nav-logo img { height: 34px; width: auto; max-width: 220px; object-fit: contain; display: block; }
     .nav-links { display: flex; gap: 32px; align-items: center; }
     .nav-links a {
       font-size: 13px; font-weight: 500; letter-spacing: 0.05em;
@@ -1016,8 +1016,9 @@
     .calendly-embed-live {
       position: relative;
       width: 100%;
-      height: 740px;
-      min-height: 740px;
+      height: auto;
+      min-height: 0;
+      padding: 0;
       border-radius: 8px;
       overflow: hidden;
       border: 1px solid var(--border);
@@ -1026,11 +1027,11 @@
     .calendly-embed-live iframe {
       display: block;
       width: 100%;
-      height: 100%;
+      /* Month view before the first calendly.page_height message.
+         The booking column is narrow even on desktop, so Calendly
+         uses the stacked month view. 760px fits that view on a 390px phone. */
+      height: 760px;
       border: 0;
-    }
-    @media(max-width:768px){
-      .calendly-embed-live { height: 1120px; min-height: 1120px; }
     }
 
     /* ─── FOOTER ─── */
@@ -1046,11 +1047,20 @@
     }
     .footer-logo-pill {
       display: inline-flex;
+      width: fit-content;
+      max-width: 100%;
       background: rgba(255,255,255,0.95);
       border-radius: 7px; padding: 8px 14px;
       margin-bottom: 16px;
     }
-    .footer-logo-pill img { height: 26px; display: block; }
+    .footer-logo-pill img {
+      display: block;
+      width: auto;
+      height: auto;
+      max-width: 200px;
+      max-height: 26px;
+      object-fit: contain;
+    }
     .footer-desc { font-size: 13px; color: rgba(255,255,255,0.38); line-height: 1.7; margin-bottom: 0; }
     .footer-col h5 {
       font-family: 'Unbounded', sans-serif; font-size: 10px;
@@ -2546,12 +2556,16 @@
     function sizeCalendly(height) {
       var c = document.getElementById('calendly-container');
       if (!c || !c.classList.contains('calendly-embed-live')) return;
-      var n = parseInt(height, 10);
-      if (!n || n < 480) return;
-      // Calendly's reported height can sit a few pixels short of the last time slot.
-      var px = (n + 28) + 'px';
+      var n = parseFloat(String(height == null ? '' : height).replace(/px/gi, ''));
+      // Ignore the 2px/26px handshake Calendly sends before the calendar paints.
+      // Every later page_height, larger or smaller, becomes the embed height.
+      if (!isFinite(n) || n < 360) return;
+      var px = Math.round(n) + 'px';
+      var iframe = c.querySelector('iframe');
+      if (iframe) iframe.style.height = px;
       c.style.height = px;
-      c.style.minHeight = px;
+      c.style.minHeight = '0px';
+      c.style.padding = '0px';
     }
     window.addEventListener('message', function (e) {
       if (!e || e.origin !== 'https://calendly.com') return;

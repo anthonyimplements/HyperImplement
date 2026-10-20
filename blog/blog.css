@@ -70,7 +70,7 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
   padding-right: max(48px, env(safe-area-inset-right));
   box-shadow: 0 1px 0 var(--border), 0 4px 24px rgba(0,0,0,0.06);
 }
-.nav-logo img { height: 34px; width: auto; display: block; }
+.nav-logo img { height: 34px; width: auto; max-width: 220px; object-fit: contain; display: block; }
 .nav-links { display: flex; gap: 32px; align-items: center; }
 .nav-links a {
   font-size: 13px; font-weight: 500; letter-spacing: 0.05em;
@@ -325,11 +325,20 @@ footer {
 }
 .footer-logo-pill {
   display: inline-flex;
+  width: fit-content;
+  max-width: 100%;
   background: rgba(255,255,255,0.95);
   border-radius: 7px; padding: 8px 14px;
   margin-bottom: 16px;
 }
-.footer-logo-pill img { height: 26px; width: auto; display: block; }
+.footer-logo-pill img {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 200px;
+  max-height: 26px;
+  object-fit: contain;
+}
 .footer-desc { font-size: 13px; color: rgba(255,255,255,0.38); line-height: 1.7; }
 .footer-col .footer-h {
   font-family: 'Unbounded', sans-serif; font-size: 10px;
