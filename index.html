@@ -2010,13 +2010,16 @@
       <script>
         /* Place the dashed ring on the centroid of the three circle boxes.
            Circle heights follow their content, so a fixed top % drifts.
-           Shrink only when the stylesheet size would touch a circle. */
+           On a phone the hole is tighter than a 60px ring: keep the ring at
+           least 40px, leave 6px under the top circle, and if that does not
+           fit on the centroid slide it down toward the bottom pair. */
         (function () {
           var root = document.querySelector('.cycle');
           if (!root) return;
           var nodes = Array.prototype.slice.call(root.querySelectorAll('.cycle-node'));
           var ring = root.querySelector('.cycle-center');
           var spin = ring && ring.querySelector('.spin');
+          var svg = spin && spin.querySelector('svg');
           if (!ring || nodes.length !== 3) return;
 
           function radiusToward(box, tx, ty) {
@@ -2030,6 +2033,13 @@
             return 1 / Math.sqrt((ux * ux) / (a * a) + (uy * uy) / (b * b));
           }
 
+          function gapAt(pos, size, box) {
+            var nx = box.left + box.width / 2;
+            var ny = box.top + box.height / 2;
+            var dist = Math.hypot(nx - pos.x, ny - pos.y);
+            return dist - radiusToward(box, pos.x, pos.y) - size / 2;
+          }
+
           var lock = false;
           function place() {
             if (lock) return;
@@ -2037,7 +2047,8 @@
             try {
               ring.style.width = '';
               ring.style.height = '';
-              if (spin) spin.style.fontSize = '';
+              if (spin) { spin.style.width = ''; spin.style.height = ''; }
+              if (svg) { svg.style.width = ''; svg.style.height = ''; }
 
               var rb = root.getBoundingClientRect();
               if (rb.width < 2 || rb.height < 2) return;
@@ -2050,26 +2061,79 @@
               cx /= boxes.length;
               cy /= boxes.length;
 
-              var minClear = Infinity;
-              for (i = 0; i < boxes.length; i++) {
-                var b = boxes[i];
-                var dist = Math.hypot((b.left + b.width / 2) - cx, (b.top + b.height / 2) - cy);
-                minClear = Math.min(minClear, dist - radiusToward(b, cx, cy));
+              var topBox = boxes[0];
+              for (i = 1; i < boxes.length; i++) {
+                var iy = boxes[i].top + boxes[i].height / 2;
+                if (iy < topBox.top + topBox.height / 2) topBox = boxes[i];
+              }
+              var lower = [];
+              for (i = 0; i < boxes.length; i++) if (boxes[i] !== topBox) lower.push(boxes[i]);
+
+              var mobile = window.matchMedia('(max-width: 768px)').matches;
+              var minTop = mobile ? 7 : 1;
+              var minOther = 1;
+              var minRing = 40;
+              var centroid = { x: cx, y: cy };
+
+              function roomAt(pos) {
+                var limit = (gapAt(pos, 0, topBox) - minTop) * 2;
+                for (var k = 0; k < lower.length; k++) {
+                  var c = (gapAt(pos, 0, lower[k]) - minOther) * 2;
+                  if (c < limit) limit = c;
+                }
+                return limit;
               }
 
               var desired = ring.getBoundingClientRect().width;
-              var fontPx = spin ? parseFloat(getComputedStyle(spin).fontSize) : 0;
+              /* Layout size, not the rotated bounding box. The spin square is 1em. */
+              var iconBase = spin ? parseFloat(getComputedStyle(spin).width) : 0;
+              var room = roomAt(centroid);
+              var pos = centroid;
               var size = desired;
-              var limit = (minClear - 2) * 2;
-              if (isFinite(limit) && limit > 0 && limit < size) size = limit;
+              if (room < desired) {
+                if (mobile && room < minRing) {
+                  size = Math.min(desired, minRing);
+                  var mx = 0, my = 0;
+                  for (var k = 0; k < lower.length; k++) {
+                    mx += lower[k].left + lower[k].width / 2;
+                    my += lower[k].top + lower[k].height / 2;
+                  }
+                  mx /= lower.length;
+                  my /= lower.length;
+                  var lo = 0, hi = 1, best = null;
+                  for (var step = 0; step < 24; step++) {
+                    var t = (lo + hi) / 2;
+                    var p = { x: cx + (mx - cx) * t, y: cy + (my - cy) * t };
+                    var ok = gapAt(p, size, topBox) >= minTop;
+                    if (ok) {
+                      for (var j = 0; j < lower.length; j++) {
+                        if (gapAt(p, size, lower[j]) < minOther) ok = false;
+                      }
+                    }
+                    if (ok) { best = p; hi = t; }
+                    else lo = t;
+                  }
+                  if (best) pos = best;
+                } else if (room > 0) {
+                  size = room;
+                }
+              }
 
               var cs = getComputedStyle(root);
-              ring.style.left = ((cx - rb.left) - (parseFloat(cs.borderLeftWidth) || 0)) + 'px';
-              ring.style.top = ((cy - rb.top) - (parseFloat(cs.borderTopWidth) || 0)) + 'px';
+              ring.style.left = ((pos.x - rb.left) - (parseFloat(cs.borderLeftWidth) || 0)) + 'px';
+              ring.style.top = ((pos.y - rb.top) - (parseFloat(cs.borderTopWidth) || 0)) + 'px';
               if (Math.abs(size - desired) > 0.4) {
                 ring.style.width = size + 'px';
                 ring.style.height = size + 'px';
-                if (spin && desired > 0) spin.style.fontSize = (fontPx * size / desired) + 'px';
+                if (svg && desired > 0 && iconBase > 0) {
+                  var icon = iconBase * (size / desired);
+                  svg.style.width = icon + 'px';
+                  svg.style.height = icon + 'px';
+                  if (spin) {
+                    spin.style.width = icon + 'px';
+                    spin.style.height = icon + 'px';
+                  }
+                }
               }
             } finally {
               lock = false;
