@@ -149,7 +149,7 @@
       padding-right: max(48px, env(safe-area-inset-right));
       box-shadow: 0 1px 0 var(--border), 0 4px 24px rgba(0,0,0,0.06);
     }
-    .nav-logo img { height: 34px; width: auto; display: block; }
+    .nav-logo img { height: 34px; width: auto; max-width: 220px; object-fit: contain; display: block; }
     .nav-links { display: flex; gap: 32px; align-items: center; }
     .nav-links a {
       font-size: 13px; font-weight: 500; letter-spacing: 0.05em;
@@ -381,20 +381,22 @@
     .calendly-embed-live {
       position: relative;
       width: 100%;
-      height: 740px;
-      min-height: 740px;
+      height: auto;
+      min-height: 0;
+      padding: 0;
       border-radius: 8px;
       border: 1px solid var(--border);
       background: #fff;
+      overflow: hidden;
     }
     .calendly-embed-live iframe {
       display: block;
       width: 100%;
-      height: 100%;
+      /* Month view before the first calendly.page_height message.
+         The booking column is narrow even on desktop, so Calendly
+         uses the stacked month view. 760px fits that view on a 390px phone. */
+      height: 760px;
       border: 0;
-    }
-    @media (max-width: 768px) {
-      .calendly-embed-live { height: 1120px; min-height: 1120px; }
     }
 
     footer {
@@ -409,10 +411,27 @@
       border-bottom: 1px solid rgba(255,255,255,0.07);
     }
     .footer-logo-pill {
-      display: inline-flex; background: rgba(255,255,255,0.95);
-      border-radius: 7px; padding: 8px 14px; margin-bottom: 16px;
+      display: inline-flex;
+      width: fit-content;
+      max-width: 100%;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255,255,255,0.95);
+      border-radius: 7px;
+      padding: 8px;
+      margin-bottom: 16px;
     }
-    .footer-logo-pill img { height: 26px; width: auto; display: block; }
+    .footer-logo-pill img {
+      display: block;
+      width: auto;
+      height: 26px;
+      max-width: none;
+      flex: 0 0 auto;
+      object-fit: contain;
+    }
+    @media (max-width: 768px) {
+      .footer-logo-pill img { height: 32px; }
+    }
     .footer-desc { font-size: 13px; color: rgba(255,255,255,0.4); line-height: 1.7; max-width: 280px; }
     .footer-col h5 {
       font-family: 'Unbounded', sans-serif; font-size: 10px;
@@ -1044,15 +1063,30 @@
       window.setTimeout(function () { if (!popupSeen()) openPopup(); }, 900);
 
       var scheduleTracked = false;
+      // First settled page_height is the month view. Calendly's spot picker
+      // keeps a 144px empty tail under the time zone; hide that only while
+      // the reported height is still the month view. Any other height (times
+      // or the booking form) uses the full value so nothing is clipped.
+      var calendlyMonthHeight = 0;
+      var CALENDLY_MONTH_TAIL = 136;
       function sizeCalendly(height) {
         var container = document.getElementById('calendly-container');
         if (!container || !container.classList.contains('calendly-embed-live')) return;
-        var n = parseInt(height, 10);
-        if (!n || n < 480) return;
-        // Calendly's reported height can sit a few pixels short of the last time slot.
-        var px = (n + 28) + 'px';
-        container.style.height = px;
-        container.style.minHeight = px;
+        var n = parseFloat(String(height == null ? '' : height).replace(/px/gi, ''));
+        if (!isFinite(n) || n < 360) return;
+        if (!calendlyMonthHeight) calendlyMonthHeight = n;
+        var monthView = Math.abs(n - calendlyMonthHeight) < 48;
+        if (monthView) calendlyMonthHeight = n;
+        var full = Math.round(n);
+        // The card border is inside the height. Give the times list and the
+        // booking form a few pixels so the last control is not flush with it.
+        var visible = monthView ? Math.max(560, full - CALENDLY_MONTH_TAIL) : full + 8;
+        var iframe = container.querySelector('iframe');
+        if (iframe) iframe.style.height = full + 'px';
+        container.style.height = visible + 'px';
+        container.style.minHeight = '0px';
+        container.style.padding = '0px';
+        container.style.overflow = 'hidden';
       }
       window.addEventListener('message', function (e) {
         if (!e || e.origin !== 'https://calendly.com') return;
