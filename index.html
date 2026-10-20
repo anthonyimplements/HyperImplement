@@ -1049,17 +1049,23 @@
       display: inline-flex;
       width: fit-content;
       max-width: 100%;
+      align-items: center;
+      justify-content: center;
       background: rgba(255,255,255,0.95);
-      border-radius: 7px; padding: 8px 14px;
+      border-radius: 7px;
+      padding: 8px;
       margin-bottom: 16px;
     }
     .footer-logo-pill img {
       display: block;
       width: auto;
-      height: auto;
-      max-width: 200px;
-      max-height: 26px;
+      height: 26px;
+      max-width: none;
+      flex: 0 0 auto;
       object-fit: contain;
+    }
+    @media (max-width: 768px) {
+      .footer-logo-pill img { height: 32px; }
     }
     .footer-desc { font-size: 13px; color: rgba(255,255,255,0.38); line-height: 1.7; margin-bottom: 0; }
     .footer-col h5 {
@@ -2553,19 +2559,30 @@
     }
 
     let scheduleTracked = false;
+    // First settled page_height is the month view. Calendly's spot picker
+    // keeps a 144px empty tail under the time zone; hide that only while
+    // the reported height is still the month view. Any other height (times
+    // or the booking form) uses the full value so nothing is clipped.
+    var calendlyMonthHeight = 0;
+    var CALENDLY_MONTH_TAIL = 136;
     function sizeCalendly(height) {
       var c = document.getElementById('calendly-container');
       if (!c || !c.classList.contains('calendly-embed-live')) return;
       var n = parseFloat(String(height == null ? '' : height).replace(/px/gi, ''));
-      // Ignore the 2px/26px handshake Calendly sends before the calendar paints.
-      // Every later page_height, larger or smaller, becomes the embed height.
       if (!isFinite(n) || n < 360) return;
-      var px = Math.round(n) + 'px';
+      if (!calendlyMonthHeight) calendlyMonthHeight = n;
+      var monthView = Math.abs(n - calendlyMonthHeight) < 48;
+      if (monthView) calendlyMonthHeight = n;
+      var full = Math.round(n);
+      // The card border is inside the height. Give the times list and the
+      // booking form a few pixels so the last control is not flush with it.
+      var visible = monthView ? Math.max(560, full - CALENDLY_MONTH_TAIL) : full + 8;
       var iframe = c.querySelector('iframe');
-      if (iframe) iframe.style.height = px;
-      c.style.height = px;
+      if (iframe) iframe.style.height = full + 'px';
+      c.style.height = visible + 'px';
       c.style.minHeight = '0px';
       c.style.padding = '0px';
+      c.style.overflow = 'hidden';
     }
     window.addEventListener('message', function (e) {
       if (!e || e.origin !== 'https://calendly.com') return;

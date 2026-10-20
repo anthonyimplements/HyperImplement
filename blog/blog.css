@@ -327,17 +327,23 @@ footer {
   display: inline-flex;
   width: fit-content;
   max-width: 100%;
+  align-items: center;
+  justify-content: center;
   background: rgba(255,255,255,0.95);
-  border-radius: 7px; padding: 8px 14px;
+  border-radius: 7px;
+  padding: 8px;
   margin-bottom: 16px;
 }
 .footer-logo-pill img {
   display: block;
   width: auto;
-  height: auto;
-  max-width: 200px;
-  max-height: 26px;
+  height: 26px;
+  max-width: none;
+  flex: 0 0 auto;
   object-fit: contain;
+}
+@media (max-width: 768px) {
+  .footer-logo-pill img { height: 32px; }
 }
 .footer-desc { font-size: 13px; color: rgba(255,255,255,0.38); line-height: 1.7; }
 .footer-col .footer-h {
