@@ -1720,15 +1720,128 @@
     @media(prefers-reduced-motion:reduce){.reel-track{animation:none;}.reel-mask{overflow-x:auto;}}
     @media(max-width:960px){.hero-grid{grid-template-columns:1fr;gap:28px;}.hero-film{order:-1;max-width:640px;margin-top:8px;}.film-chip{width:100px;right:-20px;top:-36px;}}
     @media(max-width:768px){.hero{padding:96px 20px 32px;}.hero-chip{width:110px!important;top:78px!important;bottom:auto!important;right:-18px!important;}.hero .hero-grid h1{font-size:clamp(28px,8vw,40px);}.reel-mask{margin:0 -20px;}.reel-card{height:150px;}.side-more{font-size:0;}.side-list{padding-left:18px;}.reel-label small{display:none;}}
-    .proof-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
-    .proof-card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:22px;box-shadow:0 10px 30px rgba(20,20,20,.04);transition:transform .3s cubic-bezier(.16,1,.3,1),box-shadow .3s;}
-    .proof-card:hover{transform:translateY(-3px);box-shadow:0 20px 44px rgba(249,91,61,.12);}
-    .proof-tag{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent-dark);}
-    .proof-client{font-family:'Unbounded',sans-serif;font-weight:900;font-size:16px;color:var(--text);margin:8px 0 2px;letter-spacing:-.01em;}
-    .proof-what{font-size:12.5px;font-weight:600;color:var(--text-muted);margin-bottom:10px;}
-    .proof-did{font-size:13.5px;line-height:1.6;color:var(--text-sec);margin:0;}
-    @media(max-width:960px){.proof-grid{grid-template-columns:1fr 1fr;}}
-    @media(max-width:560px){.proof-grid{grid-template-columns:1fr;}}
+    /* Real Brands cabinet — dark instrument, one orange accent */
+    .arcade{
+      --arc-bg:#06070C; --arc-panel:#0E0F11; --arc-card:#131417; --arc-ink:#F7F7F8; --arc-sec:#9CA3AD; --arc-line:rgba(255,255,255,0.08);
+      position:relative; width:100%; max-width:640px; margin:0 auto;
+      background:var(--arc-bg); color:var(--arc-ink);
+      border:1px solid var(--arc-line); border-radius:10px;
+      padding:12px; box-shadow:0 24px 48px rgba(0,0,0,0.18);
+    }
+    .arcade-top{
+      display:flex; align-items:center; justify-content:space-between;
+      padding:2px 6px 10px; margin-bottom:10px;
+      border-bottom:1px solid var(--arc-line);
+    }
+    .arcade-kicker{
+      display:inline-flex; align-items:center; gap:8px;
+      font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.1em;
+      text-transform:uppercase; color:var(--arc-sec);
+    }
+    .arcade-dot{width:6px; height:6px; border-radius:50%; background:#F95B3D; flex-shrink:0;}
+    .arcade-count{font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.08em; color:var(--arc-sec);}
+    .arcade-body{display:flex; align-items:stretch; gap:10px; min-width:0;}
+    .arcade-screen{
+      position:relative; flex:1; min-width:0;
+      background:#08090A; border:1px solid var(--arc-line); border-radius:8px;
+      overflow:hidden;
+    }
+    .arcade-viewport{position:relative; z-index:1;}
+    .arcade.is-live .arcade-screen{height:320px;}
+    .arcade.is-live .arcade-viewport{height:100%; overflow:hidden;}
+    .arcade-fade{
+      display:none; position:absolute; left:0; right:0; height:46px; z-index:3;
+      pointer-events:none;
+    }
+    .arcade.is-live .arcade-fade{display:block;}
+    .arcade-fade-top{top:0; background:linear-gradient(to bottom, #08090A 0%, rgba(8,9,10,0) 100%);}
+    .arcade-fade-bottom{bottom:0; background:linear-gradient(to top, #08090A 0%, rgba(8,9,10,0) 100%);}
+    .arcade-shade{
+      display:none; position:absolute; inset:0; z-index:2; pointer-events:none; border-radius:inherit;
+      box-shadow:inset 0 18px 22px rgba(0,0,0,0.45), inset 0 -18px 22px rgba(0,0,0,0.45);
+    }
+    .arcade.is-live .arcade-shade{display:block;}
+    .arcade-track{display:flex; flex-direction:column; gap:12px; padding:0 10px; will-change:transform;}
+    .arcade:not(.is-live) .arcade-track{padding:10px;}
+    .arcade-card{
+      position:relative; flex:0 0 auto;
+      background:var(--arc-card); border:1px solid var(--arc-line); border-radius:8px;
+      padding:14px 14px 15px;
+    }
+    .arcade-card-top{display:flex; align-items:center; gap:8px; min-height:16px;}
+    .arcade-idx,.arcade-tag,.arcade-landed{
+      font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.08em;
+      text-transform:uppercase; color:var(--arc-sec);
+    }
+    .arcade-landed{margin-left:auto; color:#F95B3D; visibility:hidden;}
+    .arcade-card.is-landed .arcade-landed{visibility:visible;}
+    .arcade-client{
+      font-family:'Unbounded',sans-serif; font-weight:700; font-size:16px;
+      letter-spacing:-0.03em; line-height:1.15; color:var(--arc-ink);
+      margin:8px 0 4px;
+    }
+    .arcade-what{font-size:13px; font-weight:500; color:var(--arc-sec); margin:0 0 8px;}
+    .arcade-did{font-size:14px; line-height:1.55; color:var(--arc-sec); margin:0; max-width:62ch;}
+    .arcade-card.is-landed{
+      border-color:rgba(249,91,61,0.55);
+      box-shadow:inset 2px 0 0 #F95B3D, 0 0 0 1px rgba(249,91,61,0.35), 0 0 24px rgba(249,91,61,0.25);
+    }
+    .arcade-side{
+      position:relative; flex:0 0 68px; width:68px; min-height:148px;
+      background:var(--arc-panel); border:1px solid var(--arc-line); border-radius:8px;
+    }
+    .arcade:not(.is-live) .arcade-side{align-self:flex-start; height:168px;}
+    .arcade-groove{
+      position:absolute; left:50%; top:14px; bottom:14px; width:8px; transform:translateX(-50%);
+      border-radius:4px; background:#08090A; box-shadow:inset 0 0 0 1px rgba(255,255,255,0.06);
+      pointer-events:none;
+    }
+    .arcade-spin{
+      position:absolute; inset:0; width:100%; height:100%; min-width:44px; min-height:44px;
+      appearance:none; -webkit-appearance:none;
+      background:transparent; border:0; padding:0; margin:0; cursor:grab;
+      touch-action:none; color:inherit; font:inherit;
+      user-select:none; -webkit-user-select:none;
+    }
+    .arcade-spin:active{cursor:grabbing;}
+    .arcade-spin:focus-visible{outline:2px solid #F95B3D; outline-offset:2px;}
+    .arcade-lever{
+      position:absolute; left:50%; top:16px; width:52px;
+      transform:translate3d(-50%, 0, 0);
+      display:flex; flex-direction:column; align-items:center;
+      pointer-events:none;
+    }
+    .arcade-fulcrum{
+      width:8px; height:8px; border-radius:50%; background:#131417;
+      border:1px solid rgba(255,255,255,0.16); flex-shrink:0;
+    }
+    .arcade-stem{width:3px; height:26px; border-radius:2px; background:#5C6370; flex-shrink:0;}
+    .arcade-knob{width:48px; height:auto; aspect-ratio:1/1; object-fit:contain; display:block; -webkit-user-drag:none; user-select:none;}
+    .arcade-foot{
+      margin-top:10px; padding:8px 6px 2px;
+      border-top:1px solid var(--arc-line);
+    }
+    .arcade-hint{
+      font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.06em;
+      color:var(--arc-sec); margin:0;
+    }
+    .arcade-status{
+      position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden;
+      clip:rect(0,0,0,0); clip-path:inset(50%); white-space:nowrap; border:0;
+    }
+    .arcade-screen,.arcade-viewport{touch-action:pan-y;}
+    @media(min-width:800px){
+      .arcade{padding:16px;}
+      .arcade-side{flex-basis:92px; width:92px;}
+      .arcade.is-live .arcade-side{min-height:180px;}
+      .arcade-knob{width:64px;}
+      .arcade-lever{width:68px;}
+      .arcade-client{font-size:18px;}
+      .arcade-card{padding:16px 16px 18px;}
+    }
+    @media(prefers-reduced-motion:reduce){
+      .arcade,.arcade *{animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important;}
+    }
     @media(min-width:961px){.hero-chip{width:clamp(340px,32vw,480px);right:calc(25vw - clamp(170px,16vw,240px));top:44%;}}
   </style>
 </head>
@@ -2073,31 +2186,76 @@
     </div>
 
     <div class="inner">
-      <div class="proof-grid">
-        <div class="proof-card reveal">
-          <div class="proof-tag">Restaurant</div>
-          <div class="proof-client">SHO Wagyu</div>
-          <div class="proof-what">AI video ads</div>
-          <p class="proof-did">Cinematic ads for their wagyu and dining room &mdash; vertical, square and wide cuts for every platform.</p>
+      <div class="arcade" id="arcade" data-state="static">
+        <div class="arcade-top">
+          <span class="arcade-kicker"><span class="arcade-dot" aria-hidden="true"></span>Real work</span>
+          <span class="arcade-count">04</span>
         </div>
-        <div class="proof-card reveal">
-          <div class="proof-tag">Furniture</div>
-          <div class="proof-client">OSOS Home &amp; Patio</div>
-          <div class="proof-what">AI product ads</div>
-          <p class="proof-did">A library of couch and patio ads featuring their real products, plus an AI spokesperson.</p>
+        <div class="arcade-body">
+          <div class="arcade-screen" id="arcade-screen">
+            <div class="arcade-viewport" id="arcade-viewport" aria-busy="false">
+              <div class="arcade-track" id="arcade-track">
+                <article class="arcade-card" data-i="0">
+                  <div class="arcade-card-top">
+                    <span class="arcade-idx">01</span>
+                    <span class="arcade-tag">Restaurant</span>
+                    <span class="arcade-landed" aria-hidden="true">Landed</span>
+                  </div>
+                  <h3 class="arcade-client">SHO Wagyu</h3>
+                  <p class="arcade-what">AI video ads</p>
+                  <p class="arcade-did">Cinematic ads for their wagyu and dining room &mdash; vertical, square and wide cuts for every platform.</p>
+                </article>
+                <article class="arcade-card" data-i="1">
+                  <div class="arcade-card-top">
+                    <span class="arcade-idx">02</span>
+                    <span class="arcade-tag">Furniture</span>
+                    <span class="arcade-landed" aria-hidden="true">Landed</span>
+                  </div>
+                  <h3 class="arcade-client">OSOS Home &amp; Patio</h3>
+                  <p class="arcade-what">AI product ads</p>
+                  <p class="arcade-did">A library of couch and patio ads featuring their real products, plus an AI spokesperson.</p>
+                </article>
+                <article class="arcade-card" data-i="2">
+                  <div class="arcade-card-top">
+                    <span class="arcade-idx">03</span>
+                    <span class="arcade-tag">Barbershop</span>
+                    <span class="arcade-landed" aria-hidden="true">Landed</span>
+                  </div>
+                  <h3 class="arcade-client">The Artist Barbershop</h3>
+                  <p class="arcade-what">AI ads + brand</p>
+                  <p class="arcade-did">Shop ads and a refreshed brand look that show off the space and the craft.</p>
+                </article>
+                <article class="arcade-card" data-i="3">
+                  <div class="arcade-card-top">
+                    <span class="arcade-idx">04</span>
+                    <span class="arcade-tag">Golf Carts</span>
+                    <span class="arcade-landed" aria-hidden="true">Landed</span>
+                  </div>
+                  <h3 class="arcade-client">Golf Cart Company</h3>
+                  <p class="arcade-what">AI product ads</p>
+                  <p class="arcade-did">Product ads that put their carts in scenes that would cost a fortune to shoot.</p>
+                </article>
+              </div>
+            </div>
+            <div class="arcade-fade arcade-fade-top" aria-hidden="true"></div>
+            <div class="arcade-fade arcade-fade-bottom" aria-hidden="true"></div>
+            <div class="arcade-shade" aria-hidden="true"></div>
+          </div>
+          <div class="arcade-side" id="arcade-side">
+            <div class="arcade-groove" aria-hidden="true"></div>
+            <button type="button" class="arcade-spin" id="arcade-spin" aria-label="Spin the reel" aria-controls="arcade-viewport">
+              <span class="arcade-lever" id="arcade-lever" aria-hidden="true">
+                <span class="arcade-fulcrum"></span>
+                <span class="arcade-stem"></span>
+                <img class="arcade-knob" src="ChipLogo.png" alt="" width="1024" height="1024" draggable="false" />
+              </span>
+            </button>
+          </div>
         </div>
-        <div class="proof-card reveal">
-          <div class="proof-tag">Barbershop</div>
-          <div class="proof-client">The Artist Barbershop</div>
-          <div class="proof-what">AI ads + brand</div>
-          <p class="proof-did">Shop ads and a refreshed brand look that show off the space and the craft.</p>
+        <div class="arcade-foot">
+          <p class="arcade-hint" id="arcade-hint">Pull the lever</p>
         </div>
-        <div class="proof-card reveal">
-          <div class="proof-tag">Golf Carts</div>
-          <div class="proof-client">Golf Cart Company</div>
-          <div class="proof-what">AI product ads</div>
-          <p class="proof-did">Product ads that put their carts in scenes that would cost a fortune to shoot.</p>
-        </div>
+        <p class="arcade-status" id="arcade-status" aria-live="polite" aria-atomic="true"></p>
       </div>
     </div>
 
@@ -2110,6 +2268,405 @@
       </div>
     </div>
   </section>
+
+  <script>
+  (function () {
+    var arcade = document.getElementById('arcade');
+    var track = document.getElementById('arcade-track');
+    var screen = document.getElementById('arcade-screen');
+    var viewport = document.getElementById('arcade-viewport');
+    var side = document.getElementById('arcade-side');
+    var spinBtn = document.getElementById('arcade-spin');
+    var lever = document.getElementById('arcade-lever');
+    var hint = document.getElementById('arcade-hint');
+    var status = document.getElementById('arcade-status');
+    if (!arcade || !track || !screen || !viewport || !side || !spinBtn || !lever) return;
+
+    var mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+    var originals = [].slice.call(track.children).filter(function (el) {
+      return el.classList.contains('arcade-card');
+    });
+    var count = originals.length;
+    if (!count) return;
+
+    var clones = [];
+    var cardH = 0;
+    var pitch = 0;
+    var cycle = 0;
+    var windowH = 0;
+    var offset = 0;
+    var mode = 'static';
+    var landedIndex = 0;
+    var staticIndex = -1;
+    var onScreen = false;
+    var tabVisible = true;
+    var rafId = 0;
+    var lastTs = 0;
+    var spinState = null;
+    var holdTimer = 0;
+    var leverToken = 0;
+    var drag = null;
+    var suppressClick = false;
+    var IDLE = 20;
+
+    function reduced() { return mq.matches; }
+    function canRun() {
+      return !reduced() && onScreen && tabVisible && mode !== 'static';
+    }
+    function refreshScreen() {
+      var r = arcade.getBoundingClientRect();
+      var next = r.bottom > 8 && r.top < window.innerHeight - 8;
+      if (next === onScreen) return;
+      onScreen = next;
+      if (canRun()) resume(); else freeze();
+    }
+    function setState(s) { arcade.dataset.state = s; }
+    function readCard(i) {
+      var card = originals[i];
+      return {
+        client: card.querySelector('.arcade-client').textContent.trim(),
+        what: card.querySelector('.arcade-what').textContent.trim(),
+        did: card.querySelector('.arcade-did').textContent.trim()
+      };
+    }
+    function announce(i) {
+      var p = readCard(i);
+      status.textContent = 'Landed on ' + p.client + '. ' + p.what + '. ' + p.did;
+    }
+    function clearLanded() {
+      var nodes = track.querySelectorAll('.arcade-card.is-landed');
+      for (var i = 0; i < nodes.length; i++) nodes[i].classList.remove('is-landed');
+    }
+    function applyLanded(i) {
+      clearLanded();
+      var nodes = track.querySelectorAll('.arcade-card');
+      for (var n = 0; n < nodes.length; n++) {
+        if (Number(nodes[n].getAttribute('data-i')) === i) nodes[n].classList.add('is-landed');
+      }
+    }
+    function setCopies(live) {
+      for (var i = 0; i < clones.length; i++) clones[i].remove();
+      clones = [];
+      if (!live) return;
+      for (var c = 0; c < originals.length; c++) {
+        var clone = originals[c].cloneNode(true);
+        clone.setAttribute('aria-hidden', 'true');
+        track.appendChild(clone);
+        clones.push(clone);
+      }
+    }
+    function layoutHeights() {
+      var cards = track.querySelectorAll('.arcade-card');
+      for (var i = 0; i < cards.length; i++) cards[i].style.minHeight = '';
+      var max = 0;
+      for (var j = 0; j < cards.length; j++) max = Math.max(max, cards[j].offsetHeight);
+      if (!max) return;
+      for (var k = 0; k < cards.length; k++) cards[k].style.minHeight = max + 'px';
+      cardH = max;
+      var gap = parseFloat(getComputedStyle(track).rowGap);
+      pitch = cardH + (isFinite(gap) ? gap : 12);
+      cycle = pitch * count;
+    }
+    function desiredScreen() {
+      var peek = window.innerWidth < 700 ? 26 : 36;
+      return Math.round(Math.min(420, cardH + peek * 2));
+    }
+    function wrap(v) {
+      if (!cycle) return 0;
+      v = v % cycle;
+      if (v < 0) v += cycle;
+      return v;
+    }
+    function offsetForCard(i) {
+      return i * pitch - (windowH - cardH) / 2;
+    }
+    function loopDist(a, b) {
+      var d = Math.abs(a - b) % cycle;
+      return Math.min(d, cycle - d);
+    }
+    function centeredIndex() {
+      if (!cycle) return 0;
+      var center = (offset + windowH / 2) % cycle;
+      var best = 0;
+      var bestDist = Infinity;
+      for (var i = 0; i < count; i++) {
+        var cardCenter = (i * pitch + cardH / 2) % cycle;
+        var d = loopDist(cardCenter, center);
+        if (d < bestDist) { bestDist = d; best = i; }
+      }
+      return best;
+    }
+    function paint() {
+      track.style.transform = 'translate3d(0,' + (-offset) + 'px,0)';
+    }
+    function deltaTo(target) {
+      var dest = wrap(offsetForCard(target));
+      var delta = dest - offset;
+      if (delta <= 1) delta += cycle;
+      delta += cycle * 2;
+      return delta;
+    }
+    var measuring = false;
+    function remeasure(forceIndex) {
+      if (measuring) return;
+      measuring = true;
+      try { remeasureBody(forceIndex); }
+      finally { measuring = false; }
+    }
+    function remeasureBody(forceIndex) {
+      layoutHeights();
+      if (!cycle || !cardH) return;
+      if (reduced()) {
+        screen.style.height = '';
+        track.style.transform = 'none';
+        return;
+      }
+      screen.style.height = desiredScreen() + 'px';
+      windowH = viewport.clientHeight || desiredScreen();
+      if (mode === 'spin' && spinState && forceIndex == null) {
+        offset = wrap(offsetForCard(centeredIndex()));
+        spinState.start = offset;
+        spinState.delta = deltaTo(spinState.target);
+        spinState.t0 = performance.now();
+        spinState.pausedElapsed = 0;
+        spinState.frozen = false;
+        paint();
+        return;
+      }
+      var idx = forceIndex != null ? forceIndex : (mode === 'hold' ? landedIndex : centeredIndex());
+      offset = wrap(offsetForCard(idx));
+      paint();
+    }
+    function stopRaf() {
+      if (rafId) cancelAnimationFrame(rafId);
+      rafId = 0;
+      lastTs = 0;
+    }
+    function schedule() {
+      if (rafId || !canRun()) return;
+      if (mode !== 'idle' && mode !== 'spin') return;
+      rafId = requestAnimationFrame(tick);
+    }
+    function tick(ts) {
+      rafId = 0;
+      if (!canRun()) { lastTs = 0; return; }
+      var dt = lastTs ? Math.min(0.05, (ts - lastTs) / 1000) : 0;
+      lastTs = ts;
+      if (mode === 'idle') {
+        offset = wrap(offset + IDLE * dt);
+        paint();
+      } else if (mode === 'spin' && spinState) {
+        var t = Math.min(1, (ts - spinState.t0) / spinState.dur);
+        var e = 1 - Math.pow(1 - t, 4);
+        offset = wrap(spinState.start + spinState.delta * e);
+        paint();
+        if (t >= 1) { finishSpin(); return; }
+      }
+      schedule();
+    }
+    function freeze() {
+      if (mode === 'spin' && spinState && !spinState.frozen) {
+        spinState.pausedElapsed = performance.now() - spinState.t0;
+        spinState.frozen = true;
+      }
+      stopRaf();
+    }
+    function resume() {
+      if (!canRun()) return;
+      if (mode === 'spin' && spinState && spinState.frozen) {
+        spinState.t0 = performance.now() - spinState.pausedElapsed;
+        spinState.frozen = false;
+      }
+      schedule();
+    }
+    function finishSpin() {
+      var target = spinState ? spinState.target : centeredIndex();
+      spinState = null;
+      landedIndex = target;
+      offset = wrap(offsetForCard(target));
+      paint();
+      mode = 'hold';
+      setState('landed');
+      applyLanded(target);
+      hint.textContent = 'Landed · ' + readCard(target).client;
+      announce(target);
+      viewport.setAttribute('aria-busy', 'false');
+      clearTimeout(holdTimer);
+      holdTimer = setTimeout(function () {
+        if (mode !== 'hold') return;
+        clearLanded();
+        hint.textContent = 'Pull the lever';
+        mode = 'idle';
+        setState('idle');
+        schedule();
+      }, 4200);
+    }
+    function startSpin() {
+      clearTimeout(holdTimer);
+      if (reduced()) { stepStatic(); return; }
+      clearLanded();
+      var current = centeredIndex();
+      var target = Math.floor(Math.random() * count);
+      if (count > 1 && target === current) target = (target + 1) % count;
+      spinState = {
+        start: offset,
+        delta: deltaTo(target),
+        target: target,
+        dur: 1200,
+        t0: performance.now(),
+        pausedElapsed: 0,
+        frozen: false
+      };
+      mode = 'spin';
+      setState('spin');
+      hint.textContent = 'Spinning';
+      viewport.setAttribute('aria-busy', 'true');
+      schedule();
+    }
+    function stepStatic() {
+      staticIndex = (staticIndex + 1) % count;
+      applyLanded(staticIndex);
+      var info = readCard(staticIndex);
+      hint.textContent = 'Landed · ' + info.client;
+      announce(staticIndex);
+      setState('static');
+      originals[staticIndex].scrollIntoView({ block: 'nearest', behavior: 'auto' });
+    }
+    function setLever(y) {
+      lever.style.transform = 'translate3d(-50%,' + y + 'px,0)';
+    }
+    function maxTravel() {
+      return Math.max(48, side.clientHeight - lever.offsetHeight - 28);
+    }
+    function springBack() {
+      lever.style.transition = reduced() ? 'none' : 'transform 460ms cubic-bezier(0.34, 1.56, 0.64, 1)';
+      setLever(0);
+    }
+    function nudgeLever() {
+      if (reduced()) return;
+      var travel = Math.min(maxTravel(), 76);
+      var token = ++leverToken;
+      lever.style.transition = 'transform 150ms cubic-bezier(0.4, 0, 0.2, 1)';
+      setLever(travel);
+      var back = function () {
+        if (token !== leverToken) return;
+        leverToken++;
+        springBack();
+      };
+      var onEnd = function (e) {
+        if (e.propertyName !== 'transform') return;
+        lever.removeEventListener('transitionend', onEnd);
+        back();
+      };
+      lever.addEventListener('transitionend', onEnd);
+      setTimeout(function () {
+        lever.removeEventListener('transitionend', onEnd);
+        back();
+      }, 220);
+    }
+    function syncMotion() {
+      clearTimeout(holdTimer);
+      spinState = null;
+      stopRaf();
+      clearLanded();
+      var live = !reduced();
+      setCopies(live);
+      arcade.classList.toggle('is-live', live);
+      arcade.classList.toggle('is-static', !live);
+      viewport.setAttribute('aria-busy', 'false');
+      hint.textContent = 'Pull the lever';
+      if (!live) {
+        track.style.transform = 'none';
+        screen.style.height = '';
+        mode = 'static';
+        staticIndex = -1;
+        setState('static');
+        layoutHeights();
+        return;
+      }
+      mode = 'idle';
+      setState('idle');
+      remeasure(0);
+      resume();
+    }
+
+    spinBtn.addEventListener('pointerdown', function (e) {
+      if (e.button != null && e.button !== 0) return;
+      if (spinBtn.setPointerCapture) {
+        try { spinBtn.setPointerCapture(e.pointerId); } catch (err) {}
+      }
+      leverToken++;
+      drag = { y: e.clientY, moved: 0 };
+      lever.style.transition = 'none';
+    });
+    spinBtn.addEventListener('pointermove', function (e) {
+      if (!drag) return;
+      var dy = Math.max(0, e.clientY - drag.y);
+      drag.moved = dy;
+      if (!reduced()) setLever(Math.min(dy, maxTravel()));
+    });
+    function endDrag(commit) {
+      if (!drag) return;
+      var moved = drag.moved;
+      drag = null;
+      springBack();
+      if (commit && moved >= 28) {
+        suppressClick = true;
+        setTimeout(function () { suppressClick = false; }, 500);
+        startSpin();
+      }
+    }
+    spinBtn.addEventListener('pointerup', function () { endDrag(true); });
+    spinBtn.addEventListener('pointercancel', function () { endDrag(false); });
+    spinBtn.addEventListener('click', function () {
+      if (suppressClick) { suppressClick = false; return; }
+      nudgeLever();
+      startSpin();
+    });
+
+    var rect = arcade.getBoundingClientRect();
+    onScreen = rect.bottom > 0 && rect.top < window.innerHeight;
+    if (window.IntersectionObserver) {
+      var io = new IntersectionObserver(function (entries) {
+        onScreen = false;
+        for (var i = 0; i < entries.length; i++) {
+          if (entries[i].isIntersecting) onScreen = true;
+        }
+        if (canRun()) resume(); else freeze();
+      }, { threshold: 0 });
+      io.observe(arcade);
+    } else {
+      onScreen = true;
+    }
+    tabVisible = document.visibilityState !== 'hidden';
+    document.addEventListener('visibilitychange', function () {
+      tabVisible = document.visibilityState !== 'hidden';
+      if (canRun()) resume(); else freeze();
+    });
+    window.addEventListener('scroll', refreshScreen, { passive: true });
+    if (mq.addEventListener) mq.addEventListener('change', syncMotion);
+    else if (mq.addListener) mq.addListener(syncMotion);
+    window.addEventListener('resize', function () { refreshScreen(); remeasure(); });
+    if (window.ResizeObserver) {
+      var lastW = 0;
+      var resizeQueued = false;
+      var ro = new ResizeObserver(function () {
+        var w = arcade.clientWidth;
+        if (Math.abs(w - lastW) < 2) return;
+        lastW = w;
+        if (resizeQueued) return;
+        resizeQueued = true;
+        requestAnimationFrame(function () {
+          resizeQueued = false;
+          remeasure();
+        });
+      });
+      ro.observe(arcade);
+    }
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { remeasure(); });
+    syncMotion();
+  })();
+  </script>
 
   <!-- ═══ FOUNDER LINK (full story on about.html) ═══ -->
   <div class="founder-strip reveal">
