@@ -236,9 +236,24 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
 .toc summary { cursor: pointer; list-style: none; }
 .toc summary::-webkit-details-marker { display: none; }
 .toc .label { margin-bottom: 0; }
-.toc ol { margin: 12px 0 0; padding-left: 18px; }
-.toc li { margin: 0 0 8px; }
-.toc a { color: var(--text-sec); font-size: 14px; line-height: 1.4; text-decoration: none; }
+.toc ol { margin: 12px 0 0; padding: 0; list-style: none; }
+.toc li {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  margin: 0 0 8px;
+}
+/* Chip mark from the existing apple-touch icon. Zoom past its transparent padding
+   so the circular chip itself is ~15px, without stretching the square asset. */
+.toc li::before {
+  content: "";
+  flex: none;
+  width: 15px;
+  height: 15px;
+  margin-top: 2px;
+  background: url("../apple-touch-icon.png") center / 119% no-repeat;
+}
+.toc a { color: var(--text-sec); font-size: 14px; line-height: 1.4; text-decoration: none; min-width: 0; }
 .toc a:hover { color: var(--accent-deep); }
 
 .post { max-width: 68ch; min-width: 0; }
