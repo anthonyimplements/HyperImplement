@@ -2007,6 +2007,86 @@
 
         <div class="cycle-center" aria-hidden="true"><span class="spin"><svg viewBox="0 0 1000 1000" aria-hidden="true" focusable="false"><path fill="currentColor" d="M514.5 438H446.5V324L451.5 257L448.5 256L396.5 299Q362.5 327 334.5 352.5Q306.5 378 286 407Q265.5 436 254 471Q242.5 506 242.5 552Q242.5 603 262 646.5Q281.5 690 315.5 722Q349.5 754 396 772.5Q442.5 791 495.5 791Q549.5 791 597 773.5Q644.5 756 680.5 724Q716.5 692 737 646.5Q757.5 601 757.5 544Q757.5 459 720 402Q682.5 345 613.5 301L649.5 250Q687.5 273 720 304Q752.5 335 776 372.5Q799.5 410 812.5 453Q825.5 496 825.5 544Q825.5 612 800 669Q774.5 726 729.5 767Q684.5 808 624.5 831.5Q564.5 855 495.5 855Q428.5 855 370 831.5Q311.5 808 268 766.5Q224.5 725 199.5 670Q174.5 615 174.5 552Q174.5 492 192 447Q209.5 402 236 366.5Q262.5 331 295 303Q327.5 275 357.5 251L406.5 211L405.5 208L335.5 213H221.5V145H514.5Z"/></svg></span></div>
       </div>
+      <script>
+        /* Place the dashed ring on the centroid of the three circle boxes.
+           Circle heights follow their content, so a fixed top % drifts.
+           Shrink only when the stylesheet size would touch a circle. */
+        (function () {
+          var root = document.querySelector('.cycle');
+          if (!root) return;
+          var nodes = Array.prototype.slice.call(root.querySelectorAll('.cycle-node'));
+          var ring = root.querySelector('.cycle-center');
+          var spin = ring && ring.querySelector('.spin');
+          if (!ring || nodes.length !== 3) return;
+
+          function radiusToward(box, tx, ty) {
+            var cx = box.left + box.width / 2;
+            var cy = box.top + box.height / 2;
+            var dx = tx - cx, dy = ty - cy;
+            var len = Math.hypot(dx, dy) || 1;
+            var a = box.width / 2, b = box.height / 2;
+            if (a <= 0 || b <= 0) return 0;
+            var ux = dx / len, uy = dy / len;
+            return 1 / Math.sqrt((ux * ux) / (a * a) + (uy * uy) / (b * b));
+          }
+
+          var lock = false;
+          function place() {
+            if (lock) return;
+            lock = true;
+            try {
+              ring.style.width = '';
+              ring.style.height = '';
+              if (spin) spin.style.fontSize = '';
+
+              var rb = root.getBoundingClientRect();
+              if (rb.width < 2 || rb.height < 2) return;
+              var boxes = nodes.map(function (n) { return n.getBoundingClientRect(); });
+              var cx = 0, cy = 0, i;
+              for (i = 0; i < boxes.length; i++) {
+                cx += boxes[i].left + boxes[i].width / 2;
+                cy += boxes[i].top + boxes[i].height / 2;
+              }
+              cx /= boxes.length;
+              cy /= boxes.length;
+
+              var minClear = Infinity;
+              for (i = 0; i < boxes.length; i++) {
+                var b = boxes[i];
+                var dist = Math.hypot((b.left + b.width / 2) - cx, (b.top + b.height / 2) - cy);
+                minClear = Math.min(minClear, dist - radiusToward(b, cx, cy));
+              }
+
+              var desired = ring.getBoundingClientRect().width;
+              var fontPx = spin ? parseFloat(getComputedStyle(spin).fontSize) : 0;
+              var size = desired;
+              var limit = (minClear - 2) * 2;
+              if (isFinite(limit) && limit > 0 && limit < size) size = limit;
+
+              var cs = getComputedStyle(root);
+              ring.style.left = ((cx - rb.left) - (parseFloat(cs.borderLeftWidth) || 0)) + 'px';
+              ring.style.top = ((cy - rb.top) - (parseFloat(cs.borderTopWidth) || 0)) + 'px';
+              if (Math.abs(size - desired) > 0.4) {
+                ring.style.width = size + 'px';
+                ring.style.height = size + 'px';
+                if (spin && desired > 0) spin.style.fontSize = (fontPx * size / desired) + 'px';
+              }
+            } finally {
+              lock = false;
+            }
+          }
+
+          place();
+          addEventListener('resize', place);
+          addEventListener('load', place);
+          if (document.fonts && document.fonts.ready) document.fonts.ready.then(place);
+          if (window.ResizeObserver) {
+            var ro = new ResizeObserver(place);
+            ro.observe(root);
+            nodes.forEach(function (n) { ro.observe(n); });
+          }
+        })();
+      </script>
 
       <!-- Conclusion card -->
       <div class="gap-conclusion reveal">
