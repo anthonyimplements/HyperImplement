@@ -3,16 +3,12 @@ tokens.json
 client-secret.json
 unique-grid-453623-e2-9c3e79de4a70.json
 *.json
-!package.json
 
 # Secrets — never commit
 .env
 **/.env
 *.env
 
-# YouTube engine — large scraped assets
+# Local-only tooling. Not part of the public site.
 youtube/renders/
-youtube/swipe-file/thumbs/
-
-# Content ID Pipeline snapshot (public video metadata — needed by hosted dashboard)
-!youtube/swipe-file/winners.json
+youtube/swipe-file/
