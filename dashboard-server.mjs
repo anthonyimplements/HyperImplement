@@ -420,6 +420,7 @@ const server = http.createServer(async (req, res) => {
 });
 
 server.listen(PORT, async () => {
+  if (process.env.NO_OPEN) { console.log('Running in background (no auto-open).'); return; }
   console.log(`\n🚀 HyperImplement Analytics Server running at http://localhost:${PORT}\n`);
 
   const authed = !!(oauth2Client.credentials?.access_token || oauth2Client.credentials?.refresh_token);

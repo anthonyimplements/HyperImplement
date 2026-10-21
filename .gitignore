@@ -16,3 +16,5 @@ youtube/swipe-file/thumbs/
 
 # Content ID Pipeline snapshot (public video metadata — needed by hosted dashboard)
 !youtube/swipe-file/winners.json
+tokens.expired-*.json
+dashboard-server.log
