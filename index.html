@@ -1693,6 +1693,28 @@
     @media(max-width:960px){.proof-grid{grid-template-columns:1fr 1fr;}}
     @media(max-width:560px){.proof-grid{grid-template-columns:1fr;}}
     @media(min-width:961px){.hero-chip{width:clamp(340px,32vw,480px);right:calc(25vw - clamp(170px,16vw,240px));top:44%;}}
+    .side-list li{border-top:1px solid var(--border);padding-top:0;}
+    .sub summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:1fr auto;column-gap:10px;row-gap:2px;grid-template-rows:auto auto;align-content:start;align-items:start;padding:10px 0;border-radius:8px;}
+    .sub summary::-webkit-details-marker{display:none;}
+    .sub summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+    .sub summary strong{grid-column:1;font-size:13.5px;color:var(--text);font-weight:600;transition:color .2s;}
+    .sub summary span{grid-column:1;font-size:13px;color:var(--text-sec);line-height:1.5;}
+    .sub-plus{grid-column:2;grid-row:1/3;align-self:center;width:18px;height:18px;border-radius:50%;border:1px solid var(--border);position:relative;transition:transform .3s cubic-bezier(.16,1,.3,1),background .2s,border-color .2s;}
+    .sub-plus::before,.sub-plus::after{content:'';position:absolute;left:50%;top:50%;width:8px;height:1.5px;margin:-.75px 0 0 -4px;background:var(--text-muted);}
+    .sub-plus::after{transform:rotate(90deg);}
+    .sub:hover strong,.sub[open] strong{color:var(--accent);}
+    .sub[open] .sub-plus{transform:rotate(45deg);background:var(--accent);border-color:var(--accent);}
+    .sub[open] .sub-plus::before,.sub[open] .sub-plus::after{background:#fff;}
+    .sub-d{margin:0 0 12px;padding:10px 12px;border-radius:10px;background:rgba(249,91,61,.06);border-left:2px solid var(--accent);font-size:13px;line-height:1.6;color:var(--text);animation:engIn .3s cubic-bezier(.16,1,.3,1);}
+    .sub-d b{font-weight:600;}
+    .side-list{gap:0;}
+    .ways{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:0 0 28px;}
+    .way{display:flex;flex-direction:column;gap:4px;padding:18px 20px;border-radius:16px;background:#fff;border:1px solid var(--border);}
+    .way-hot{border-color:var(--accent);box-shadow:0 14px 34px rgba(249,91,61,.14);}
+    .way-k{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent-dark);}
+    .way strong{font-family:'Unbounded',sans-serif;font-size:15px;font-weight:800;color:var(--text);}
+    .way span:last-child{font-size:13.5px;color:var(--text-sec);line-height:1.5;}
+    @media(max-width:760px){.ways{grid-template-columns:1fr;}}
   </style>
 </head>
 <body>
@@ -1836,18 +1858,18 @@
           <details class="side side-ads">
             <summary>
               <span class="side-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M10 9.5v5l4.5-2.5z" fill="currentColor"/></svg></span>
-              <span class="side-txt"><span class="side-k">What we make</span><span class="side-title">The Ad Studio</span><span class="side-line">Scroll-stopping AI video &amp; image ads, made for your brand.</span></span>
+              <span class="side-txt"><span class="side-k">What we make</span><span class="side-title">The Ad Studio</span><span class="side-line">Scroll-stopping AI ads, built on what&rsquo;s already winning in your market.</span></span>
               <span class="side-more">What does this mean? <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg></span>
             </summary>
-            <ul class="side-list"><li><strong>We study what already works.</strong><span>Your niche and your competitors&rsquo; best ads, so we start from proven angles.</span></li><li><strong>We make the ads.</strong><span>Cinematic, UGC, product and avatar ads &mdash; studio quality, without the studio bill.</span></li><li><strong>We plan where they run.</strong><span>Offers, hooks and a testing plan built around your numbers.</span></li><li><strong>We launch &amp; scale them.</strong><span>Meta and Google campaigns &mdash; we cut what flops and scale what wins.</span></li></ul>
+            <ul class="side-list"><li><details class="sub"><summary><strong>We study what&rsquo;s already working.</strong><span>Intel on the ads winning in your market.</span><i class="sub-plus" aria-hidden="true"></i></summary><p class="sub-d">Our research tools pull the ads your competitors are actively running &mdash; it&rsquo;s all public in the ad libraries &mdash; so we see exactly which creatives, hooks and offers are performing before we make anything.</p></details></li><li><details class="sub"><summary><strong>We make the ads.</strong><span>The styles that perform best right now.</span><i class="sub-plus" aria-hidden="true"></i></summary><p class="sub-d"><b>UGC</b> (creator-style videos that feel like a real customer talking), <b>AI avatar</b> spokespeople, cinematic product and food shots, and motion ads &mdash; studio quality, without the studio bill.</p></details></li><li><details class="sub"><summary><strong>We build on proven hooks.</strong><span>Start from what already converts.</span><i class="sub-plus" aria-hidden="true"></i></summary><p class="sub-d">A research system finds the viral hooks and offers working in your niche, and we adapt them to your brand &mdash; so you begin from proven results, not a guess.</p></details></li><li><details class="sub"><summary><strong>Optional: we run them for you.</strong><span>Add-on &mdash; or run them yourself.</span><i class="sub-plus" aria-hidden="true"></i></summary><p class="sub-d">Want hands-off? We connect your Meta &amp; Google ad accounts, launch the campaigns and scale the winners. Prefer to run ads in-house? Take the creatives and go.</p></details></li></ul>
           </details>
           <details class="side side-sys">
             <summary>
               <span class="side-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12a8 8 0 0 1 13.7-5.7L20 8.6M20 4v4.6h-4.6M20 12a8 8 0 0 1-13.7 5.7L4 15.4M4 20v-4.6h4.6"/></svg></span>
-              <span class="side-txt"><span class="side-k">What we install</span><span class="side-title">The Growth System</span><span class="side-line">An AI content machine that grows your socials on autopilot.</span></span>
+              <span class="side-txt"><span class="side-k">What we install</span><span class="side-title">The Growth System</span><span class="side-line">Send us your videos &mdash; we turn them into daily posts on every platform.</span></span>
               <span class="side-more">What does this mean? <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg></span>
             </summary>
-            <ul class="side-list"><li><strong>One video becomes twenty.</strong><span>We edit your long-form and auto-clip it into captioned Shorts, Reels &amp; TikToks.</span></li><li><strong>AI versions of you post daily.</strong><span>Avatar swarms publish on many accounts, so your reach multiplies without more filming.</span></li><li><strong>A brain that knows your brand.</strong><span>It plans topics, writes hooks and captions, and schedules every week.</span></li><li><strong>You just watch it grow.</strong><span>Posting runs itself; we tune it to what your audience actually watches.</span></li></ul>
+            <ul class="side-list"><li><details class="sub"><summary><strong>One video becomes twenty.</strong><span>Your footage, edited and posted everywhere.</span><i class="sub-plus" aria-hidden="true"></i></summary><p class="sub-d">Send us what you film &mdash; the food, the chef, the experience. We cut it into short clips and connect your TikTok, Instagram, Facebook and YouTube to post <b>3&ndash;5 times a day, automatically</b>. A steady organic presence without opening an app.</p></details></li><li><details class="sub"><summary><strong>AI characters that post for you.</strong><span>A face for your brand &mdash; real or cartoon.</span><i class="sub-plus" aria-hidden="true"></i></summary><p class="sub-d">An AI avatar or a cartoon mascot with the same look and voice every time. It describes your dishes, explains your product or service in depth, and builds a brand around one recognizable character &mdash; no one has to be on camera.</p></details></li><li><details class="sub"><summary><strong>A brain that knows your business.</strong><span>Everything you offer, and everything that performs.</span><i class="sub-plus" aria-hidden="true"></i></summary><p class="sub-d">We build a database of your menu, products and services plus every post&rsquo;s engagement. Because the AI knows your business, it plans topics, writes captions and handles the repetitive marketing work the way you would.</p></details></li><li><details class="sub"><summary><strong>You just steer.</strong><span>Tell us what you like &mdash; we keep tuning.</span><i class="sub-plus" aria-hidden="true"></i></summary><p class="sub-d">You don&rsquo;t run anything. Give us direction &mdash; more of this, less of that &mdash; and we keep refining the system as it learns what your audience actually watches.</p></details></li></ul>
           </details>
         </div>
         <div class="hero-cta-group reveal d4">
@@ -1872,6 +1894,11 @@
       <div class="howfree-head reveal">
         <div class="label">How We Work</div>
         <h2 class="section-title">Research. Create. <em>Scale.</em></h2>
+      </div>
+      <div class="ways reveal">
+        <div class="way"><span class="way-k">Option 1</span><strong>We make your ads</strong><span>You get the creatives and run them yourself.</span></div>
+        <div class="way"><span class="way-k">Option 2</span><strong>We grow your socials</strong><span>Your videos, edited and auto-posted daily.</span></div>
+        <div class="way way-hot"><span class="way-k">Option 3 &middot; Recommended</span><strong>Both, fully managed</strong><span>Ads + growth system + Meta &amp; Google campaigns.</span></div>
       </div>
       <div class="howfree-steps reveal">
         <div class="howfree-step">
@@ -1900,24 +1927,24 @@
   <div class="stats-section">
     <div class="stats-grid">
       <div class="stat-item reveal">
-        <span class="stat-category">Systems Built</span>
-        <div class="stat-value"><span>50+</span></div>
-        <div class="stat-label">AI systems built and deployed for brands</div>
+        <span class="stat-category">Views Generated</span>
+        <div class="stat-value"><span>1.5M+</span></div>
+        <div class="stat-label">Views generated across social media for our clients</div>
       </div>
       <div class="stat-item reveal d1">
-        <span class="stat-category">Social Impressions</span>
-        <div class="stat-value"><span>100K+</span></div>
-        <div class="stat-label">Social media impressions generated for our clients</div>
+        <span class="stat-category">Posts Per Day</span>
+        <div class="stat-value"><span>3&ndash;5</span></div>
+        <div class="stat-label">Posted automatically to every platform &mdash; no one opening an app</div>
       </div>
       <div class="stat-item reveal d2">
-        <span class="stat-category">Marketing Agents</span>
-        <div class="stat-value"><span>10</span></div>
-        <div class="stat-label">AI agents deployed to auto-clip brand content, then edit &amp; post it with Claude Code</div>
+        <span class="stat-category">Clips Per Video</span>
+        <div class="stat-value"><span>20</span></div>
+        <div class="stat-label">Short-form clips cut from every long video you send us</div>
       </div>
       <div class="stat-item reveal d3">
-        <span class="stat-category">Implementation Rate</span>
-        <div class="stat-value"><span>100%</span></div>
-        <div class="stat-label">Every engagement ends with something live and working</div>
+        <span class="stat-category">Platforms</span>
+        <div class="stat-value"><span>5</span></div>
+        <div class="stat-label">TikTok, Instagram, Facebook, YouTube &amp; LinkedIn &mdash; from one upload</div>
       </div>
     </div>
   </div>
@@ -2655,7 +2682,7 @@
       v.loop=false; v.poster='work/film-v2.jpg'; v.src='work/film-v2.mp4'; v.muted=false; v.play().catch(()=>{});
       lb.classList.add('open'); document.body.style.overflow='hidden';
     }
-    if(matchMedia('(hover:hover)').matches){document.querySelectorAll('.side').forEach(d=>{d.addEventListener('mouseenter',()=>d.open=true);d.addEventListener('mouseleave',()=>d.open=false);});}
+    if(matchMedia('(hover:hover)').matches){document.querySelectorAll('.sub').forEach(d=>{d.addEventListener('mouseenter',()=>d.open=true);d.addEventListener('mouseleave',()=>d.open=false);});document.querySelectorAll('.side').forEach(d=>{d.addEventListener('mouseenter',()=>d.open=true);d.addEventListener('mouseleave',()=>d.open=false);});}
 
     let workIdx = 0;
     function renderWork() {
