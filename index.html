@@ -1762,7 +1762,7 @@
     .proof-client{font-family:'Unbounded',sans-serif;font-weight:900;font-size:16px;color:var(--text);margin:8px 0 2px;letter-spacing:-.01em;}
     .proof-what{font-size:12.5px;font-weight:600;color:var(--text-muted);margin-bottom:10px;}
     .proof-did{font-size:13.5px;line-height:1.6;color:var(--text-sec);margin:0;}
-    @media(max-width:960px){.proof-grid{grid-template-columns:1fr 1fr;}}
+    @media(max-width:960px){.proof-grid{grid-template-columns:repeat(2,minmax(0,1fr));}}
     @media(max-width:560px){.proof-grid{grid-template-columns:1fr;}}
     @media(min-width:961px){.hero-chip{width:clamp(340px,32vw,480px);right:calc(25vw - clamp(170px,16vw,240px));top:44%;}}
     .side-list li{border-top:1px solid var(--border);padding-top:0;}
@@ -1806,6 +1806,23 @@
     .proof-list li::before{content:'';position:absolute;left:0;top:7px;width:6px;height:6px;border-radius:50%;background:var(--accent);}
     .proof-out{margin-top:14px;padding:10px 12px;border-radius:10px;background:rgba(249,91,61,.07);border-left:2px solid var(--accent);font-size:12.5px;line-height:1.5;color:var(--text);font-weight:500;}
     .proof-out span{display:block;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent-dark);margin-bottom:3px;font-weight:400;}
+    .proof-grid{grid-template-columns:repeat(3,minmax(0,1fr));}
+    .proof-card{min-width:0;}
+    @media(max-width:960px){.proof-grid{grid-template-columns:repeat(2,minmax(0,1fr));}}
+    @media(max-width:560px){.proof-grid{grid-template-columns:1fr;}}
+    .proof-greek .proof-tag{display:flex;align-items:center;justify-content:space-between;}
+    .bear-av{width:44px;height:44px;object-fit:contain;filter:drop-shadow(0 4px 10px rgba(249,91,61,.25));}
+    .bear-strip{margin:14px -6px 0;overflow:hidden;border-radius:12px;-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);}
+    .bear-track{display:flex;gap:8px;width:max-content;padding:4px 6px;animation:reelMove 22s linear infinite;}
+    .bear-strip:hover .bear-track{animation-play-state:paused;}
+    .bear-tile{width:104px;height:104px;flex-shrink:0;border:0;padding:0;border-radius:10px;overflow:hidden;cursor:pointer;background:#1a1a1a;transition:transform .3s cubic-bezier(.16,1,.3,1);}
+    .bear-tile:hover{transform:scale(1.05);}
+    .bear-tile:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+    .bear-tile:active{transform:scale(.97);}
+    .bear-tile video{width:100%;height:100%;object-fit:cover;display:block;}
+    @media(prefers-reduced-motion:reduce){.bear-track{animation:none;}.bear-strip{overflow-x:auto;}}
+    .av-ex{display:flex;align-items:center;gap:10px;margin-top:10px;font-size:12px;color:var(--text-sec);font-style:italic;}
+    .av-ex img{width:40px;height:40px;object-fit:contain;flex-shrink:0;}
   </style>
 </head>
 <body>
@@ -1869,7 +1886,7 @@
               <span class="side-txt"><span class="side-k">What we install</span><span class="side-title">The Growth System</span><span class="side-line">Send us your videos &mdash; we turn them into daily posts on every platform.</span></span>
               <span class="side-more">What does this mean? <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg></span>
             </summary>
-            <ul class="side-list"><li><details class="sub"><summary><strong>One video becomes twenty.</strong><span>Your footage, edited and posted everywhere.</span><i class="sub-plus" aria-hidden="true"></i></summary><p class="sub-d">Send us what you film &mdash; your product, your service, your team, your space. We cut it into short clips and connect your TikTok, Instagram, Facebook and YouTube to post <b>3&ndash;5 times a day, automatically</b>. A steady organic presence without opening an app.</p></details></li><li><details class="sub"><summary><strong>AI characters that post for you.</strong><span>A face for your brand &mdash; real or cartoon.</span><i class="sub-plus" aria-hidden="true"></i></summary><p class="sub-d">An AI avatar or a cartoon mascot with the same look and voice every time. It explains your product, service or menu in depth, and builds a brand around one recognizable character &mdash; no one has to be on camera.</p></details></li><li><details class="sub"><summary><strong>A brain that knows your business.</strong><span>Everything you offer, and everything that performs.</span><i class="sub-plus" aria-hidden="true"></i></summary><p class="sub-d">We build a database of everything you offer plus every post&rsquo;s engagement. Because the AI knows your business, it plans topics, writes captions and handles the repetitive marketing work the way you would.</p></details></li><li><details class="sub"><summary><strong>You just steer.</strong><span>Tell us what you like &mdash; we keep tuning.</span><i class="sub-plus" aria-hidden="true"></i></summary><p class="sub-d">You don&rsquo;t run anything. Give us direction &mdash; more of this, less of that &mdash; and we keep refining the system as it learns what your audience actually watches.</p></details></li></ul>
+            <ul class="side-list"><li><details class="sub"><summary><strong>One video becomes twenty.</strong><span>Your footage, edited and posted everywhere.</span><i class="sub-plus" aria-hidden="true"></i></summary><p class="sub-d">Send us what you film &mdash; your product, your service, your team, your space. We cut it into short clips and connect your TikTok, Instagram, Facebook and YouTube to post <b>3&ndash;5 times a day, automatically</b>. A steady organic presence without opening an app.</p></details></li><li><details class="sub"><summary><strong>AI characters that post for you.</strong><span>A face for your brand &mdash; real or cartoon.</span><i class="sub-plus" aria-hidden="true"></i></summary><p class="sub-d">An AI avatar or a cartoon mascot with the same look and voice every time. It explains your product, service or menu in depth, and builds a brand around one recognizable character &mdash; no one has to be on camera.<span class="av-ex"><img src="work/bear/bear-avatar.png" alt="" width="40" height="40" />Example: the Greek dancing bear we built for a local festival.</span></p></details></li><li><details class="sub"><summary><strong>A brain that knows your business.</strong><span>Everything you offer, and everything that performs.</span><i class="sub-plus" aria-hidden="true"></i></summary><p class="sub-d">We build a database of everything you offer plus every post&rsquo;s engagement. Because the AI knows your business, it plans topics, writes captions and handles the repetitive marketing work the way you would.</p></details></li><li><details class="sub"><summary><strong>You just steer.</strong><span>Tell us what you like &mdash; we keep tuning.</span><i class="sub-plus" aria-hidden="true"></i></summary><p class="sub-d">You don&rsquo;t run anything. Give us direction &mdash; more of this, less of that &mdash; and we keep refining the system as it learns what your audience actually watches.</p></details></li></ul>
           </details>
         </div>
         <div class="hero-cta-group reveal d4">
@@ -2299,6 +2316,16 @@
 
     <div class="inner">
       <div class="proof-grid">
+        <details class="proof-card proof-greek reveal">
+          <summary>
+            <div class="proof-tag">Local Festival <img class="bear-av" src="work/bear/bear-avatar.png" alt="AI Greek dancing bear avatar" width="44" height="44" /></div>
+            <div class="proof-client">A viral AI mascot + daily posting</div>
+            <span class="proof-more">See what we did <i class="sub-plus" aria-hidden="true"></i></span>
+          </summary>
+          <div class="bear-strip"><div class="bear-track"><button type="button" class="bear-tile" onclick="openClip('work/bear/bear-1.mp4','work/bear/bear-1.jpg')" aria-label="Play Greek bear clip 1"><video src="work/bear/bear-1.mp4" poster="work/bear/bear-1.jpg" muted loop playsinline preload="none"></video></button><button type="button" class="bear-tile" onclick="openClip('work/bear/bear-2.mp4','work/bear/bear-2.jpg')" aria-label="Play Greek bear clip 2"><video src="work/bear/bear-2.mp4" poster="work/bear/bear-2.jpg" muted loop playsinline preload="none"></video></button><button type="button" class="bear-tile" onclick="openClip('work/bear/bear-3.mp4','work/bear/bear-3.jpg')" aria-label="Play Greek bear clip 3"><video src="work/bear/bear-3.mp4" poster="work/bear/bear-3.jpg" muted loop playsinline preload="none"></video></button><button type="button" class="bear-tile" onclick="openClip('work/bear/bear-4.mp4','work/bear/bear-4.jpg')" aria-label="Play Greek bear clip 4"><video src="work/bear/bear-4.mp4" poster="work/bear/bear-4.jpg" muted loop playsinline preload="none"></video></button><button type="button" class="bear-tile" onclick="openClip('work/bear/bear-5.mp4','work/bear/bear-5.jpg')" aria-label="Play Greek bear clip 5"><video src="work/bear/bear-5.mp4" poster="work/bear/bear-5.jpg" muted loop playsinline preload="none"></video></button><button tabindex="-1" aria-hidden="true" type="button" class="bear-tile" onclick="openClip('work/bear/bear-1.mp4','work/bear/bear-1.jpg')" aria-label="Play Greek bear clip 1"><video src="work/bear/bear-1.mp4" poster="work/bear/bear-1.jpg" muted loop playsinline preload="none"></video></button><button tabindex="-1" aria-hidden="true" type="button" class="bear-tile" onclick="openClip('work/bear/bear-2.mp4','work/bear/bear-2.jpg')" aria-label="Play Greek bear clip 2"><video src="work/bear/bear-2.mp4" poster="work/bear/bear-2.jpg" muted loop playsinline preload="none"></video></button><button tabindex="-1" aria-hidden="true" type="button" class="bear-tile" onclick="openClip('work/bear/bear-3.mp4','work/bear/bear-3.jpg')" aria-label="Play Greek bear clip 3"><video src="work/bear/bear-3.mp4" poster="work/bear/bear-3.jpg" muted loop playsinline preload="none"></video></button><button tabindex="-1" aria-hidden="true" type="button" class="bear-tile" onclick="openClip('work/bear/bear-4.mp4','work/bear/bear-4.jpg')" aria-label="Play Greek bear clip 4"><video src="work/bear/bear-4.mp4" poster="work/bear/bear-4.jpg" muted loop playsinline preload="none"></video></button><button tabindex="-1" aria-hidden="true" type="button" class="bear-tile" onclick="openClip('work/bear/bear-5.mp4','work/bear/bear-5.jpg')" aria-label="Play Greek bear clip 5"><video src="work/bear/bear-5.mp4" poster="work/bear/bear-5.jpg" muted loop playsinline preload="none"></video></button></div></div>
+          <ul class="proof-list"><li>Researched how other festivals promote themselves organically.</li><li>Created an AI avatar &mdash; a Greek dancing bear &mdash; who starred in every piece of content.</li><li>The bear talked about the food, previewed the festival and even walked the real festival grounds.</li><li>An automated content system posted a new bear video to Facebook every day, with the same character and voice each time.</li></ul>
+          <div class="proof-out"><span>Output</span>50,000+ local impressions &middot; one recognizable AI mascot &middot; daily organic posting</div>
+        </details>
         <details class="proof-card reveal">
           <summary>
             <div class="proof-tag">Golf Cart Dealer</div>
@@ -2682,9 +2709,10 @@
       const io=new IntersectionObserver(es=>es.forEach(e=>{const v=e.target; if(e.isIntersecting && !matchMedia('(prefers-reduced-motion: reduce)').matches){v.play().catch(()=>{});} else v.pause();}),{root:t.parentElement,rootMargin:'0px 200px'});
       t.querySelectorAll('video').forEach(v=>io.observe(v));
     }
+    document.querySelectorAll('.proof-greek').forEach(d=>d.addEventListener('toggle',()=>d.querySelectorAll('video').forEach(v=>{if(d.open){v.preload='auto';v.play().catch(()=>{});}else v.pause();})));
     function openClip(src,poster){
       const lb=document.getElementById('work-lb'), v=document.getElementById('work-video');
-      document.getElementById('work-lb-title').textContent='Musky Fest \u2014 AI Short Film';
+      document.getElementById('work-lb-title').textContent=src.includes('bear')?'Greek Festival \u2014 AI Mascot':'Musky Fest \u2014 AI Short Film';
       document.getElementById('work-lb-client').textContent='';
       v.poster=poster; v.src=src; v.loop=true; v.play().catch(()=>{});
       lb.classList.add('open'); document.body.style.overflow='hidden';
