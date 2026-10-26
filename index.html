@@ -1792,6 +1792,20 @@
     .stat-proof:hover,.stat-proof:focus-visible{background:var(--accent);color:#fff;}
     .stat-proof:focus-visible{outline:2px solid #fff;outline-offset:2px;}
     .stat-proof:active{transform:scale(.96);}
+    .reel-badge{position:absolute;z-index:1;left:10px;bottom:10px;padding:4px 10px;border-radius:999px;background:var(--accent);color:#fff;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.06em;text-transform:uppercase;box-shadow:0 6px 16px rgba(249,91,61,.4);}
+    .proof-grid{align-items:start;}
+    .proof-card summary{list-style:none;cursor:pointer;}
+    .proof-card summary::-webkit-details-marker{display:none;}
+    .proof-card summary:focus-visible{outline:2px solid var(--accent);outline-offset:4px;border-radius:8px;}
+    .proof-more{display:flex;align-items:center;justify-content:space-between;margin-top:14px;font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);transition:color .2s;}
+    .proof-card:hover .proof-more,.proof-card[open] .proof-more{color:var(--accent);}
+    .proof-card[open] .sub-plus{transform:rotate(45deg);background:var(--accent);border-color:var(--accent);}
+    .proof-card[open] .sub-plus::before,.proof-card[open] .sub-plus::after{background:#fff;}
+    .proof-list{list-style:none;margin:14px 0 0;padding:0;display:grid;gap:10px;animation:engIn .3s cubic-bezier(.16,1,.3,1);}
+    .proof-list li{position:relative;padding-left:14px;font-size:13px;line-height:1.55;color:var(--text-sec);}
+    .proof-list li::before{content:'';position:absolute;left:0;top:7px;width:6px;height:6px;border-radius:50%;background:var(--accent);}
+    .proof-out{margin-top:14px;padding:10px 12px;border-radius:10px;background:rgba(249,91,61,.07);border-left:2px solid var(--accent);font-size:12.5px;line-height:1.5;color:var(--text);font-weight:500;}
+    .proof-out span{display:block;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent-dark);margin-bottom:3px;font-weight:400;}
   </style>
 </head>
 <body>
@@ -1915,7 +1929,7 @@
       <div class="stat-item reveal">
         <span class="stat-category">Views Generated</span>
         <div class="stat-value"><span>1.5M+</span></div>
-        <div class="stat-label">Views generated across social media for our clients <a class="stat-proof" href="https://www.instagram.com/p/DeqPRzQxM_j/" target="_blank" rel="noopener">Proof &rarr;</a></div>
+        <div class="stat-label">Views generated across social media for our clients <a class="stat-proof" href="https://www.instagram.com/p/DeqPRzQxM_j/" target="_blank" rel="noopener">Viral clip proof &rarr;</a></div>
       </div>
       <div class="stat-item reveal d1">
         <span class="stat-category">Posts Per Day</span>
@@ -1930,7 +1944,7 @@
       <div class="stat-item reveal d3">
         <span class="stat-category">Platforms</span>
         <div class="stat-value"><span>5</span></div>
-        <div class="stat-label">TikTok, Instagram, Facebook, YouTube &amp; LinkedIn &mdash; from one upload</div>
+        <div class="stat-label">TikTok, Instagram, Facebook, YouTube &amp; LinkedIn &mdash; posted in one click, hours saved every week</div>
       </div>
     </div>
   </div>
@@ -2003,8 +2017,8 @@
       <div class="gap-node-intro reveal">
         <div class="label" style="text-align:center;">The Creative Gap</div>
         <div class="gap-headline" style="text-align:center;">
-          The same product photo.<br/>
-          The same <em>ads</em>.
+          Ads alone don&rsquo;t<br/>
+          build <em>attention</em>.
         </div>
       </div>
 
@@ -2023,20 +2037,20 @@
         <div class="cycle-node n1">
           <img class="cycle-img" src="assets/gap-noise.webp" alt="" width="480" height="480" />
           <div class="cycle-step">01</div>
-          <div class="cycle-title">The Same Still</div>
-          <p class="cycle-text">One photo, used on the listing, the ad, and the post.</p>
+          <div class="cycle-title">Try a Few Ads</div>
+          <p class="cycle-text">Some posts, some paid ads. No system behind them.</p>
         </div>
         <div class="cycle-node n2">
           <img class="cycle-img" src="assets/gap-awareness.webp" alt="" width="480" height="480" />
           <div class="cycle-step">02</div>
-          <div class="cycle-title">Nothing New Goes Live</div>
-          <p class="cycle-text">The creative sits. Months pass. The product doesn't.</p>
+          <div class="cycle-title">Never Refined</div>
+          <p class="cycle-text">No one studies what worked, so results stay flat.</p>
         </div>
         <div class="cycle-node n3">
           <img class="cycle-img" src="assets/gap-workflow.webp" alt="" width="480" height="480" />
           <div class="cycle-step">03</div>
-          <div class="cycle-title">Back to the Old Shoot</div>
-          <p class="cycle-text">Another quote. Another wait. Then the cycle repeats.</p>
+          <div class="cycle-title">Back to the Old Way</div>
+          <p class="cycle-text">&ldquo;It didn&rsquo;t work.&rdquo; Then the cycle repeats.</p>
         </div>
 
         <div class="cycle-center" aria-hidden="true"><span class="spin"><svg viewBox="0 0 1000 1000" aria-hidden="true" focusable="false"><path fill="currentColor" d="M514.5 438H446.5V324L451.5 257L448.5 256L396.5 299Q362.5 327 334.5 352.5Q306.5 378 286 407Q265.5 436 254 471Q242.5 506 242.5 552Q242.5 603 262 646.5Q281.5 690 315.5 722Q349.5 754 396 772.5Q442.5 791 495.5 791Q549.5 791 597 773.5Q644.5 756 680.5 724Q716.5 692 737 646.5Q757.5 601 757.5 544Q757.5 459 720 402Q682.5 345 613.5 301L649.5 250Q687.5 273 720 304Q752.5 335 776 372.5Q799.5 410 812.5 453Q825.5 496 825.5 544Q825.5 612 800 669Q774.5 726 729.5 767Q684.5 808 624.5 831.5Q564.5 855 495.5 855Q428.5 855 370 831.5Q311.5 808 268 766.5Q224.5 725 199.5 670Q174.5 615 174.5 552Q174.5 492 192 447Q209.5 402 236 366.5Q262.5 331 295 303Q327.5 275 357.5 251L406.5 211L405.5 208L335.5 213H221.5V145H514.5Z"/></svg></span></div>
@@ -2188,8 +2202,8 @@
 
       <!-- Conclusion card -->
       <div class="gap-conclusion reveal">
-        <div class="gap-conclusion-title">Break the loop. <em>Make new creative.</em></div>
-        <p class="gap-conclusion-sub">We make product photos, UGC, and video ads from your products. Start with 3 free photos of your brand.</p>
+        <div class="gap-conclusion-title">Break the loop. <em>Post daily. Learn. Go viral.</em></div>
+        <p class="gap-conclusion-sub">Most companies lean only on paid ads. An AI system that posts every day &mdash; and studies what actually gets watched &mdash; builds attention for anything you sell. Then paid ads amplify the proven winners.</p>
         <a href="#claim" class="btn-primary" style="font-size:12px;">Claim 3 Free Photos <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
       </div>
 
@@ -2202,8 +2216,8 @@
   <section class="pipeline-section" id="services">
     <div class="pipeline-head reveal">
       <div class="label">What We Do</div>
-      <h2 class="section-title">Photos, Ads, and UGC.</h2>
-      <p class="section-sub">Researched from your product and your market, then made to run.</p>
+      <h2 class="section-title">Content, Ads &amp; Growth.</h2>
+      <p class="section-sub">Researched from your business and your market, then made to post and run.</p>
     </div>
 
     <div class="pipe-stage reveal">
@@ -2213,13 +2227,13 @@
         <!-- half A -->
         <div class="pipe-cluster">
           <span class="pipe-cluster-label">Research</span>
-          <div class="pipe-chip"><div class="pc-tag">Product</div><div class="pc-name">Your Product &amp; Listing</div></div>
-          <div class="pipe-chip"><div class="pc-tag">Market</div><div class="pc-name">Competitor Ad Research</div></div>
+          <div class="pipe-chip"><div class="pc-tag">Business</div><div class="pc-name">Your Offer &amp; Audience</div></div>
+          <div class="pipe-chip"><div class="pc-tag">Market</div><div class="pc-name">Competitor &amp; Trend Research</div></div>
         </div>
         <div class="pipe-gap"><span class="pn"></span></div>
         <div class="pipe-cluster">
           <span class="pipe-cluster-label">Create</span>
-          <div class="pipe-chip"><div class="pc-tag">Photos</div><div class="pc-name">AI Product Photos</div></div>
+          <div class="pipe-chip"><div class="pc-tag">Visuals</div><div class="pc-name">AI Photos &amp; Graphics</div></div>
           <div class="pipe-chip"><div class="pc-tag">Video</div><div class="pc-name">UGC &amp; Video Ads</div></div>
         </div>
         <div class="pipe-gap"><span class="pn"></span></div>
@@ -2231,20 +2245,20 @@
         <div class="pipe-gap"><span class="pn"></span></div>
         <div class="pipe-cluster">
           <span class="pipe-cluster-label">Refresh</span>
-          <div class="pipe-chip"><div class="pc-tag">New</div><div class="pc-name">More Angles of the Product</div></div>
-          <div class="pipe-chip"><div class="pc-tag">Next</div><div class="pc-name">The Next Round of Creative</div></div>
+          <div class="pipe-chip"><div class="pc-tag">Learn</div><div class="pc-name">Double Down on What Works</div></div>
+          <div class="pipe-chip"><div class="pc-tag">Next</div><div class="pc-name">The Next Round of Content</div></div>
         </div>
         <div class="pipe-gap"><span class="pn"></span></div>
         <!-- half B -->
         <div class="pipe-cluster">
           <span class="pipe-cluster-label">Research</span>
-          <div class="pipe-chip"><div class="pc-tag">Product</div><div class="pc-name">Your Product &amp; Listing</div></div>
-          <div class="pipe-chip"><div class="pc-tag">Market</div><div class="pc-name">Competitor Ad Research</div></div>
+          <div class="pipe-chip"><div class="pc-tag">Business</div><div class="pc-name">Your Offer &amp; Audience</div></div>
+          <div class="pipe-chip"><div class="pc-tag">Market</div><div class="pc-name">Competitor &amp; Trend Research</div></div>
         </div>
         <div class="pipe-gap"><span class="pn"></span></div>
         <div class="pipe-cluster">
           <span class="pipe-cluster-label">Create</span>
-          <div class="pipe-chip"><div class="pc-tag">Photos</div><div class="pc-name">AI Product Photos</div></div>
+          <div class="pipe-chip"><div class="pc-tag">Visuals</div><div class="pc-name">AI Photos &amp; Graphics</div></div>
           <div class="pipe-chip"><div class="pc-tag">Video</div><div class="pc-name">UGC &amp; Video Ads</div></div>
         </div>
         <div class="pipe-gap"><span class="pn"></span></div>
@@ -2256,15 +2270,15 @@
         <div class="pipe-gap"><span class="pn"></span></div>
         <div class="pipe-cluster">
           <span class="pipe-cluster-label">Refresh</span>
-          <div class="pipe-chip"><div class="pc-tag">New</div><div class="pc-name">More Angles of the Product</div></div>
-          <div class="pipe-chip"><div class="pc-tag">Next</div><div class="pc-name">The Next Round of Creative</div></div>
+          <div class="pipe-chip"><div class="pc-tag">Learn</div><div class="pc-name">Double Down on What Works</div></div>
+          <div class="pipe-chip"><div class="pc-tag">Next</div><div class="pc-name">The Next Round of Content</div></div>
         </div>
         <div class="pipe-gap"><span class="pn"></span></div>
       </div>
     </div>
 
     <div class="pipeline-cta reveal">
-      <p><strong>Not sure where to start?</strong> Claim 3 free photos of your product. Or <a href="#book">book a discovery call</a> and we&rsquo;ll look at the store together.</p>
+      <p><strong>Not sure where to start?</strong> Claim 3 free AI photos for your brand. Or <a href="#book">book a discovery call</a> and we&rsquo;ll map out a plan for your business together.</p>
       <a href="#claim" class="btn-dark">Claim 3 Free Photos
         <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
       </a>
@@ -2279,36 +2293,48 @@
       <div style="text-align:center;margin-bottom:48px;" class="reveal">
         <div class="label">Who We&rsquo;ve Worked With</div>
         <h2 class="section-title">Real Brands.<br/>Real Work.</h2>
-        <p style="font-size:15px;color:var(--text-sec);line-height:1.7;font-weight:300;max-width:520px;margin:16px auto 0;">No fluff &mdash; just what we actually made for each business.</p>
+        <p style="font-size:15px;color:var(--text-sec);line-height:1.7;font-weight:300;max-width:520px;margin:16px auto 0;">Hover any project to see exactly what we built.</p>
       </div>
     </div>
 
     <div class="inner">
       <div class="proof-grid">
-        <div class="proof-card reveal">
-          <div class="proof-tag">Restaurant</div>
-          <div class="proof-client">SHO Wagyu</div>
-          <div class="proof-what">AI video ads</div>
-          <p class="proof-did">Cinematic ads for their wagyu and dining room &mdash; vertical, square and wide cuts for every platform.</p>
-        </div>
-        <div class="proof-card reveal">
-          <div class="proof-tag">Furniture</div>
-          <div class="proof-client">OSOS Home &amp; Patio</div>
-          <div class="proof-what">AI product ads</div>
-          <p class="proof-did">A library of couch and patio ads featuring their real products, plus an AI spokesperson.</p>
-        </div>
-        <div class="proof-card reveal">
-          <div class="proof-tag">Barbershop</div>
-          <div class="proof-client">The Artist Barbershop</div>
-          <div class="proof-what">AI ads + brand</div>
-          <p class="proof-did">Shop ads and a refreshed brand look that show off the space and the craft.</p>
-        </div>
-        <div class="proof-card reveal">
-          <div class="proof-tag">Golf Carts</div>
-          <div class="proof-client">Golf Cart Company</div>
-          <div class="proof-what">AI product ads</div>
-          <p class="proof-did">Product ads that put their carts in scenes that would cost a fortune to shoot.</p>
-        </div>
+        <details class="proof-card reveal">
+          <summary>
+            <div class="proof-tag">Golf Cart Dealer</div>
+            <div class="proof-client">Product ads + a daily content engine</div>
+            <span class="proof-more">See what we did <i class="sub-plus" aria-hidden="true"></i></span>
+          </summary>
+          <ul class="proof-list"><li>Remade every product ad for their golf carts, with motion-graphic features.</li><li>Set up a content system: they film long-form in the shop &mdash; the carts, the crew, customer pickups.</li><li>Our AI growth system turns it into clips and posts 3 short-form videos a day to TikTok, Instagram, Facebook &amp; YouTube.</li></ul>
+          <div class="proof-out"><span>Output</span>10+ videos &amp; product photos &middot; content system &middot; 3 posts/day</div>
+        </details>
+        <details class="proof-card reveal">
+          <summary>
+            <div class="proof-tag">Barbershop</div>
+            <div class="proof-client">Auto-posting, AI website &amp; local ads</div>
+            <span class="proof-more">See what we did <i class="sub-plus" aria-hidden="true"></i></span>
+          </summary>
+          <ul class="proof-list"><li>Connected every social platform and post multiple times a day.</li><li>They film the cuts and transformations &mdash; we auto-edit the clips and publish everywhere.</li><li>Built an AI-powered website: when someone starts a booking and doesn&rsquo;t finish, an AI agent follows up by text and email.</li><li>Ran and refined Google &amp; Meta campaigns across a 5-mile radius to promote services and deals.</li></ul>
+          <div class="proof-out"><span>Output</span>Daily posting &middot; AI booking follow-up &middot; local ad campaigns</div>
+        </details>
+        <details class="proof-card reveal">
+          <summary>
+            <div class="proof-tag">Furniture Brand</div>
+            <div class="proof-client">Hero ads, product photos &amp; brand kit</div>
+            <span class="proof-more">See what we did <i class="sub-plus" aria-hidden="true"></i></span>
+          </summary>
+          <ul class="proof-list"><li>Recreated video ads for their three best-selling products.</li><li>Reshot the full product photo set with AI.</li><li>Built a brand kit to keep every future edit and video on-brand.</li></ul>
+          <div class="proof-out"><span>Output</span>3 hero video ads &middot; full photo set &middot; brand kit</div>
+        </details>
+        <details class="proof-card reveal">
+          <summary>
+            <div class="proof-tag">Upscale Wagyu Restaurant</div>
+            <div class="proof-client">Full rebrand + growth engine</div>
+            <span class="proof-more">See what we did <i class="sub-plus" aria-hidden="true"></i></span>
+          </summary>
+          <ul class="proof-list"><li>Complete rebrand, with cinematic ads of the dining experience in multiple styles.</li><li>Auto-posting to every platform to grow their organic brand across Chicagoland, powered by the same clipping system.</li><li>An automated Instagram outreach system invites local influencers to dine &mdash; putting the restaurant in front of their audiences.</li><li>Google Ads targeting a 5-mile radius, positioning them as a premier local destination.</li></ul>
+          <div class="proof-out"><span>Output</span>Premium rebrand &middot; cinematic ad library &middot; influencer outreach &middot; local ads</div>
+        </details>
       </div>
     </div>
 
@@ -2603,6 +2629,8 @@
     // OSOS couch ads (Lincoln / Gracie / Eva) interleaved with the other ads
     // so no two similar couches sit next to each other.
     const WORK = [
+      { label:'Most Popular Clip &middot; 1.2M Views', dur:'0:26', ratio:'4 / 3', badge:'1.2M views &middot; Most popular',
+        poster:'work/coke-viral.jpg', src:'work/coke-viral.mp4' },
       { label:'Furniture Advertisement',         dur:'0:15', ratio:'1 / 1',
         poster:'work/lincoln-2.jpg',  src:'work/lincoln-2.mp4' },
       { label:'Restaurant Advertisement',        dur:'0:08', ratio:'9 / 16',
@@ -2638,7 +2666,7 @@
     function renderReel(){
       const t=document.getElementById('reel-track'); if(!t) return;
       const ratio=r=>{const [a,b]=r.split('/').map(Number);return a/b;};
-      const one=WORK.map((w,i)=>`<button class="reel-card" style="width:${Math.round(170*ratio(w.ratio))}px" onclick="openWork(${i})" aria-label="Watch ${w.label}"><video src="${w.src.replace('work/','work/prev-')}" poster="${w.poster}" muted loop playsinline preload="none"></video></button>`).join('');
+      const one=WORK.map((w,i)=>`<button class="reel-card" style="width:${Math.round(170*ratio(w.ratio))}px" onclick="openWork(${i})" aria-label="Watch ${w.label.replace(/&[a-z]+;/g,' ')}"><video src="${w.src.replace('work/','work/prev-')}" poster="${w.poster}" muted loop playsinline preload="none"></video>${w.badge?`<span class="reel-badge">${w.badge}</span>`:''}</button>`).join('');
       const film=`<button class="reel-card reel-film" style="width:${Math.round(170*16/9)}px" onclick="openFilm()" aria-label="Watch the HyperImplement film"><video src="work/prev-film-reel.mp4" poster="work/film-v2.jpg" muted loop playsinline preload="none"></video><i class="reel-play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5z"/></svg></i><span>&#9679; Our Film &middot; 0:32</span></button>`;
       t.innerHTML=film+one+film+one;
       t.querySelectorAll('.reel-card').forEach((c,i)=>{ if(i>WORK.length) c.tabIndex=-1, c.setAttribute('aria-hidden','true'); });
@@ -2668,14 +2696,14 @@
       v.loop=false; v.poster='work/film-v2.jpg'; v.src='work/film-v2.mp4'; v.muted=false; v.play().catch(()=>{});
       lb.classList.add('open'); document.body.style.overflow='hidden';
     }
-    if(matchMedia('(hover:hover)').matches){document.querySelectorAll('.sub').forEach(d=>{d.addEventListener('mouseenter',()=>d.open=true);d.addEventListener('mouseleave',()=>d.open=false);});document.querySelectorAll('.side').forEach(d=>{d.addEventListener('mouseenter',()=>d.open=true);d.addEventListener('mouseleave',()=>d.open=false);});}
+    if(matchMedia('(hover:hover)').matches){document.querySelectorAll('.proof-card').forEach(d=>{d.addEventListener('mouseenter',()=>d.open=true);d.addEventListener('mouseleave',()=>d.open=false);});document.querySelectorAll('.sub').forEach(d=>{d.addEventListener('mouseenter',()=>d.open=true);d.addEventListener('mouseleave',()=>d.open=false);});document.querySelectorAll('.side').forEach(d=>{d.addEventListener('mouseenter',()=>d.open=true);d.addEventListener('mouseleave',()=>d.open=false);});}
 
     let workIdx = 0;
     function renderWork() {
       const grid = document.getElementById('work-rail');
       if (!grid) return;
       grid.innerHTML = WORK.map((w,i) => `
-        <button class="work-card" style="aspect-ratio:${w.ratio}" onclick="openWork(${i})" aria-label="Play ${w.label}">
+        <button class="work-card" style="aspect-ratio:${w.ratio}" onclick="openWork(${i})" aria-label="Play ${w.label.replace(/&[a-z]+;/g,' ')}">
           <img class="work-thumb" src="${w.poster}" alt="" loading="lazy" />
           <span class="work-tint"></span>
           <span class="work-scrim"></span>
@@ -2698,7 +2726,7 @@
     function openWork(i) {
       workIdx = i;
       const w = WORK[i], lb = document.getElementById('work-lb'), v = document.getElementById('work-video');
-      document.getElementById('work-lb-title').textContent = w.label;
+      document.getElementById('work-lb-title').innerHTML = w.label;
       document.getElementById('work-lb-client').textContent = workClient(w.src);
       v.loop = false; v.poster = w.poster;
       if (w.src) { v.src = w.src; v.play().catch(()=>{}); }
