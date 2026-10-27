@@ -409,7 +409,15 @@ footer {
     background: transparent;
   }
   table.compare { min-width: 0; }
-  .table-stack thead {
+  /* Leave table layout entirely. A block row still inherited the 22% first
+     column (table.compare td:first-child beats .table-stack td), and
+     overflow-wrap:anywhere then broke the slot name mid-word. */
+  .table-stack table.compare {
+    display: block;
+    width: 100%;
+    min-width: 0;
+  }
+  .table-stack table.compare thead {
     position: absolute;
     width: 1px;
     height: 1px;
@@ -421,21 +429,42 @@ footer {
     white-space: nowrap;
     border: 0;
   }
-  .table-stack tbody,
-  .table-stack tr,
-  .table-stack td { display: block; width: auto; }
-  .table-stack tr {
+  .table-stack table.compare tbody,
+  .table-stack table.compare tr,
+  .table-stack table.compare td {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+  }
+  .table-stack table.compare tr {
     border: 1px solid var(--border);
     border-radius: 12px;
     margin: 0 0 12px;
     background: #fff;
     padding: 4px 0 12px;
   }
-  .table-stack td { border-top: 0; padding: 8px 14px 0; }
-  .table-stack td:first-child { width: auto; font-size: 16px; padding-top: 12px; }
-  .table-stack td::before {
+  .table-stack table.compare td {
+    border-top: 0;
+    padding: 8px 14px 0;
+    overflow-wrap: normal;
+    word-break: normal;
+  }
+  .table-stack table.compare td:first-child {
+    width: 100%;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1.35;
+    padding-top: 12px;
+  }
+  .table-stack table.compare td::before {
     content: attr(data-label);
     display: block;
+    width: auto;
+    max-width: 100%;
+    white-space: nowrap;
+    overflow-wrap: normal;
+    word-break: normal;
     font-family: 'IBM Plex Mono', monospace;
     font-size: 10px;
     font-weight: 500;
