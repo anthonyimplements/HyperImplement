@@ -1755,15 +1755,158 @@
     @media(prefers-reduced-motion:reduce){.reel-track{animation:none;}.reel-mask{overflow-x:auto;}}
     @media(max-width:960px){.hero-grid{grid-template-columns:1fr;gap:28px;}.hero-film{order:-1;max-width:640px;margin-top:8px;}.film-chip{width:100px;right:-20px;top:-36px;}}
     @media(max-width:768px){.hero{padding:96px 20px 32px;}.hero-chip{width:110px!important;top:78px!important;bottom:auto!important;right:-18px!important;}.hero .hero-grid h1{font-size:clamp(28px,8vw,40px);}.reel-mask{margin:0 -20px;}.reel-card{height:150px;}.side-more{font-size:0;}.side-list{padding-left:18px;}.reel-label small{display:none;}}
-    .proof-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
-    .proof-card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:22px;box-shadow:0 10px 30px rgba(20,20,20,.04);transition:transform .3s cubic-bezier(.16,1,.3,1),box-shadow .3s;}
-    .proof-card:hover{transform:translateY(-3px);box-shadow:0 20px 44px rgba(249,91,61,.12);}
-    .proof-tag{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent-dark);}
-    .proof-client{font-family:'Unbounded',sans-serif;font-weight:900;font-size:16px;color:var(--text);margin:8px 0 2px;letter-spacing:-.01em;}
-    .proof-what{font-size:12.5px;font-weight:600;color:var(--text-muted);margin-bottom:10px;}
-    .proof-did{font-size:13.5px;line-height:1.6;color:var(--text-sec);margin:0;}
-    @media(max-width:960px){.proof-grid{grid-template-columns:repeat(2,minmax(0,1fr));}}
-    @media(max-width:560px){.proof-grid{grid-template-columns:1fr;}}
+    /* Real Brands cabinet — dark instrument, one orange accent */
+    .arcade{
+      --arc-bg:#06070C; --arc-panel:#0E0F11; --arc-card:#131417; --arc-ink:#F7F7F8; --arc-sec:#9CA3AD; --arc-line:rgba(255,255,255,0.08);
+      position:relative; width:100%; max-width:640px; margin:0 auto;
+      background:var(--arc-bg); color:var(--arc-ink);
+      border:1px solid var(--arc-line); border-radius:10px;
+      padding:12px; box-shadow:0 24px 48px rgba(0,0,0,0.18);
+    }
+    .arcade-top{
+      display:flex; align-items:center; justify-content:space-between;
+      padding:2px 6px 10px; margin-bottom:10px;
+      border-bottom:1px solid var(--arc-line);
+    }
+    .arcade-kicker{
+      display:inline-flex; align-items:center; gap:8px;
+      font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.1em;
+      text-transform:uppercase; color:var(--arc-sec);
+    }
+    .arcade-dot{width:6px; height:6px; border-radius:50%; background:#F95B3D; flex-shrink:0;}
+    .arcade-count{font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.08em; color:var(--arc-sec);}
+    .arcade-body{display:flex; align-items:stretch; gap:10px; min-width:0;}
+    .arcade-screen{
+      position:relative; flex:1; min-width:0;
+      background:#08090A; border:1px solid var(--arc-line); border-radius:8px;
+      overflow:hidden;
+    }
+    .arcade-viewport{position:relative; z-index:1;}
+    .arcade.is-live .arcade-screen{height:320px;}
+    .arcade.is-live .arcade-viewport{height:100%; overflow:hidden;}
+    .arcade-fade{
+      display:none; position:absolute; left:0; right:0; height:46px; z-index:3;
+      pointer-events:none;
+    }
+    .arcade.is-live .arcade-fade{display:block;}
+    .arcade-fade-top{top:0; background:linear-gradient(to bottom, #08090A 0%, rgba(8,9,10,0) 100%);}
+    .arcade-fade-bottom{bottom:0; background:linear-gradient(to top, #08090A 0%, rgba(8,9,10,0) 100%);}
+    .arcade-shade{
+      display:none; position:absolute; inset:0; z-index:2; pointer-events:none; border-radius:inherit;
+      box-shadow:inset 0 18px 22px rgba(0,0,0,0.45), inset 0 -18px 22px rgba(0,0,0,0.45);
+    }
+    .arcade.is-live .arcade-shade{display:block;}
+    .arcade-track{display:flex; flex-direction:column; gap:12px; padding:0 10px; will-change:transform;}
+    .arcade:not(.is-live) .arcade-track{padding:10px;}
+    .arcade-card{
+      position:relative; flex:0 0 auto;
+      background:var(--arc-card); border:1px solid var(--arc-line); border-radius:8px;
+      padding:14px 14px 15px;
+    }
+    .arcade-card-top{display:flex; align-items:center; gap:8px; min-height:16px;}
+    .arcade-idx,.arcade-tag,.arcade-landed{
+      font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.08em;
+      text-transform:uppercase; color:var(--arc-sec);
+    }
+    .arcade-landed{margin-left:auto; color:#F95B3D; visibility:hidden;}
+    .arcade-card.is-landed .arcade-landed{visibility:visible;}
+    .arcade-client{
+      font-family:'Unbounded',sans-serif; font-weight:700; font-size:16px;
+      letter-spacing:-0.03em; line-height:1.15; color:var(--arc-ink);
+      margin:8px 0 4px;
+    }
+    .arcade-what{font-size:13px; font-weight:500; color:var(--arc-sec); margin:0 0 8px;}
+    .arcade-did{font-size:14px; line-height:1.55; color:var(--arc-sec); margin:0; max-width:62ch;}
+    .arcade-card.is-landed{
+      border-color:rgba(249,91,61,0.55);
+      box-shadow:inset 2px 0 0 #F95B3D, 0 0 0 1px rgba(249,91,61,0.35), 0 0 24px rgba(249,91,61,0.25);
+    }
+    .arcade-side{
+      position:relative; flex:0 0 68px; width:68px; min-height:148px;
+      background:var(--arc-panel); border:1px solid var(--arc-line); border-radius:8px;
+      touch-action:pan-y;
+    }
+    .arcade:not(.is-live) .arcade-side{align-self:flex-start; height:168px;}
+    .arcade-groove{
+      position:absolute; left:50%; top:14px; bottom:14px; width:8px; transform:translateX(-50%);
+      border-radius:4px; background:#08090A; box-shadow:inset 0 0 0 1px rgba(255,255,255,0.06);
+      pointer-events:none;
+    }
+    .arcade-spin{
+      position:absolute; left:50%; top:10px; width:52px; min-width:44px; min-height:44px;
+      transform:translateX(-50%);
+      appearance:none; -webkit-appearance:none;
+      background:transparent; border:0; padding:0; margin:0; cursor:grab;
+      touch-action:none; color:inherit; font:inherit;
+      user-select:none; -webkit-user-select:none;
+      overflow:visible; z-index:1;
+    }
+    .arcade-spin:active{cursor:grabbing;}
+    .arcade-spin:focus-visible{outline:2px solid #F95B3D; outline-offset:2px;}
+    .arcade-lever{
+      position:relative; width:100%;
+      transform:translate3d(0, 0, 0);
+      display:flex; flex-direction:column; align-items:center;
+      pointer-events:none;
+    }
+    .arcade-fulcrum{
+      width:8px; height:8px; border-radius:50%; background:#131417;
+      border:1px solid rgba(255,255,255,0.16); flex-shrink:0;
+    }
+    .arcade-stem{width:3px; height:26px; border-radius:2px; background:#5C6370; flex-shrink:0;}
+    .arcade-knob{width:48px; height:auto; aspect-ratio:1/1; object-fit:contain; display:block; -webkit-user-drag:none; user-select:none;}
+    .arcade-foot{
+      margin-top:10px; padding:8px 6px 2px;
+      border-top:1px solid var(--arc-line);
+    }
+    .arcade-hint{
+      font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.06em;
+      color:var(--arc-sec); margin:0;
+    }
+    .arcade-status{
+      position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden;
+      clip:rect(0,0,0,0); clip-path:inset(50%); white-space:nowrap; border:0;
+    }
+    .arcade-screen,.arcade-viewport{touch-action:pan-y;}
+    .arcade.is-live[data-state="landed"] .arcade-fade{display:none;}
+    @media(min-width:800px){
+      .arcade{padding:16px;}
+      .arcade-side{flex-basis:92px; width:92px;}
+      .arcade.is-live .arcade-side{min-height:180px;}
+      .arcade-spin{width:68px;}
+      .arcade-knob{width:64px;}
+      .arcade .bear-tile{width:88px;height:88px;}
+      .arcade-client{font-size:18px;}
+      .arcade-card{padding:16px 16px 18px;}
+    }
+    @media(max-width:799px){
+      .arcade{padding:8px;}
+      .arcade-top{padding:0 4px 6px;margin-bottom:6px;}
+      .arcade-body{gap:8px;}
+      .arcade-side{flex-basis:60px;width:60px;}
+      .arcade-track{gap:8px;padding:0 6px;}
+      .arcade-card{padding:8px 8px 10px;}
+      .arcade-client{font-size:14px;line-height:1.2;margin:4px 0 0;}
+      .arcade .bear-av{width:28px;height:28px;}
+      .arcade-card .proof-list{margin:6px 0 0;gap:4px;}
+      .arcade-card .proof-list li{font-size:12px;line-height:1.35;padding-left:12px;}
+      .arcade-card .proof-list li::before{top:5px;}
+      .arcade-card .proof-out{margin-top:6px;padding:6px 8px;font-size:12px;line-height:1.35;}
+      .arcade-foot{margin-top:6px;padding:6px 4px 0;}
+      .arcade .bear-tile{width:72px;height:48px;border-radius:8px;}
+      .arcade .bear-strip{margin:6px 0 0;border-radius:8px;}
+      .arcade .bear-track{gap:6px;padding:0;}
+    }
+    @media(prefers-reduced-motion:reduce){
+      .arcade,.arcade *{animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important;}
+    }
+    .arcade-card .proof-list{margin:10px 0 0;}
+    .arcade-card .proof-list li{color:var(--arc-sec);}
+    .arcade-card .proof-list li::before{background:#F95B3D;}
+    .arcade-card .proof-out{margin-top:12px;background:rgba(249,91,61,0.12);color:var(--arc-ink);border-left-color:#F95B3D;}
+    .arcade-card .proof-out span{color:#F95B3D;}
+    .arcade .bear-strip{margin:10px 0 0;}
+    .arcade .bear-av{width:36px;height:36px;margin-left:auto;}
     @media(min-width:961px){.hero-chip{width:clamp(340px,32vw,480px);right:calc(25vw - clamp(170px,16vw,240px));top:44%;}}
     .side-list li{border-top:1px solid var(--border);padding-top:0;}
     .sub summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:1fr auto;column-gap:10px;row-gap:2px;grid-template-rows:auto auto;align-content:start;align-items:start;padding:10px 0;border-radius:8px;}
@@ -2310,58 +2453,93 @@
       <div style="text-align:center;margin-bottom:48px;" class="reveal">
         <div class="label">Who We&rsquo;ve Worked With</div>
         <h2 class="section-title">Real Brands.<br/>Real Work.</h2>
-        <p style="font-size:15px;color:var(--text-sec);line-height:1.7;font-weight:300;max-width:520px;margin:16px auto 0;">Hover any project to see exactly what we built.</p>
+        <p style="font-size:15px;color:var(--text-sec);line-height:1.7;font-weight:300;max-width:520px;margin:16px auto 0;">Pull the lever to land on a project.</p>
       </div>
     </div>
 
     <div class="inner">
-      <div class="proof-grid">
-        <details class="proof-card proof-greek reveal">
-          <summary>
-            <div class="proof-tag">Local Festival <img class="bear-av" src="work/bear/bear-avatar.png" alt="AI Greek dancing bear avatar" width="44" height="44" /></div>
-            <div class="proof-client">A viral AI mascot + daily posting</div>
-            <span class="proof-more">See what we did <i class="sub-plus" aria-hidden="true"></i></span>
-          </summary>
-          <div class="bear-strip"><div class="bear-track"><button type="button" class="bear-tile" onclick="openClip('work/bear/bear-1.mp4','work/bear/bear-1.jpg')" aria-label="Play Greek bear clip 1"><video src="work/bear/bear-1.mp4" poster="work/bear/bear-1.jpg" muted loop playsinline preload="none"></video></button><button type="button" class="bear-tile" onclick="openClip('work/bear/bear-2.mp4','work/bear/bear-2.jpg')" aria-label="Play Greek bear clip 2"><video src="work/bear/bear-2.mp4" poster="work/bear/bear-2.jpg" muted loop playsinline preload="none"></video></button><button type="button" class="bear-tile" onclick="openClip('work/bear/bear-3.mp4','work/bear/bear-3.jpg')" aria-label="Play Greek bear clip 3"><video src="work/bear/bear-3.mp4" poster="work/bear/bear-3.jpg" muted loop playsinline preload="none"></video></button><button type="button" class="bear-tile" onclick="openClip('work/bear/bear-4.mp4','work/bear/bear-4.jpg')" aria-label="Play Greek bear clip 4"><video src="work/bear/bear-4.mp4" poster="work/bear/bear-4.jpg" muted loop playsinline preload="none"></video></button><button type="button" class="bear-tile" onclick="openClip('work/bear/bear-5.mp4','work/bear/bear-5.jpg')" aria-label="Play Greek bear clip 5"><video src="work/bear/bear-5.mp4" poster="work/bear/bear-5.jpg" muted loop playsinline preload="none"></video></button><button tabindex="-1" aria-hidden="true" type="button" class="bear-tile" onclick="openClip('work/bear/bear-1.mp4','work/bear/bear-1.jpg')" aria-label="Play Greek bear clip 1"><video src="work/bear/bear-1.mp4" poster="work/bear/bear-1.jpg" muted loop playsinline preload="none"></video></button><button tabindex="-1" aria-hidden="true" type="button" class="bear-tile" onclick="openClip('work/bear/bear-2.mp4','work/bear/bear-2.jpg')" aria-label="Play Greek bear clip 2"><video src="work/bear/bear-2.mp4" poster="work/bear/bear-2.jpg" muted loop playsinline preload="none"></video></button><button tabindex="-1" aria-hidden="true" type="button" class="bear-tile" onclick="openClip('work/bear/bear-3.mp4','work/bear/bear-3.jpg')" aria-label="Play Greek bear clip 3"><video src="work/bear/bear-3.mp4" poster="work/bear/bear-3.jpg" muted loop playsinline preload="none"></video></button><button tabindex="-1" aria-hidden="true" type="button" class="bear-tile" onclick="openClip('work/bear/bear-4.mp4','work/bear/bear-4.jpg')" aria-label="Play Greek bear clip 4"><video src="work/bear/bear-4.mp4" poster="work/bear/bear-4.jpg" muted loop playsinline preload="none"></video></button><button tabindex="-1" aria-hidden="true" type="button" class="bear-tile" onclick="openClip('work/bear/bear-5.mp4','work/bear/bear-5.jpg')" aria-label="Play Greek bear clip 5"><video src="work/bear/bear-5.mp4" poster="work/bear/bear-5.jpg" muted loop playsinline preload="none"></video></button></div></div>
-          <ul class="proof-list"><li>Researched how other festivals promote themselves organically.</li><li>Created an AI avatar &mdash; a Greek dancing bear &mdash; who starred in every piece of content.</li><li>The bear talked about the food, previewed the festival and even walked the real festival grounds.</li><li>An automated content system posted a new bear video to Facebook every day, with the same character and voice each time.</li></ul>
-          <div class="proof-out"><span>Output</span>50,000+ local impressions &middot; one recognizable AI mascot &middot; daily organic posting</div>
-        </details>
-        <details class="proof-card reveal">
-          <summary>
-            <div class="proof-tag">Golf Cart Dealer</div>
-            <div class="proof-client">Product ads + a daily content engine</div>
-            <span class="proof-more">See what we did <i class="sub-plus" aria-hidden="true"></i></span>
-          </summary>
-          <ul class="proof-list"><li>Remade every product ad for their golf carts, with motion-graphic features.</li><li>Set up a content system: they film long-form in the shop &mdash; the carts, the crew, customer pickups.</li><li>Our AI growth system turns it into clips and posts 3 short-form videos a day to TikTok, Instagram, Facebook &amp; YouTube.</li></ul>
-          <div class="proof-out"><span>Output</span>10+ videos &amp; product photos &middot; content system &middot; 3 posts/day</div>
-        </details>
-        <details class="proof-card reveal">
-          <summary>
-            <div class="proof-tag">Barbershop</div>
-            <div class="proof-client">Auto-posting, AI website &amp; local ads</div>
-            <span class="proof-more">See what we did <i class="sub-plus" aria-hidden="true"></i></span>
-          </summary>
-          <ul class="proof-list"><li>Connected every social platform and post multiple times a day.</li><li>They film the cuts and transformations &mdash; we auto-edit the clips and publish everywhere.</li><li>Built an AI-powered website: when someone starts a booking and doesn&rsquo;t finish, an AI agent follows up by text and email.</li><li>Ran and refined Google &amp; Meta campaigns across a 5-mile radius to promote services and deals.</li></ul>
-          <div class="proof-out"><span>Output</span>Daily posting &middot; AI booking follow-up &middot; local ad campaigns</div>
-        </details>
-        <details class="proof-card reveal">
-          <summary>
-            <div class="proof-tag">Furniture Brand</div>
-            <div class="proof-client">Hero ads, product photos &amp; brand kit</div>
-            <span class="proof-more">See what we did <i class="sub-plus" aria-hidden="true"></i></span>
-          </summary>
-          <ul class="proof-list"><li>Recreated video ads for their three best-selling products.</li><li>Reshot the full product photo set with AI.</li><li>Built a brand kit to keep every future edit and video on-brand.</li></ul>
-          <div class="proof-out"><span>Output</span>3 hero video ads &middot; full photo set &middot; brand kit</div>
-        </details>
-        <details class="proof-card reveal">
-          <summary>
-            <div class="proof-tag">Upscale Wagyu Restaurant</div>
-            <div class="proof-client">Full rebrand + growth engine</div>
-            <span class="proof-more">See what we did <i class="sub-plus" aria-hidden="true"></i></span>
-          </summary>
-          <ul class="proof-list"><li>Complete rebrand, with cinematic ads of the dining experience in multiple styles.</li><li>Auto-posting to every platform to grow their organic brand across Chicagoland, powered by the same clipping system.</li><li>An automated Instagram outreach system invites local influencers to dine &mdash; putting the restaurant in front of their audiences.</li><li>Google Ads targeting a 5-mile radius, positioning them as a premier local destination.</li></ul>
-          <div class="proof-out"><span>Output</span>Premium rebrand &middot; cinematic ad library &middot; influencer outreach &middot; local ads</div>
-        </details>
+      <div class="arcade" id="arcade" data-state="static">
+        <div class="arcade-top">
+          <span class="arcade-kicker"><span class="arcade-dot" aria-hidden="true"></span>Real work</span>
+          <span class="arcade-count">05</span>
+        </div>
+        <div class="arcade-body">
+          <div class="arcade-screen" id="arcade-screen">
+            <div class="arcade-viewport" id="arcade-viewport" aria-busy="false">
+              <div class="arcade-track" id="arcade-track">
+                <article class="arcade-card" data-i="0">
+                  <div class="arcade-card-top">
+                    <span class="arcade-idx">01</span>
+                    <span class="arcade-tag">Local Festival</span>
+                    <img class="bear-av" src="work/bear/bear-avatar.png" alt="AI Greek dancing bear avatar" width="44" height="44" />
+                    <span class="arcade-landed" aria-hidden="true">Landed</span>
+                  </div>
+                  <h3 class="arcade-client">A viral AI mascot + daily posting</h3>
+                  <div class="bear-strip"><div class="bear-track"><button type="button" class="bear-tile" onclick="openClip('work/bear/bear-1.mp4','work/bear/bear-1.jpg')" aria-label="Play Greek bear clip 1"><video src="work/bear/bear-1.mp4" poster="work/bear/bear-1.jpg" muted loop playsinline preload="none"></video></button><button type="button" class="bear-tile" onclick="openClip('work/bear/bear-2.mp4','work/bear/bear-2.jpg')" aria-label="Play Greek bear clip 2"><video src="work/bear/bear-2.mp4" poster="work/bear/bear-2.jpg" muted loop playsinline preload="none"></video></button><button type="button" class="bear-tile" onclick="openClip('work/bear/bear-3.mp4','work/bear/bear-3.jpg')" aria-label="Play Greek bear clip 3"><video src="work/bear/bear-3.mp4" poster="work/bear/bear-3.jpg" muted loop playsinline preload="none"></video></button><button type="button" class="bear-tile" onclick="openClip('work/bear/bear-4.mp4','work/bear/bear-4.jpg')" aria-label="Play Greek bear clip 4"><video src="work/bear/bear-4.mp4" poster="work/bear/bear-4.jpg" muted loop playsinline preload="none"></video></button><button type="button" class="bear-tile" onclick="openClip('work/bear/bear-5.mp4','work/bear/bear-5.jpg')" aria-label="Play Greek bear clip 5"><video src="work/bear/bear-5.mp4" poster="work/bear/bear-5.jpg" muted loop playsinline preload="none"></video></button><button tabindex="-1" aria-hidden="true" type="button" class="bear-tile" onclick="openClip('work/bear/bear-1.mp4','work/bear/bear-1.jpg')" aria-label="Play Greek bear clip 1"><video src="work/bear/bear-1.mp4" poster="work/bear/bear-1.jpg" muted loop playsinline preload="none"></video></button><button tabindex="-1" aria-hidden="true" type="button" class="bear-tile" onclick="openClip('work/bear/bear-2.mp4','work/bear/bear-2.jpg')" aria-label="Play Greek bear clip 2"><video src="work/bear/bear-2.mp4" poster="work/bear/bear-2.jpg" muted loop playsinline preload="none"></video></button><button tabindex="-1" aria-hidden="true" type="button" class="bear-tile" onclick="openClip('work/bear/bear-3.mp4','work/bear/bear-3.jpg')" aria-label="Play Greek bear clip 3"><video src="work/bear/bear-3.mp4" poster="work/bear/bear-3.jpg" muted loop playsinline preload="none"></video></button><button tabindex="-1" aria-hidden="true" type="button" class="bear-tile" onclick="openClip('work/bear/bear-4.mp4','work/bear/bear-4.jpg')" aria-label="Play Greek bear clip 4"><video src="work/bear/bear-4.mp4" poster="work/bear/bear-4.jpg" muted loop playsinline preload="none"></video></button><button tabindex="-1" aria-hidden="true" type="button" class="bear-tile" onclick="openClip('work/bear/bear-5.mp4','work/bear/bear-5.jpg')" aria-label="Play Greek bear clip 5"><video src="work/bear/bear-5.mp4" poster="work/bear/bear-5.jpg" muted loop playsinline preload="none"></video></button></div></div>
+                  <ul class="proof-list"><li>Researched how other festivals promote themselves organically.</li><li>Created an AI avatar &mdash; a Greek dancing bear &mdash; who starred in every piece of content.</li><li>The bear talked about the food, previewed the festival and even walked the real festival grounds.</li><li>An automated content system posted a new bear video to Facebook every day, with the same character and voice each time.</li></ul>
+                  <div class="proof-out"><span>Output</span>50,000+ local impressions &middot; one recognizable AI mascot &middot; daily organic posting</div>
+                </article>
+                <article class="arcade-card" data-i="1">
+                  <div class="arcade-card-top">
+                    <span class="arcade-idx">02</span>
+                    <span class="arcade-tag">Golf Cart Dealer</span>
+                    <span class="arcade-landed" aria-hidden="true">Landed</span>
+                  </div>
+                  <h3 class="arcade-client">Product ads + a daily content engine</h3>
+                  <ul class="proof-list"><li>Remade every product ad for their golf carts, with motion-graphic features.</li><li>Set up a content system: they film long-form in the shop &mdash; the carts, the crew, customer pickups.</li><li>Our AI growth system turns it into clips and posts 3 short-form videos a day to TikTok, Instagram, Facebook &amp; YouTube.</li></ul>
+                  <div class="proof-out"><span>Output</span>10+ videos &amp; product photos &middot; content system &middot; 3 posts/day</div>
+                </article>
+                <article class="arcade-card" data-i="2">
+                  <div class="arcade-card-top">
+                    <span class="arcade-idx">03</span>
+                    <span class="arcade-tag">Barbershop</span>
+                    <span class="arcade-landed" aria-hidden="true">Landed</span>
+                  </div>
+                  <h3 class="arcade-client">Auto-posting, AI website &amp; local ads</h3>
+                  <ul class="proof-list"><li>Connected every social platform and post multiple times a day.</li><li>They film the cuts and transformations &mdash; we auto-edit the clips and publish everywhere.</li><li>Built an AI-powered website: when someone starts a booking and doesn&rsquo;t finish, an AI agent follows up by text and email.</li><li>Ran and refined Google &amp; Meta campaigns across a 5-mile radius to promote services and deals.</li></ul>
+                  <div class="proof-out"><span>Output</span>Daily posting &middot; AI booking follow-up &middot; local ad campaigns</div>
+                </article>
+                <article class="arcade-card" data-i="3">
+                  <div class="arcade-card-top">
+                    <span class="arcade-idx">04</span>
+                    <span class="arcade-tag">Furniture Brand</span>
+                    <span class="arcade-landed" aria-hidden="true">Landed</span>
+                  </div>
+                  <h3 class="arcade-client">Hero ads, product photos &amp; brand kit</h3>
+                  <ul class="proof-list"><li>Recreated video ads for their three best-selling products.</li><li>Reshot the full product photo set with AI.</li><li>Built a brand kit to keep every future edit and video on-brand.</li></ul>
+                  <div class="proof-out"><span>Output</span>3 hero video ads &middot; full photo set &middot; brand kit</div>
+                </article>
+                <article class="arcade-card" data-i="4">
+                  <div class="arcade-card-top">
+                    <span class="arcade-idx">05</span>
+                    <span class="arcade-tag">Upscale Wagyu Restaurant</span>
+                    <span class="arcade-landed" aria-hidden="true">Landed</span>
+                  </div>
+                  <h3 class="arcade-client">Full rebrand + growth engine</h3>
+                  <ul class="proof-list"><li>Complete rebrand, with cinematic ads of the dining experience in multiple styles.</li><li>Auto-posting to every platform to grow their organic brand across Chicagoland, powered by the same clipping system.</li><li>An automated Instagram outreach system invites local influencers to dine &mdash; putting the restaurant in front of their audiences.</li><li>Google Ads targeting a 5-mile radius, positioning them as a premier local destination.</li></ul>
+                  <div class="proof-out"><span>Output</span>Premium rebrand &middot; cinematic ad library &middot; influencer outreach &middot; local ads</div>
+                </article>
+              </div>
+            </div>
+            <div class="arcade-fade arcade-fade-top" aria-hidden="true"></div>
+            <div class="arcade-fade arcade-fade-bottom" aria-hidden="true"></div>
+            <div class="arcade-shade" aria-hidden="true"></div>
+          </div>
+          <div class="arcade-side" id="arcade-side">
+            <div class="arcade-groove" aria-hidden="true"></div>
+            <button type="button" class="arcade-spin" id="arcade-spin" aria-label="Spin the reel" aria-controls="arcade-viewport">
+              <span class="arcade-lever" id="arcade-lever" aria-hidden="true">
+                <span class="arcade-fulcrum"></span>
+                <span class="arcade-stem"></span>
+                <img class="arcade-knob" src="ChipLogo.png" alt="" width="1024" height="1024" draggable="false" />
+              </span>
+            </button>
+          </div>
+        </div>
+        <div class="arcade-foot">
+          <p class="arcade-hint" id="arcade-hint">Pull the lever</p>
+        </div>
+        <p class="arcade-status" id="arcade-status" aria-live="polite" aria-atomic="true"></p>
       </div>
     </div>
 
@@ -2374,6 +2552,469 @@
       </div>
     </div>
   </section>
+
+  <script>
+  (function () {
+    var arcade = document.getElementById('arcade');
+    var track = document.getElementById('arcade-track');
+    var screen = document.getElementById('arcade-screen');
+    var viewport = document.getElementById('arcade-viewport');
+    var side = document.getElementById('arcade-side');
+    var spinBtn = document.getElementById('arcade-spin');
+    var lever = document.getElementById('arcade-lever');
+    var hint = document.getElementById('arcade-hint');
+    var status = document.getElementById('arcade-status');
+    if (!arcade || !track || !screen || !viewport || !side || !spinBtn || !lever) return;
+
+    var mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+    var originals = [].slice.call(track.children).filter(function (el) {
+      return el.classList.contains('arcade-card');
+    });
+    var count = originals.length;
+    if (!count) return;
+
+    var clones = [];
+    var cardH = 0;
+    var tops = [];
+    var heights = [];
+    var cycle = 0;
+    var windowH = 0;
+    var offset = 0;
+    var mode = 'static';
+    var landedIndex = 0;
+    var staticIndex = -1;
+    var onScreen = false;
+    var tabVisible = true;
+    var rafId = 0;
+    var lastTs = 0;
+    var spinState = null;
+    var holdTimer = 0;
+    var leverToken = 0;
+    var drag = null;
+    var suppressClick = false;
+    var lastPlayed = -2;
+    var IDLE = 20;
+
+    function reduced() { return mq.matches; }
+    function canRun() {
+      return !reduced() && onScreen && tabVisible && mode !== 'static';
+    }
+    function refreshScreen() {
+      var r = arcade.getBoundingClientRect();
+      var next = r.bottom > 8 && r.top < window.innerHeight - 8;
+      if (next === onScreen) return;
+      onScreen = next;
+      if (canRun()) resume(); else freeze();
+    }
+    function setState(s) { arcade.dataset.state = s; }
+    function readCard(i) {
+      var card = originals[i];
+      var out = card.querySelector('.proof-out');
+      var did = '';
+      if (out) {
+        var copy = out.cloneNode(true);
+        var lab = copy.querySelector('span');
+        if (lab) lab.remove();
+        did = copy.textContent.replace(/\s+/g, ' ').trim();
+      }
+      return {
+        client: card.querySelector('.arcade-client').textContent.trim(),
+        what: card.querySelector('.arcade-tag').textContent.trim(),
+        did: did
+      };
+    }
+    function syncVideos() {
+      var active = -1;
+      if (mode === 'hold') active = landedIndex;
+      else if (mode === 'static' && staticIndex >= 0) active = staticIndex;
+      else if (mode === 'idle' && canRun()) active = centeredIndex();
+      if (active === lastPlayed) return;
+      lastPlayed = active;
+      var cards = track.querySelectorAll('.arcade-card');
+      for (var i = 0; i < cards.length; i++) {
+        var play = active >= 0 && !cards[i].hasAttribute('aria-hidden') && Number(cards[i].getAttribute('data-i')) === active;
+        var vids = cards[i].querySelectorAll('video');
+        for (var v = 0; v < vids.length; v++) {
+          var hidden = vids[v].closest('[aria-hidden="true"]');
+          if (play && !hidden) {
+            vids[v].preload = 'auto';
+            var started = vids[v].play();
+            if (started && started.catch) started.catch(function () {});
+          } else {
+            vids[v].pause();
+          }
+        }
+      }
+    }
+    function pauseVideos() {
+      lastPlayed = -2;
+      var vids = track.querySelectorAll('video');
+      for (var v = 0; v < vids.length; v++) vids[v].pause();
+    }
+    function announce(i) {
+      var p = readCard(i);
+      status.textContent = 'Landed on ' + p.client + '. ' + p.what + '. ' + p.did;
+    }
+    function clearLanded() {
+      var nodes = track.querySelectorAll('.arcade-card.is-landed');
+      for (var i = 0; i < nodes.length; i++) nodes[i].classList.remove('is-landed');
+    }
+    function applyLanded(i) {
+      clearLanded();
+      var nodes = track.querySelectorAll('.arcade-card');
+      for (var n = 0; n < nodes.length; n++) {
+        if (Number(nodes[n].getAttribute('data-i')) === i) nodes[n].classList.add('is-landed');
+      }
+    }
+    function setCopies(live) {
+      for (var i = 0; i < clones.length; i++) clones[i].remove();
+      clones = [];
+      if (!live) return;
+      for (var c = 0; c < originals.length; c++) {
+        var clone = originals[c].cloneNode(true);
+        clone.setAttribute('aria-hidden', 'true');
+        track.appendChild(clone);
+        clones.push(clone);
+      }
+    }
+    function layoutHeights() {
+      for (var i = 0; i < originals.length; i++) originals[i].style.minHeight = '';
+      var gap = parseFloat(getComputedStyle(track).rowGap);
+      if (!isFinite(gap)) gap = 12;
+      var acc = 0;
+      var max = 0;
+      tops = [];
+      heights = [];
+      for (var j = 0; j < originals.length; j++) {
+        var h = originals[j].offsetHeight;
+        heights.push(h);
+        tops.push(acc);
+        if (h > max) max = h;
+        acc += h + gap;
+      }
+      if (!max) return;
+      cardH = max;
+      cycle = acc;
+    }
+    function desiredScreen() {
+      var chrome = arcade.offsetHeight - screen.offsetHeight;
+      var viewH = window.innerHeight || 0;
+      var clientH = document.documentElement.clientHeight || 0;
+      if (clientH && (!viewH || clientH < viewH)) viewH = clientH;
+      var cap = Math.floor(viewH * 0.75) - chrome - 8;
+      var need = Math.ceil((cardH || 0) + 16);
+      if (cap < 180) cap = 180;
+      return Math.round(Math.max(180, Math.min(cap, Math.max(need, 220))));
+    }
+    function wrap(v) {
+      if (!cycle) return 0;
+      v = v % cycle;
+      if (v < 0) v += cycle;
+      return v;
+    }
+    function offsetForCard(i) {
+      var h = heights[i] || cardH || 0;
+      var top = tops[i] || 0;
+      var room = windowH - h;
+      var raw = room <= 0 ? top : top - room / 2;
+      if (raw < 0) raw = 0;
+      return raw;
+    }
+    function loopDist(a, b) {
+      var d = Math.abs(a - b) % cycle;
+      return Math.min(d, cycle - d);
+    }
+    function centeredIndex() {
+      if (!cycle) return 0;
+      var center = (offset + windowH / 2) % cycle;
+      var best = 0;
+      var bestDist = Infinity;
+      for (var i = 0; i < count; i++) {
+        var cardCenter = (tops[i] + (heights[i] || 0) / 2) % cycle;
+        var d = loopDist(cardCenter, center);
+        if (d < bestDist) { bestDist = d; best = i; }
+      }
+      return best;
+    }
+    function paint() {
+      track.style.transform = 'translate3d(0,' + (-offset) + 'px,0)';
+    }
+    function deltaTo(target) {
+      var dest = wrap(offsetForCard(target));
+      var delta = dest - offset;
+      if (delta <= 1) delta += cycle;
+      delta += cycle * 2;
+      return delta;
+    }
+    var measuring = false;
+    function remeasure(forceIndex) {
+      if (measuring) return;
+      measuring = true;
+      try { remeasureBody(forceIndex); }
+      finally { measuring = false; }
+    }
+    function remeasureBody(forceIndex) {
+      layoutHeights();
+      if (!cycle || !cardH) return;
+      if (reduced()) {
+        screen.style.height = '';
+        track.style.transform = 'none';
+        return;
+      }
+      screen.style.height = desiredScreen() + 'px';
+      windowH = viewport.clientHeight || desiredScreen();
+      if (mode === 'spin' && spinState && forceIndex == null) {
+        offset = wrap(offsetForCard(centeredIndex()));
+        spinState.start = offset;
+        spinState.delta = deltaTo(spinState.target);
+        spinState.t0 = performance.now();
+        spinState.pausedElapsed = 0;
+        spinState.frozen = false;
+        paint();
+        return;
+      }
+      var idx = forceIndex != null ? forceIndex : (mode === 'hold' ? landedIndex : centeredIndex());
+      offset = wrap(offsetForCard(idx));
+      paint();
+    }
+    function stopRaf() {
+      if (rafId) cancelAnimationFrame(rafId);
+      rafId = 0;
+      lastTs = 0;
+    }
+    function schedule() {
+      if (rafId || !canRun()) return;
+      if (mode !== 'idle' && mode !== 'spin') return;
+      rafId = requestAnimationFrame(tick);
+    }
+    function tick(ts) {
+      rafId = 0;
+      if (!canRun()) { lastTs = 0; return; }
+      var dt = lastTs ? Math.min(0.05, (ts - lastTs) / 1000) : 0;
+      lastTs = ts;
+      if (mode === 'idle') {
+        offset = wrap(offset + IDLE * dt);
+        paint();
+        syncVideos();
+      } else if (mode === 'spin' && spinState) {
+        var t = Math.min(1, (ts - spinState.t0) / spinState.dur);
+        var e = 1 - Math.pow(1 - t, 4);
+        offset = wrap(spinState.start + spinState.delta * e);
+        paint();
+        if (t >= 1) { finishSpin(); return; }
+      }
+      schedule();
+    }
+    function freeze() {
+      if (mode === 'spin' && spinState && !spinState.frozen) {
+        spinState.pausedElapsed = performance.now() - spinState.t0;
+        spinState.frozen = true;
+      }
+      stopRaf();
+      pauseVideos();
+    }
+    function resume() {
+      if (!canRun()) return;
+      if (mode === 'spin' && spinState && spinState.frozen) {
+        spinState.t0 = performance.now() - spinState.pausedElapsed;
+        spinState.frozen = false;
+      }
+      schedule();
+      syncVideos();
+    }
+    function finishSpin() {
+      var target = spinState ? spinState.target : centeredIndex();
+      spinState = null;
+      landedIndex = target;
+      offset = wrap(offsetForCard(target));
+      paint();
+      mode = 'hold';
+      setState('landed');
+      applyLanded(target);
+      hint.textContent = 'Landed · ' + readCard(target).client;
+      announce(target);
+      viewport.setAttribute('aria-busy', 'false');
+      syncVideos();
+      clearTimeout(holdTimer);
+      holdTimer = setTimeout(function () {
+        if (mode !== 'hold') return;
+        clearLanded();
+        hint.textContent = 'Pull the lever';
+        mode = 'idle';
+        setState('idle');
+        schedule();
+        syncVideos();
+      }, 4200);
+    }
+    function startSpin() {
+      clearTimeout(holdTimer);
+      if (reduced()) { stepStatic(); return; }
+      clearLanded();
+      var current = centeredIndex();
+      var target = Math.floor(Math.random() * count);
+      if (count > 1 && target === current) target = (target + 1) % count;
+      spinState = {
+        start: offset,
+        delta: deltaTo(target),
+        target: target,
+        dur: 1200,
+        t0: performance.now(),
+        pausedElapsed: 0,
+        frozen: false
+      };
+      mode = 'spin';
+      setState('spin');
+      hint.textContent = 'Spinning';
+      viewport.setAttribute('aria-busy', 'true');
+      pauseVideos();
+      schedule();
+    }
+    function stepStatic() {
+      staticIndex = (staticIndex + 1) % count;
+      applyLanded(staticIndex);
+      var info = readCard(staticIndex);
+      hint.textContent = 'Landed · ' + info.client;
+      announce(staticIndex);
+      setState('static');
+      syncVideos();
+      originals[staticIndex].scrollIntoView({ block: 'nearest', behavior: 'auto' });
+    }
+    function setLever(y) {
+      lever.style.transform = 'translate3d(0,' + y + 'px,0)';
+    }
+    function maxTravel() {
+      return Math.max(48, side.clientHeight - lever.offsetHeight - 28);
+    }
+    function springBack() {
+      lever.style.transition = reduced() ? 'none' : 'transform 460ms cubic-bezier(0.34, 1.56, 0.64, 1)';
+      setLever(0);
+    }
+    function nudgeLever() {
+      if (reduced()) return;
+      var travel = Math.min(maxTravel(), 76);
+      var token = ++leverToken;
+      lever.style.transition = 'transform 150ms cubic-bezier(0.4, 0, 0.2, 1)';
+      setLever(travel);
+      var back = function () {
+        if (token !== leverToken) return;
+        leverToken++;
+        springBack();
+      };
+      var onEnd = function (e) {
+        if (e.propertyName !== 'transform') return;
+        lever.removeEventListener('transitionend', onEnd);
+        back();
+      };
+      lever.addEventListener('transitionend', onEnd);
+      setTimeout(function () {
+        lever.removeEventListener('transitionend', onEnd);
+        back();
+      }, 220);
+    }
+    function syncMotion() {
+      clearTimeout(holdTimer);
+      spinState = null;
+      stopRaf();
+      clearLanded();
+      var live = !reduced();
+      setCopies(live);
+      arcade.classList.toggle('is-live', live);
+      arcade.classList.toggle('is-static', !live);
+      viewport.setAttribute('aria-busy', 'false');
+      hint.textContent = 'Pull the lever';
+      if (!live) {
+        track.style.transform = 'none';
+        screen.style.height = '';
+        mode = 'static';
+        staticIndex = -1;
+        setState('static');
+        layoutHeights();
+        return;
+      }
+      mode = 'idle';
+      setState('idle');
+      remeasure(0);
+      resume();
+      syncVideos();
+    }
+
+    spinBtn.addEventListener('pointerdown', function (e) {
+      if (e.button != null && e.button !== 0) return;
+      if (spinBtn.setPointerCapture) {
+        try { spinBtn.setPointerCapture(e.pointerId); } catch (err) {}
+      }
+      leverToken++;
+      drag = { y: e.clientY, moved: 0 };
+      lever.style.transition = 'none';
+    });
+    spinBtn.addEventListener('pointermove', function (e) {
+      if (!drag) return;
+      var dy = Math.max(0, e.clientY - drag.y);
+      drag.moved = dy;
+      if (!reduced()) setLever(Math.min(dy, maxTravel()));
+    });
+    function endDrag(commit) {
+      if (!drag) return;
+      var moved = drag.moved;
+      drag = null;
+      springBack();
+      if (commit && moved >= 28) {
+        suppressClick = true;
+        setTimeout(function () { suppressClick = false; }, 500);
+        startSpin();
+      }
+    }
+    spinBtn.addEventListener('pointerup', function () { endDrag(true); });
+    spinBtn.addEventListener('pointercancel', function () { endDrag(false); });
+    spinBtn.addEventListener('click', function () {
+      if (suppressClick) { suppressClick = false; return; }
+      nudgeLever();
+      startSpin();
+    });
+
+    var rect = arcade.getBoundingClientRect();
+    onScreen = rect.bottom > 0 && rect.top < window.innerHeight;
+    if (window.IntersectionObserver) {
+      var io = new IntersectionObserver(function (entries) {
+        onScreen = false;
+        for (var i = 0; i < entries.length; i++) {
+          if (entries[i].isIntersecting) onScreen = true;
+        }
+        if (canRun()) resume(); else freeze();
+      }, { threshold: 0 });
+      io.observe(arcade);
+    } else {
+      onScreen = true;
+    }
+    tabVisible = document.visibilityState !== 'hidden';
+    document.addEventListener('visibilitychange', function () {
+      tabVisible = document.visibilityState !== 'hidden';
+      if (canRun()) resume(); else freeze();
+    });
+    window.addEventListener('scroll', refreshScreen, { passive: true });
+    if (mq.addEventListener) mq.addEventListener('change', syncMotion);
+    else if (mq.addListener) mq.addListener(syncMotion);
+    window.addEventListener('resize', function () { refreshScreen(); remeasure(); });
+    if (window.ResizeObserver) {
+      var lastW = 0;
+      var resizeQueued = false;
+      var ro = new ResizeObserver(function () {
+        var w = arcade.clientWidth;
+        if (Math.abs(w - lastW) < 2) return;
+        lastW = w;
+        if (resizeQueued) return;
+        resizeQueued = true;
+        requestAnimationFrame(function () {
+          resizeQueued = false;
+          remeasure();
+        });
+      });
+      ro.observe(arcade);
+    }
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { remeasure(); });
+    syncMotion();
+  })();
+  </script>
 
   <!-- ═══ FOUNDER LINK (full story on about.html) ═══ -->
   <div class="founder-strip reveal">
