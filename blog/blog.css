@@ -473,7 +473,16 @@ footer {
     color: var(--accent);
     margin-bottom: 2px;
   }
-  .table-stack caption { padding-left: 2px; }
+  /* A blockified table shrink-wraps its caption to the longest word. */
+  .table-stack table.compare caption {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    padding-left: 2px;
+    white-space: normal;
+    overflow-wrap: normal;
+    word-break: normal;
+  }
   .cta-row .btn-primary { width: 100%; }
   footer { padding: 48px 20px 28px; }
   .footer-top { grid-template-columns: 1fr; gap: 28px; }
