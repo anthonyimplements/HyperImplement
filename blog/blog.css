@@ -267,6 +267,19 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
 .post .lede-in { font-size: 19px; }
 .post a { color: var(--accent-deep); text-underline-offset: 3px; }
 .post a:hover { color: var(--accent); }
+/* .post a (one class + one element) beats .btn-primary, so a callout
+   button inside an article was drawn in the rust link color on the
+   orange fill. These states win on hover, :active, and :visited too. */
+.post a.btn-primary,
+.post a.btn-primary:hover,
+.post a.btn-primary:focus,
+.post a.btn-primary:focus-visible,
+.post a.btn-primary:active,
+.post a.btn-primary:visited {
+  color: #fff;
+  -webkit-text-fill-color: #fff;
+  opacity: 1;
+}
 .post ul, .post ol { padding-left: 1.25em; }
 .post li + li { margin-top: 0.45em; }
 .post strong { font-weight: 600; }
