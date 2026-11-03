@@ -5,8 +5,15 @@
     <link>https://hyperimplement.com/blog/</link>
     <description>Practical guides from Anthony on AI product photos, ads, and UGC for e-com brands.</description>
     <language>en-us</language>
-    <lastBuildDate>Tue, 20 Oct 2026 16:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Tue, 03 Nov 2026 16:00:00 GMT</lastBuildDate>
     <atom:link href="https://hyperimplement.com/blog/feed.xml" rel="self" type="application/rss+xml"/>
+    <item>
+      <title>Why AI Product Photos Look Fake (and 7 Fixes I Use)</title>
+      <link>https://hyperimplement.com/blog/why-ai-product-photos-look-fake.html</link>
+      <guid isPermaLink="true">https://hyperimplement.com/blog/why-ai-product-photos-look-fake.html</guid>
+      <pubDate>Tue, 03 Nov 2026 16:00:00 GMT</pubDate>
+      <description>Why do AI product photos look fake? Here are the 7 fixes I use for e-com brands, from a clean white-background reference to negative prompts you can copy.</description>
+    </item>
     <item>
       <title>How to Make UGC Ads With AI (Without Faking a Review)</title>
       <link>https://hyperimplement.com/blog/how-to-make-ugc-ads-with-ai.html</link>
