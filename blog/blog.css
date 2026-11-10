@@ -295,6 +295,7 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
 .prompt code { font-family: inherit; }
 
 .table-wrap { overflow-x: auto; max-width: 100%; margin: 18px 0; border: 1px solid var(--border); border-radius: 12px; }
+.table-wrap.stack-on-small td:first-child { width: 24%; }
 table { width: 100%; border-collapse: collapse; }
 caption {
   text-align: left; font-family: 'IBM Plex Mono', monospace;
@@ -413,6 +414,28 @@ footer {
   .steps-2 { grid-template-columns: 1fr; }
   .step-arrow { transform: rotate(90deg); justify-self: center; }
   .cta-row .btn-primary { width: 100%; }
+  /* Three-column article tables: stack each row so words stay intact
+     and the page does not scroll sideways at phone width. */
+  .table-wrap.stack-on-small { position: relative; }
+  .table-wrap.stack-on-small table,
+  .table-wrap.stack-on-small tbody,
+  .table-wrap.stack-on-small tr,
+  .table-wrap.stack-on-small td { display: block; width: auto; }
+  .table-wrap.stack-on-small thead {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+  }
+  .table-wrap.stack-on-small tr { padding: 12px 14px 14px; border-top: 1px solid var(--border); }
+  .table-wrap.stack-on-small td,
+  .table-wrap.stack-on-small td:first-child { border: 0; padding: 0; width: auto; overflow-wrap: break-word; }
+  .table-wrap.stack-on-small td + td { margin-top: 8px; }
+  .table-wrap.stack-on-small td[data-label]::before {
+    content: attr(data-label);
+    display: block;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--accent); font-weight: 500; margin-bottom: 2px;
+  }
   footer { padding: 48px 20px 28px; }
   .footer-top { grid-template-columns: 1fr; gap: 28px; }
   .footer-bottom { flex-direction: column; gap: 8px; text-align: center; }
